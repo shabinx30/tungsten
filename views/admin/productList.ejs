@@ -1,0 +1,205 @@
+<%-include('../layouts/adminHeader.ejs')%>
+<%-include('../layouts/adminSidebar.ejs')%>
+
+<style>
+    .purple-header-box {
+    background-color: #936dd1; /* Purple color */
+    color: #ffffff; /* White text color */
+    padding: 15px; /* Adjust padding as needed */
+    border-radius: 5px; /* Optional: Add rounded corners */
+    margin-bottom: 20px; /* Optional: Add space below the box */
+    text-align: center;
+}
+.search-bar {
+    margin-bottom: 10px; /* Adjust spacing between search bar and heading */
+}
+.search-btn {
+        width: 100px; /* Adjust the width of the button as needed */
+        height: 40px; /* Adjust the height of the button as needed */
+        border: 2px solid #000; /* Black border */
+        border-radius: 5px; /* Make it round */
+        background-color: #936dd1; /* Black background */
+        color: #050404; /* White text color */
+        font-size: 14px; /* Adjust font size */
+        padding: 0; /* Remove padding */
+    }
+
+
+.search-bar {
+    width: calc(100% - 80px); /* Adjust the width of the search bar */
+    margin-right: 10px; /* Adjust spacing between search bar and button */
+}
+.btn-primary {
+    border-radius: 5px; /* Slight curve */
+    background-color: #936dd1; /* Purple background */
+    border-color: #0a0a0a; /* Border color same as background for a consistent look */
+    color: #050404; /* Black text color */
+    font-size: 14px; /* Adjust font size */
+    padding: 8px 20px; /* Adjust padding */
+}
+.custom-table-header {
+    background-color: grey;
+    color: black;
+}
+.red-button{
+    color: #9f0000; 
+    background-color: #ff9797; 
+    border-radius: 10px;
+  }
+  .red-button:hover{
+    color: #9f0000;
+    background-color: #ff6969;
+  }
+  .green-button{
+    color: #009f18; 
+    background-color: #a2ff97; 
+    border-radius: 10px;
+  }
+  .green-button:hover{
+    color: #009f18;
+    background-color: #68ff58;
+  }
+  .delete-button{
+    color:#ff0000;
+    background-color: #525252;
+    border-radius: 10px;
+  }
+  .delete-button:hover{
+    color: #ff0000;
+    background-color: #000;
+  }
+  .edit-button{
+    color: blue;
+    background-color: #a1a1ff;
+    border-radius: 10px;
+  }
+  .edit-button:hover{
+    color: blue;
+    background-color: #7b7bff;
+  }
+</style>
+
+<div class="page-wrapper">
+    <!-- ============================================================== -->
+    <!-- Container fluid  -->
+    <!-- ============================================================== -->
+    <div class="container-fluid">
+        <!-- ============================================================== -->
+        <!-- Start Page Content -->
+        <!-- ============================================================== -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        
+                        <div class="text-center mb-5"> <!-- Added div with custom class -->
+                             
+                            <h2 class="card-title">Products Informations</h2>
+                        </div>
+                        <div class="table-responsive" style="border-radius: 20px;">
+                            <table class="table">
+                                <thead class="custom-table-header" style="background-color: #936dd1;">
+                                    <tr>
+                                        <th scope="col">PRODUCT NAME</th>
+                                        <th scope="col">IMAGE</th>
+                                        <th scope="col">PRICE</th>
+                                        <th scope="col">CATEGORY</th>
+                                        <th scope="col">STOCK</th>  
+                                        <th scope="col">CHANGES</th>                                              
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% products.forEach(product => { %>
+                                        <tr>
+                                            <td><%= product.name %></td>
+                                            <td>
+                                               <% console.log( product)%>
+                                                        <img style="height: 50px; width: 50px; border: 2px solid #000; border-radius: 10px;" src="/productImages/<%= product.images[0] %>" alt="<%= product.name %> main image" class="img-fluid" >
+                                                
+                                            </td>
+                                            <td>₹<%= product.price %></td>
+                                            <td><%= product.categoryName %></td>
+                                            <td><%= product.quantity %></td>
+                                            <td class="text-right align-middle">
+                                                <a href="/admin/editProduct?productId=<%= product._id %>" class="btn-status-toggle" data-productid="<%= product._id %>">
+                                                
+                                                    <span class="btn ml-3 edit-button">EDIT</span>                                                                                                         
+                                                </a>
+                                                <% if (product.is_listed) { %>
+                                                    <a>
+                                                        <button id="status-button-<%= product._id %>" onclick="confirmAction('<%= product._id %>')" class="btn ml-3 red-button">Unlist</button>
+                                                    </a>
+                                                <% } else { %>
+                                                    <a >
+                                                        <button id="status-button-<%= product._id %>" onclick="confirmAction('<%= product._id %>')" class="btn ml-3 green-button">List</button>
+                                                    </a>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- End Page wrapper  -->
+        <!-- ============================================================== -->
+    </div>
+    <% if (success) { %> 
+        <div class="alert  text-center" role="alert" style="color:green; background: white;">
+            <%= success %>
+        </div>
+    <% } %>
+    
+    <div class="text-center">
+        <a href="/admin/addProducts" class="btn btn-primary mb-5">+ Add Products</a>
+    </div>
+</div>
+
+<script>
+    function confirmAction(productId) {
+        let productBtn = document.getElementById(`status-button-${productId}`);
+        console.log(productBtn);
+    
+        fetch(`/admin/productStatus?productId=${productId}`, {
+            method: "GET"
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            console.log("Response is working:", data.is_listed);
+            
+                if(data.is_listed==false){
+                    console.log("heyyyyy");
+                    productBtn.innerText = "Unlist";
+                    productBtn.className = "btn ml-3 red-button";
+                    productBtn.style.backgroundColor = "#ff9797";
+                    productBtn.style.color = "#9f0000";
+                } else {
+                    console.log("haaaaaiiiiiii");
+                    productBtn.innerText = "List";
+                    productBtn.className = "btn ml-3 green-button";
+                    productBtn.style.backgroundColor = "#a2ff97";
+                    productBtn.style.color = "#009f18";
+                }
+            
+        })
+        .catch((error) => {
+            console.error("There was a problem with the fetch operation:", error);
+        });
+    }
+</script> 
+     
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+
+<%-include('../layouts/adminFooter.ejs')%>
