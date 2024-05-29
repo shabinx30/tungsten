@@ -11,11 +11,11 @@ const userSchema = mongoose.Schema({
     },
     phone_number:{
         type:Number,
-        required:true
+        // required:true
     },
     password:{
         type:String,
-        required:true
+        // required:true
     },
     is_blocked:{
         type:Boolean,

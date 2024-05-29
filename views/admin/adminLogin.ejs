@@ -156,36 +156,103 @@
         right: 0px;
         color: #fff;
     }
+
+    /* incorrect password */
+
+    @keyframes slideInFromLeft {
+    0% {
+      transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5%);
+    }
+    50% {
+        transform: translateX(5%);
+    }
+    75% {
+        transform: translateX(-5%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+  }
+  
+  .smo {  
+    /* This section calls the slideInFromLeft animation we defined above */
+    animation: .25s ease 0s 2 slideInFromLeft;
+    border-radius: 5px;
+    color: #db0000;
+    background-color: #ffbebe;
+  }
+
+
 </style>
 
 <div class="container">
 	<div class="screen">
 		<div class="screen__content">
-			<form class="admin_login" method="post" action="/admin">
+			<form id="form" class="admin_login" method="post" action="/admin">
                 <h2 style="color: #000000;">Admin Login</h2>
                 <div class="admin_login__field">
 					<i class="admin_login__icon fas fa-user"></i>
-					<input type="email" name="email" required   class="admin_login__input" placeholder="Email">
+					<input type="email" name="email" id="email" class="admin_login__input" placeholder="Email">
 				</div>
 				<div class="admin_login__field">
 					<i class="admin_login__icon fas fa-lock"></i>
-					<input type="password" name="password" required   class="admin_login__input" placeholder="Password">
+					<input type="password" name="password" id="password_input" class="admin_login__input" placeholder="Password">
 				</div>
+                <% if(locals.message){ %>
+                    <div id="error" class="smo text-center">
+                        <%= message %>
+                    </div>
+                <% } %>
 				<button class="button admin_login__submit">
 					<span class="button__text">Log In</span>
 				</button>				
 			</form>
-            <% 
-                if(typeof message !== 'undefined'){
-            %>
-                    <p style="color: green; background-color: lightgreen;"><%= message %></p>
-            <%
-                }
-            
-            %>
 		</div>
 		<div class="screen__background">
 		</div>		
 	</div>
 </div>
 <%- include('../layouts/adminFooter.ejs') %>
+
+<script>
+    form.addEventListener('submit', function(event) {
+    let emailInput = document.getElementById('email').value.trim();
+    let passwordInput = document.getElementById('password_input').value.trim();
+
+
+    let emailError = document.getElementById('error');
+    if (emailInput === '') {
+        emailError.textContent = 'Please enter an email address.';
+        event.preventDefault(); // Prevent form submission if validation fails
+        return;
+    } else {
+        emailError.textContent = '';
+    }
+
+    let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailInput)) {
+        emailError.textContent = 'Please enter a valid email address.';
+        event.preventDefault(); // Prevent form submission if validation fails
+        return;
+    } else {
+        emailError.textContent = '';
+    }
+
+    let passwordError = document.getElementById('error');
+    if (passwordInput === '') {
+        passwordError.textContent = 'Please enter a password.';
+        event.preventDefault(); // Prevent form submission if validation fails
+        return;
+    } else if (passwordInput.length < 4) {
+        passwordError.textContent = 'Password must be at least 8 characters long.';
+        event.preventDefault(); // Prevent form submission if validation fails
+        return;
+    } else {
+        passwordError.textContent = '';
+    }
+
+});
+</script>

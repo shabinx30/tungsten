@@ -28,7 +28,7 @@ const verifyLogin = async (req,res)=>{
                 res.render('adminLogin',{message:"Email or Password is incorrect...!!!"})
             }
         }else{
-            res.render('adminLogin',{message:"Your not Existing...!!!"})
+            res.render('adminLogin',{message:"Email or Password is incorrect...!!!"})
         }
     } catch (error) {
         console.log(error.message);
@@ -37,7 +37,6 @@ const verifyLogin = async (req,res)=>{
 
 const loadLogin = async(req,res) => {
     try {
-        
         res.render('adminLogin');
 
     } catch (error) {
@@ -57,8 +56,10 @@ const loadDashboard = async(req, res) => {
 
 const logout = async(req,res)=>{
     try {
+
         req.session.destroy()
-        res.redirect('/admin')
+
+        return res.redirect('/admin')
     } catch (error) {
         console.log(error.message);
     }
@@ -139,17 +140,14 @@ const addCategory = async (req,res)=>{
 
 const blockUser = async(req,res)=>{
     try {
-        const userId = req.query.userId
-        console.log(userId,'userid in block user');
+        const userId = req.query.userId;
         const checking = await User.findOne({ _id: userId});
 
         if (checking.is_blocked == false) {
             const confirmation = await User.findOneAndUpdate({ _id: userId }, { $set: { is_blocked: true } });
-            req.session.user_id = null
-            console.log(req.session.user_id,'re.ses.userid');
+            // req.session.user_id=null
             res.json(confirmation)
         } else {
-            
             const confirmation = await User.findOneAndUpdate({ _id: checking._id }, { $set: { is_blocked: false } });
             res.json(confirmation)
         }

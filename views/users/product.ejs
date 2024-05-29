@@ -1,9 +1,42 @@
 <%- include('../layouts/header.ejs') %>
-<div class="page-wrapper">
-    <header class="header">
-        
+<div id="preLoader" class="centerImage" style="width: 100%; height: 100vh; padding-top: 35vh; background-color: #000000;">
+    <img class="img-fluid" style="width: 20%; display: block; margin-left: auto;margin-right: auto;" src="animation/preloading_animation.gif">
+</div>
 
-        <div class="header-bottom sticky-header">
+
+<script>
+    let loader = document.getElementById("preLoader")
+    window.addEventListener("load", function () {
+        let nav = document.getElementById('head_nav')
+        loader.style.display = "none";
+        nav.className = "header smol"
+    })
+</script>
+
+
+    <div class="page-wrapper">
+        <header class="header" id="head_nav">
+            <div class="header-bottom sticky-header">
+                <style>
+
+
+                    /* for logout */
+              @keyframes slideInFromLeft1 {
+                  0% {
+                    transform: translateY(-100%);
+                    opacity: 0;
+                  }
+                  100% {
+                      transform: translateY(0);
+                      opacity: 1;
+                  }
+                }
+                
+                .smol {  
+                  /* This section calls the slideInFromLeft animation we defined above */
+                  animation: .3s ease 0s 1 slideInFromLeft1;
+                }
+              </style>
             <div class="container">
                 <div class="header-left">
                     <button class="mobile-menu-toggler">
@@ -124,7 +157,7 @@
                                     <div id="product-zoom-gallery" class="product-image-gallery">
                                         <% if(product.images.length>1) { %>
                                             <% for(let i=0;i< product.images.length;i++) { %>
-                                                <a class="product-gallery-item" href="#" data-image="/productImages/<%= product.images[i] %>" data-zoom-image="/productImages/<%= product.images[i] %>">
+                                                <a class="product-gallery-item <%=i==0? 'active':''%>" href="#" data-image="/productImages/<%= product.images[i] %>" data-zoom-image="/productImages/<%= product.images[i] %>">
                                                     <img src="/productImages/<%= product.images[i] %>" alt="product side">
                                                 </a>
                                             <%}%>
@@ -189,11 +222,11 @@
                                 </div><!-- End .details-filter-row -->
 
                                 <div class="product-details-action">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    <a onclick="addToCart('<%= product._id %>')" class="btn-product btn-cart"><span>add to cart</span></a>
 
                                     <div class="details-action-wrapper">
                                         <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
-                                        <a href="#" class="btn-product btn-compare" title="Compare"><span>Add to Compare</span></a>
+                                        <a href="" class="btn-product btn-compare" title="Compare"><span>Add to Compare</span></a>
                                     </div><!-- End .details-action-wrapper -->
                                 </div><!-- End .product-details-action -->
 
@@ -660,7 +693,7 @@
                 </div><!-- End .product-details-quantity -->
 
                 <div class="product-details-action">
-                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                    <a onclick="addToCart('<%= product._id %>')" class="btn-product btn-cart"><span>add to cart</span></a>
                     <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
                 </div><!-- End .product-details-action -->
             </div><!-- End .col-6 -->
@@ -955,3 +988,39 @@
 </div><!-- End .modal -->
 <%- include('../layouts/footer.ejs') %>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<!-- add to cart fucntionality -->
+<script>
+    function addToCart(productId){
+        const quantity = 1
+        fetch('/addCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ productId, quantity })
+        })
+            .then(response => response.json())
+            .then(data=>{
+                if(data.success){
+                    Swal.fire({
+                        icon : 'success',
+                        title : 'Success',
+                        text : 'Product added successfully',
+                        showConfirmButton  :false,
+                        timer : 1500
+                    })
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: data.error || 'Product is already existing.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            })
+
+        
+    }
+</script>

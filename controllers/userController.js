@@ -4,6 +4,8 @@ const nodemailer = require('nodemailer');
 const Otp = require('../models/otp');
 const Product = require('../models/productModel')
 const Category = require('../models/categoryModel')
+const Cart = require('../models/cartModel');
+const Address = require('../models/addresses')
 
 const securePassword = async(password) => {
     try{
@@ -16,15 +18,32 @@ const securePassword = async(password) => {
 
 const home = async(req,res)=>{
     try {
-        res.render('home')
+        const userId = req.session.user_id
+        const userData = await User.findOne({ _id: userId })
+        if(userData){
+            const cart = await Cart.findOne({ userId: userId }).populate('products.productId').exec();
+            if(cart){
+                res.render('home',{products: cart.products,name: userData.name })
+            }else{
+                res.render('home',{products: [],name: userData.name })
+            }
+        }else{
+            res.render('home',{products: [],name: '' })
+        }
     } catch (error) {
         console.log(error.message)
     }
 }
 const shop = async(req,res)=>{
     try {
-        const productData = await Product.find({is_listed: true})
-        res.render('shop',{products: productData})
+        // console.log(typeof(req.query.type));
+        if(req.query.type){
+            const productData = await Product.find({is_listed: true}).sort({price:parseInt(req.query.type)})
+            res.render('shop',{products: productData})
+        }else{
+            const productData = await Product.find({is_listed: true})
+            res.render('shop',{products: productData})
+        }
     } catch (error) {
         console.log(error.message);
     }
@@ -67,13 +86,6 @@ const wishlist = async(req,res)=>{
     }
 }
 
-const cart = async(req,res)=>{
-    try {
-        res.render('cart')
-    } catch (error) {
-        console.log(error.message);
-    }
-}
 
 const sign_in = async(req,res)=>{
     try {
@@ -114,7 +126,7 @@ const verifyLogin = async(req, res) => {
             }
         }
         else{
-            res.render('signIn',{message:"Email and Password is incorrect...!!!"});
+            res.render('signIn',{message:"User not existing..!!"});
         }
 
     } catch (error) {
@@ -142,11 +154,10 @@ const transporter = nodemailer.createTransport({
 const insertUser = async (req, res) => {
 
     try{
-        // console.log('insert is working');
-        const { name, email, phone_number, password } = req.body
+        const { name, phone_number, password } = req.body
+        const email = req.body.email.toLowerCase()
 
         const exist = await User.findOne({email: email})
-
         if(exist){
             res.render('register', {message: "User alredy existing...!!!"});
         }
@@ -203,7 +214,13 @@ const insertUser = async (req, res) => {
 const userDashboard = async(req,res)=>{
     try {
         const userData = await User.findById({_id: req.session.user_id})
-        res.render('userDashboard',{user: userData})
+        const addresses = await Address.findOne({userId: req.session.user_id})
+        // console.log(addresses.addresses);
+        if(addresses){
+            res.render('userDashboard',{user: userData,addresses: addresses.addresses})
+        }else{
+            res.render('userDashboard',{user: userData,addresses: []})
+        }
     } catch (error) {
         console.log(error.message);
     }
@@ -218,7 +235,6 @@ const logout = async(req,res)=>{
     }
 }
 
-  
 
 
 const verifyOTP = async (req, res) => {
@@ -258,7 +274,153 @@ const loadOtp = async(req,res)=>{
     }
 }
 
+const loadEditUser = async (req,res)=>{
+    try {
+        const userId = req.session.user_id;
+        const userData = await User.findOne({_id: userId })
+        res.render('editProfile',{userData})
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send(error.message)
+    }
+}
 
+const editProfile = async (req,res)=>{
+    try {
+        const userId = req.session.user_id;
+        const { name,phone_number } = req.body;
+        const userData = await User.findOneAndUpdate({_id: userId },{$set:{name: name,phone_number: phone_number}})
+        if(userData){
+            res.redirect('/userDashboard')
+        }else{
+            res.redirect('/signIn')
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send(error.message)
+    }
+}
+
+
+const loadChangePassword = async (req,res)=>{
+    try {
+        const msg = req.flash('errmsg')
+        res.render('changePassword',{msg})
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send(error.message)
+    }
+}
+
+const changePassword = async (req,res)=>{
+    try {
+        const userId = req.session.user_id
+        const { password,new_password } = req.body
+        const userData = await User.findOne({_id: userId})
+
+        const passwordMatch = await bcrypt.compare(password,userData.password)
+
+        if(passwordMatch){
+            const spassword = await securePassword(new_password)
+            const change = await User.findOneAndUpdate({_id: userId},{$set:{password: spassword}})
+            if(change){
+                res.redirect('/userDashboard')
+            }else{
+                req.flash('errmsg', 'Unabel to change password...!!!');
+                return res.redirect('/changePassword')
+            }
+        }else{
+            req.flash('errmsg', 'Password is incorrect...!!!');
+            return res.redirect('/changePassword')
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send(error.message)
+    }
+}
+
+
+const loadForgotPassword = async (req,res)=>{
+    try {
+        const msg = req.flash('errmsg')
+        res.render('forgotPassword',{msg})
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send(error.message)
+    }
+}
+
+const forgotPassword = async (req,res)=>{
+    try {
+        const email = req.body.email;
+        const userData = await User.findOne({email: email})
+        if(userData){
+            const otp = generateOTP();
+                    console.log(email,otp);
+                    const mailOptions = {
+                        from: 'tungsten.industries007@gmail.com', // my email address
+                        to: email,
+                        subject: 'OTP for Email Verification',
+                        text: `Your OTP (One-Time Password) for email verification is: ${otp}`
+                    };
+
+                    await transporter.sendMail(mailOptions);
+                    const confirmation = Otp({
+                        email: email,
+                        otp: otp
+                    });
+                    confirmation.save()//save data into data base
+
+                    res.redirect(`/loadOtp?email=${email}`)
+        }else{
+            req.flash('errmsg', 'Email is not existing...!!!');
+            return res.redirect('/forgotPassword')
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send(error.message)
+    }
+}
+
+const googleLoginSuccess = async (req,res)=>{
+    try {
+        if(!req.user){
+            res.redirect('/failure')
+        }
+        console.log(req.user);
+        const userData = await User.findOne({email: req.user.email})
+        if(!userData){
+            const result = User({
+                name: req.user.given_name,
+                email: req.user.email,
+                is_blocked: false,
+                is_verified: true
+            })
+            const status = result.save()
+            if(status){
+                req.session.user_id=result._id
+                res.redirect('/home')
+            }else{
+                res.status(400).send(error.message)
+            }
+        }else{
+            req.session.user_id = userData._id;
+            res.redirect('/home')
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send(error.message)
+    }
+}
+
+const googleLoginFailure = async(req,res)=>{
+    try {
+        res.send('Error')
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send(error.message)
+    }
+}
 
 module.exports = {
     home,
@@ -272,9 +434,16 @@ module.exports = {
     register,
     insertUser,
     verifyLogin,
-    cart,
     userDashboard,
     logout,
     loadOtp,
-    verifyOTP
+    verifyOTP,
+    loadEditUser,
+    editProfile,
+    loadChangePassword,
+    changePassword,
+    loadForgotPassword,
+    forgotPassword,
+    googleLoginSuccess,
+    googleLoginFailure
 }

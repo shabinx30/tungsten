@@ -1,11 +1,15 @@
 const userModel=require('../models/userModel')
 
 const isLogin = async (req,res,next)=>{
-    const a=await userModel.findOne({_id:req.session.user_id})
+    const a = await userModel.findOne({_id:req.session.user_id})
     try {
-        if(req.session.user_id&&a.is_blocked===false){
+        if(req.session.user_id){
             // console.log(req.session.user_id,'its in auth');
-            next()
+            if(a.is_blocked===false) next()
+                else{
+                    req.session.user_id=null
+                    res.redirect('/signIn')
+                }
         }else{
             res.redirect('/signIn')
         }
@@ -15,11 +19,14 @@ const isLogin = async (req,res,next)=>{
 }
 
 const isLogout = async(req,res,next)=>{
+    const a = await userModel.findOne({_id:req.session.user_id})
     try {
         if(!req.session.user_id){
-            res.redirect('/signIn')
-        }else{
             next()
+        }else{
+            // next()
+            
+            res.redirect('/home')
         }
     } catch (error) {
         console.log(error.message);

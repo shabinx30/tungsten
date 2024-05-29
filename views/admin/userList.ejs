@@ -136,6 +136,7 @@
 
 <script>
     function confirmAction(user_Id) {
+        console.log('function');
         let userBtn = document.getElementById(`status-button-${user_Id}`);
     
         fetch(`/admin/blockUser?userId=${user_Id}`, {
@@ -154,14 +155,10 @@
                     console.log("heyyyyy");
                     userBtn.innerText = "Unblock";
                     userBtn.className = "btn ml-3 red-button";
-                    userBtn.style.backgroundColor = "#ff9797";
-                    userBtn.style.color = "#9f0000";
                 } else {
                     console.log("haaaaaiiiiiii");
                     userBtn.innerText = "Block";
                     userBtn.className = "btn ml-3 green-button";
-                    userBtn.style.backgroundColor = "#a2ff97";
-                    userBtn.style.color = "#009f18";
                 }
             
         })

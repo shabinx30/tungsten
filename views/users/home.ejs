@@ -1,7 +1,42 @@
 <%- include('../layouts/header.ejs') %>
+<div id="preLoader" class="centerImage" style="width: 100%; height: 100vh; padding-top: 35vh; background-color: #000000;">
+    <img class="img-fluid" style="width: 20%; display: block; margin-left: auto;margin-right: auto;" src="animation/preloading_animation.gif">
+</div>
+
+
+<script>
+    let loader = document.getElementById("preLoader")
+    window.addEventListener("load", function () {
+        let nav = document.getElementById('head_nav')
+        loader.style.display = "none";
+        nav.className = "header smol"
+    })
+</script>
+
+
     <div class="page-wrapper">
-        <header class="header">
+        <header class="header" id="head_nav">
             <div class="header-bottom sticky-header">
+                <style>
+
+
+                    /* for logout */
+              @keyframes slideInFromLeft1 {
+                  0% {
+                    transform: translateY(-100%);
+                    opacity: 0;
+                  }
+                  100% {
+                      transform: translateY(0);
+                      opacity: 1;
+                  }
+                }
+                
+                .smol {  
+                  /* This section calls the slideInFromLeft animation we defined above */
+                  animation: .3s ease 0s 1 slideInFromLeft1;
+                }
+              </style>
                 <div class="container">
                     <div class="header-left">
                         <button class="mobile-menu-toggler">
@@ -63,7 +98,7 @@
                         <div class="dropdown cart-dropdown">
                             <a href="/cart" class="dropdown-toggle" >
                                 <i class="icon-shopping-cart"></i>
-                                <span class="cart-count">2</span>
+                                <span class="cart-count"><%= products.length %></span>
                             </a>
     
                             <!-- dropdown -->
@@ -73,7 +108,14 @@
                             <a href="/userDashboard" class="dropdown-toggle" >
                                 <i class="fa-regular fa-user" style="font-size: x-large;"></i>
                             </a>
-    
+                            <p class="ml-2" id="profile"><b><% if(name) { %>
+                                <%if(name.length<=6){ %>
+                                    <%=name%>
+                                    <%}%>
+                            <% }else { %> 
+                                Login
+                            <% } %>
+                            </b></p>
                             <!-- dropdown -->
     
                         </div>
@@ -1407,7 +1449,7 @@
 <!-- Mobile Menu -->
 <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
 
-<div class="mobile-menu-container">
+<div class="mobile-menu-container" style="overflow: hidden;">
 <div class="mobile-menu-wrapper">
     <span class="mobile-menu-close"><i class="icon-close"></i></span>
 
@@ -1420,27 +1462,27 @@
     <nav class="mobile-nav">
         <ul class="mobile-menu">
             <li class="active">
-                <a href="index.html">Home</a>
+                <a href="">Home</a>
 
             </li>
             <li>
-                <a href="category.html">Shop</a>
+                <a href="/shop">Shop</a>
                 
             </li>
             <li>
-                <a href="product.html" class="sf-with-ul">Category</a>
+                <a href="/category" class="sf-with-ul">Category</a>
                 
             </li>
             <li>
-                <a href="#">About Us</a>
+                <a href="/about">About Us</a>
                 
             </li>
             <li>
-                <a href="blog.html">Contact Us</a>
+                <a href="/contact">Contact Us</a>
 
             </li>
             <li>
-                <a href="elements-list.html">blog</a>
+                <a href="/blog">blog</a>
                 
             </li>
         </ul>
@@ -1568,5 +1610,4 @@
     </div><!-- End .modal-content -->
 </div><!-- End .modal-dialog -->
 </div><!-- End .modal -->
-
 <%- include('../layouts/footer.ejs') %>

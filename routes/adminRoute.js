@@ -61,8 +61,8 @@ admin_route.get('/deleteCategory',adminAuth.isLogin,adminController.deleteCatego
 admin_route.get('/editCategory',adminAuth.isLogin,adminController.loadEditCategory)
 admin_route.post('/editCategory',adminAuth.isLogin,adminController.editCategory)
 
-admin_route.get('*',(req,res)=>{
-    res.send('<style>body{background: black;}</style><h1 style="color: white; font-family: Courier, monospace; text-align: center; margin-top: 20%;">Page not found<span style="color: red";> !!!</span></h1>')
-})
+// admin_route.get('*',(req,res)=>{
+//     res.send('<style>body{background: black;}</style><h1 style="color: white; font-family: Courier, monospace; text-align: center; margin-top: 20%;">Page not found<span style="color: red";> !!!</span></h1>')
+// })
 
 module.exports = admin_route
