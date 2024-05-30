@@ -4,7 +4,17 @@
         background-color: black;
     }
 </style>
-<div >
+<div>
     <h2 style="color: white; margin-top: 25%; text-align: center; font-family: 'Courier New', Courier, monospace;">404 page not found<span style="color: red;"> !!</span></h2>
 </div>
+<script>
+    let current = window.location.href
+    setTimeout(()=>{
+        if(current.includes('/admin')){
+            window.location.href = "/admin"
+        }else{
+            window.location.href = "/"
+        }
+    },3000)
+</script>
 <%- include('../layouts/adminFooter.ejs') %>

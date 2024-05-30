@@ -3,7 +3,6 @@ const user_route = express()
 const flash = require('express-flash')
 const session = require('express-session')
 const userAuth = require('../middleware/userAuth')
-const config = require('../config/config')
 const passport = require('passport')
 require('../passport')
 
@@ -12,7 +11,7 @@ user_route.use(flash())
 
 //session
 user_route.use(session({
-    secret:config.sessionSecret,
+    secret:process.env.sessionSecret,
     resave: false,
     saveUninitialized: true,
 }))

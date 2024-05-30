@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://127.0.0.1:27017/e-commerce_management_system");
+require("dotenv").config();
+mongoose.connect(process.env.mongoose);
 const express = require("express");
 const app = express();
 const nocache = require("nocache");
 const path = require("path");
-require("dotenv").config();
 app.use(nocache());
 
 

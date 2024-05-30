@@ -2,11 +2,10 @@ const express = require('express')
 const admin_route = express();
 const bodyParser = require('body-parser')
 const session = require('express-session')
-const config = require('../config/config')
 const flash = require('express-flash')
 
 admin_route.use(session({
-    secret:config.sessionSecret,
+    secret:process.env.sessionSecret,
     resave: false,
     saveUninitialized: true,
 }));

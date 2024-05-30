@@ -23,12 +23,12 @@ const home = async(req,res)=>{
         if(userData){
             const cart = await Cart.findOne({ userId: userId }).populate('products.productId').exec();
             if(cart){
-                res.render('home',{products: cart.products,name: userData.name })
+                res.render('home',{products: cart.products,name: userData.name,picture: userData.picture })
             }else{
-                res.render('home',{products: [],name: userData.name })
+                res.render('home',{products: [],name: userData.name,picture: userData.picture })
             }
         }else{
-            res.render('home',{products: [],name: '' })
+            res.render('home',{products: [],name: '',picture: '' })
         }
     } catch (error) {
         console.log(error.message)
@@ -393,6 +393,7 @@ const googleLoginSuccess = async (req,res)=>{
             const result = User({
                 name: req.user.given_name,
                 email: req.user.email,
+                picture: req.user.photos[0].value,
                 is_blocked: false,
                 is_verified: true
             })

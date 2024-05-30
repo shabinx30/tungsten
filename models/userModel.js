@@ -28,6 +28,10 @@ const userSchema = mongoose.Schema({
     is_verified:{
         type:Boolean,
         default:false
+    },
+    picture:{
+        type:String,
+        required:false
     }
 
 },{versionKey:false});
