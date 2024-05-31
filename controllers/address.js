@@ -1,20 +1,12 @@
 const Address = require('../models/addresses')
 
-const loadAddAddress = async (req,res)=>{
-    try {
-        const msg=req.flash('errmsg')
-        res.render('addAddress',{msg})
-    } catch (error) {
-        console.log(error.message);
-        res.status(400).send(error.message)
-    }
-}
 
 const addAddress = async (req,res)=>{
     try {
         console.log('wo');
-        const userId = req.session.user_id
-        const { address_type,first_name,last_name,contry,street_name,town,state,postcode,phone_number,email } = req.body;
+        const userId = req.session.user_id;
+        const address_type = req.body.address_type.toUpperCase()
+        const { first_name,last_name,contry,street_name,town,state,postcode,phone_number,email } = req.body;
         console.log('wo2');
         const exist = await Address.findOne({userId: userId})
         if(!exist){
@@ -59,14 +51,14 @@ const addAddress = async (req,res)=>{
                         email
                     }}});
                 if(!addressData) {
-                    req.flash('errmsg', "Couldn't this Address...!!!");
-                    return res.redirect('/addAddress')
+                    req.flash('addressmsg', "Couldn't add Address...!!!");
+                    return res.redirect('/userDashboard')
                 }else{
                     res.redirect('/userDashboard')
                 }
             }else{
-                req.flash('errmsg', 'This Address is already exist...!!!');
-                return res.redirect('/addAddress')
+                req.flash('addressmsg', 'This Address is already exist...!!!');
+                return res.redirect('/userDashboard')
             }
         }
     } catch (error) {
@@ -76,6 +68,5 @@ const addAddress = async (req,res)=>{
 }
 
 module.exports = {
-    loadAddAddress,
     addAddress
 }

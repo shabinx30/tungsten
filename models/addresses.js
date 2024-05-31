@@ -1,3 +1,4 @@
+const { Timestamp } = require('mongodb')
 const mongoose = require('mongoose')
 
 const addressSchema = mongoose.Schema({
@@ -48,6 +49,8 @@ const addressSchema = mongoose.Schema({
             required:true
         }
     }]
+},{
+    timestamps:true
 })
 
 module.exports = mongoose.model('Address',addressSchema)

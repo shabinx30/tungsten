@@ -198,7 +198,7 @@
                                     <% } %>
                                     
                                     <!-- Button trigger modal -->
-                                    <a class="btn btn-outline-primary-2" style="border-radius: 10px; cursor: pointer;" data-toggle="modal" data-target="#exampleModalCenter"><span>Add address</span><i class="icon-long-arrow-right"></i></a>
+                                    <a class="btn btn-outline-primary-2" id="addAddress" style="border-radius: 10px; cursor: pointer;" data-toggle="modal" data-target="#exampleModalCenter"><span>Add address</span><i class="icon-long-arrow-right"></i></a>
   
                                     <!-- Modal -->
                                     <div class="modal fade"  id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -212,7 +212,7 @@
                                             </div>  
                                             <div class="modal-body pl-3 pr-3">
                                                 <form id="form" action="/addAddress" method="post">
-                                                    <p class="text-danger" ><%= locals.msg %></p>
+                                                    <p class="text-danger" id="addressmsg" ><%= locals.addressmsg %></p>
                                                     <div class="form-group">
                                                         <label for="register-email-2">Enter Address type *</label>
                                                          <input type="text" class="form-control" id="address_type" name="address_type" style="border-radius: 10px;" maxlength="21" placeholder="Eg :- Work address">
@@ -608,4 +608,17 @@
         }
     
     });
+</script>
+
+<script>
+    const addressmsg = document.getElementById('addressmsg')
+    if(addressmsg.textContent){
+        console.log('adderror');
+        setTimeout(()=>{
+            const address_link = document.getElementById('tab-address-link')
+            const addAddress = document.getElementById('addAddress');
+            address_link.click()
+            addAddress.click()
+        },500)
+    }
 </script>

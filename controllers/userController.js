@@ -214,11 +214,16 @@ const userDashboard = async(req,res)=>{
     try {
         const userData = await User.findById({_id: req.session.user_id})
         const addresses = await Address.findOne({userId: req.session.user_id})
+        if(req.query.re){
+            req.flash('addressmsg', "Please add Address...!!!");
+            return res.redirect('/userDashboard')
+        }
+        const addressmsg = req.flash('addressmsg')
         // console.log(addresses.addresses);
         if(addresses){
-            res.render('userDashboard',{user: userData,addresses: addresses.addresses})
+            res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg})
         }else{
-            res.render('userDashboard',{user: userData,addresses: []})
+            res.render('userDashboard',{user: userData,addresses: [],addressmsg})
         }
     } catch (error) {
         console.log(error.message);

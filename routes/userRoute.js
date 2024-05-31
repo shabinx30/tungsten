@@ -62,7 +62,6 @@ user_route.get('/editProfile',userAuth.isLogin,userController.loadEditUser)
 user_route.post('/editProfile',userAuth.isLogin,userController.editProfile)
 
 //Address
-user_route.get('/addAddress',userAuth.isLogin,userAddress.loadAddAddress)
 user_route.post('/addAddress',userAuth.isLogin,userAddress.addAddress)
 
 //change password
