@@ -11,9 +11,41 @@ const addressSchema = mongoose.Schema({
             type: String,
             required: true
         },
-        address:{
+        first_name:{
             type:String,
             required: true
+        },
+        last_name:{
+            type:String,
+            required: true
+        },
+        contry:{
+            type:String,
+            required: true
+        },
+        street_name:{
+            type:String,
+            required: true
+        },
+        town:{
+            type:String,
+            required: true
+        },
+        state:{
+            type:String,
+            required:true
+        },
+        postcode:{
+            type:String,
+            required:true
+        },
+        phone_number:{
+            type:String,
+            required:true
+        },
+        email:{
+            type:String,
+            required:true
         }
     }]
 })

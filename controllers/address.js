@@ -14,7 +14,7 @@ const addAddress = async (req,res)=>{
     try {
         console.log('wo');
         const userId = req.session.user_id
-        const { address_type,address } = req.body;
+        const { address_type,first_name,last_name,contry,street_name,town,state,postcode,phone_number,email } = req.body;
         console.log('wo2');
         const exist = await Address.findOne({userId: userId})
         if(!exist){
@@ -22,7 +22,15 @@ const addAddress = async (req,res)=>{
                 userId: userId,
                 addresses: [{
                     address_type,
-                    address
+                    first_name,
+                    last_name,
+                    contry,
+                    street_name,
+                    town,
+                    state,
+                    postcode,
+                    phone_number,
+                    email
                 }]
             })
             await addressData.save()
@@ -37,7 +45,19 @@ const addAddress = async (req,res)=>{
                 }
             })
             if(!result){
-                const addressData = await Address.findOneAndUpdate({userId: userId},{$addToSet:{addresses:{address_type: address_type,address: address}}})
+                const addressData = await Address.findOneAndUpdate({userId: userId},
+                    {$addToSet:{addresses:{
+                        address_type,
+                        first_name,
+                        last_name,
+                        contry,
+                        street_name,
+                        town,
+                        state,
+                        postcode,
+                        phone_number,
+                        email
+                    }}});
                 if(!addressData) {
                     req.flash('errmsg', "Couldn't this Address...!!!");
                     return res.redirect('/addAddress')

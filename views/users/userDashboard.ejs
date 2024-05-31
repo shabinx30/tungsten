@@ -112,7 +112,7 @@
     <main class="main">
         <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
             <div class="container">
-                <h1 class="page-title">My Account<span>Shop</span></h1>
+                <h1 class="page-title">My Account</h1>
             </div><!-- End .container -->
         </div><!-- End .page-header -->
         <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
@@ -181,12 +181,12 @@
                                                         <div class="card-body">
                                                             <h3 class="card-title"><%= address.address_type %></h3><!-- End .card-title -->
 
-                                                            <p>User Name<br>
-                                                            User Company<br>
-                                                            John str<br>
-                                                            New York, NY 10001<br>
-                                                            1-234-987-6543<br>
-                                                            yourmail@mail.com<br>
+                                                            <p><%= address.first_name %> <%=address.last_name%><br>
+                                                            <%= address.contry %> <br>
+                                                            <%= address.street_name %> <br>
+                                                            <%= address.town %> <%= address.state %> <br>
+                                                            <%= address.postcode %> <%= address.phone_number %> <br>
+                                                            <%= address.email %></p>
                                                             <a href="#">Edit <i class="icon-edit"></i></a></p>
                                                         </div><!-- End .card-body -->
                                                     </div><!-- End .card-dashboard -->
@@ -216,52 +216,61 @@
                                                     <div class="form-group">
                                                         <label for="register-email-2">Enter Address type *</label>
                                                          <input type="text" class="form-control" id="address_type" name="address_type" style="border-radius: 10px;" maxlength="21" placeholder="Eg :- Work address">
-                                                         <span id="address_type_error" class="error-message" style="color: red; font-size: smaller; "></span>
+                                                         <span id="address_type_error" class="error-message" style="color: red; font-size: smaller;"></span>
                                                      </div><!-- End .form-group -->
                                                     <div class="row">
                                                         <div class="col-sm-6">
                                                             <label>First Name *</label>
-                                                            <input type="text" id="first_name" class="form-control" style="border-radius: 10px;">
+                                                            <input type="text" id="first_name" class="form-control" name="first_name" style="border-radius: 10px;">
+                                                            <span id="first_name_error" class="error-message" style="color: red; font-size: smaller; "></span>
                                                         </div><!-- End .col-sm-6 -->
             
                                                         <div class="col-sm-6">
                                                             <label>Last Name *</label>
-                                                            <input type="text" id="last_name" class="form-control" style="border-radius: 10px;">
+                                                            <input type="text" id="last_name" class="form-control" name="last_name" style="border-radius: 10px;">
+                                                            <span id="last_name_error" class="error-message" style="color: red; font-size: smaller; "></span>
                                                         </div><!-- End .col-sm-6 -->
                                                     </div><!-- End .row -->
             
                                                     <label>Country *</label>
-                                                    <input type="text" id="contry" class="form-control" style="border-radius: 10px;">
+                                                    <input type="text" id="contry" class="form-control" name="contry" style="border-radius: 10px;">
+                                                    <span id="contry_error" class="error-message" style="color: red; font-size: smaller; "></span>
             
                                                     <label>Street address *</label>
-                                                    <input type="text" id="street_name" class="form-control" style="border-radius: 10px;" placeholder="House number and Street name">
+                                                    <input type="text" id="street_name" class="form-control" name="street_name" style="border-radius: 10px;" placeholder="House number and Street name">
+                                                    <span id="street_name_error" class="error-message" style="color: red; font-size: smaller; "></span>
             
                                                     <div class="row">
                                                         <div class="col-sm-6">
                                                             <label>Town / City *</label>
-                                                            <input type="text" id="town" class="form-control" style="border-radius: 10px;">
+                                                            <input type="text" id="town" class="form-control" name="town" style="border-radius: 10px;">
+                                                            <span id="town_error" class="error-message" style="color: red; font-size: smaller; "></span>
                                                         </div><!-- End .col-sm-6 -->
             
                                                         <div class="col-sm-6">
                                                             <label>State *</label>
-                                                            <input type="text" id="state" class="form-control" style="border-radius: 10px;">
+                                                            <input type="text" id="state" class="form-control" name="state" style="border-radius: 10px;">
+                                                            <span id="state_error" class="error-message" style="color: red; font-size: smaller; "></span>
                                                         </div><!-- End .col-sm-6 -->
                                                     </div><!-- End .row -->
             
                                                     <div class="row">
                                                         <div class="col-sm-6">
                                                             <label>Postcode / ZIP *</label>
-                                                            <input type="text" id="postcode" class="form-control" style="border-radius: 10px;">
+                                                            <input type="text" id="postcode" class="form-control" name="postcode" style="border-radius: 10px;">
+                                                            <span id="postcode_error" class="error-message" style="color: red; font-size: smaller; "></span>
                                                         </div><!-- End .col-sm-6 -->
             
                                                         <div class="col-sm-6">
                                                             <label>Phone *</label>
-                                                            <input type="text" id="phone_number" class="form-control" style="border-radius: 10px;">
+                                                            <input type="text" id="phone_number" class="form-control" name="phone_number" style="border-radius: 10px;">
+                                                            <span id="phone_number_error" class="error-message" style="color: red; font-size: smaller; "></span>
                                                         </div><!-- End .col-sm-6 -->
                                                     </div><!-- End .row -->
             
                                                     <label>Email address *</label>
-                                                    <input type="text" id="email" class="form-control" style="border-radius: 10px;">
+                                                    <input type="text" id="email" class="form-control" name="email" style="border-radius: 10px;">
+                                                    <span id="emailError" class="error-message" style="color: red; font-size: smaller; "></span>
                                             </div>  
                                                     <div class="modal-footer mx-auto">
                                                         <button type="button" class="btn btn-outline-primary-2" data-dismiss="modal" style="border-radius: 10px; height: 2.9em;">
@@ -502,6 +511,69 @@
             return;
         } else {
             address_type_error.textContent = '';
+        }
+
+        let first_name_error = document.getElementById('first_name_error');
+        if (first_name === '') {
+            first_name_error.textContent = 'Please enter your first name.';
+            event.preventDefault(); 
+            return;
+        } else {
+            first_name_error.textContent = '';
+        }
+
+        let last_name_error = document.getElementById('last_name_error');
+        if (last_name === '') {
+            last_name_error.textContent = 'Please enter your first name.';
+            event.preventDefault(); 
+            return;
+        } else {
+            last_name_error.textContent = '';
+        }
+
+        let contry_error = document.getElementById('contry_error');
+        if (contry === '') {
+            contry_error.textContent = 'Please enter your contry name.';
+            event.preventDefault(); 
+            return;
+        } else {
+            contry_error.textContent = '';
+        }
+
+        let street_name_error = document.getElementById('street_name_error');
+        if (street_name === '') {
+            street_name_error.textContent = 'Please enter your street name.';
+            event.preventDefault(); 
+            return;
+        } else {
+            street_name_error.textContent = '';
+        }
+
+        let town_error = document.getElementById('town_error');
+        if (town === '') {
+            town_error.textContent = 'Please enter the town name.';
+            event.preventDefault(); 
+            return;
+        } else {
+            town_error.textContent = '';
+        }
+
+        let state_error = document.getElementById('state_error');
+        if (state === '') {
+            state_error.textContent = 'Please enter the state name.';
+            event.preventDefault(); 
+            return;
+        } else {
+            state_error.textContent = '';
+        }
+
+        let postcode_error = document.getElementById('postcode_error');
+        if (postcode === '') {
+            postcode_error.textContent = 'Please enter the postcode.';
+            event.preventDefault(); 
+            return;
+        } else {
+            postcode_error.textContent = '';
         }
 
         let emailError = document.getElementById('emailError');
