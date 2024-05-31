@@ -144,7 +144,8 @@
                                     <div class="form-group">
                                         <label for="register-email-2">Enter the OTP *</label><br>
                                         <label for="register-email-2">OTP sended to <b><%= locals.email %></b></label>
-                                        <input type="hidden" id="categoryId" name="email" value="<%= locals.email %>">
+                                        <input type="hidden" name="email" value="<%= locals.email %>">
+                                        <input type="hidden" name="forgot" value="<%= locals.forgot %>">
                                         <input type="text" class="form-control" id="register-email-2" name="otp" style="border-radius: 10px;" required>
                                     </div><!-- End .form-group -->
                                     <div class="text-right mb-3">
@@ -577,6 +578,7 @@
       if (totalSecondsRemaining <= 0) {
         clearInterval(countdownInterval);
         // Optionally, you can add code here to enable the link or perform any other action when the timer reaches zero.
+        resendButton.disabled=false
       }
     }, 1000); // Update every second
   

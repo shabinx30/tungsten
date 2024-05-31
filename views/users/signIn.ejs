@@ -195,11 +195,53 @@
                                             <i class="icon-long-arrow-right"></i>
                                         </button>
 
+                                    </form>
+                                        <a class="forgot-link" id="Toggle" style="cursor: pointer;" data-toggle="modal" data-target="#exampleModalCenter">Forgot Your Password?</a>
+
+                                        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content p-4" style="border-radius: 20px;">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title" id="exampleModalLongTitle">Forgot Password</h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body pl-3 pr-3">
+                                                        <form id="form" action="/forgotPassword" method="post">
+                                                            <p class="text-danger" aria-live="polite" id="forgot_error"><%= locals.forgot %></p>
+                                                            <div class="form-group p-4">
+                                                                <label for="forgot_password">Enter email *</label>
+                                                                <input type="email" class="form-control" id="forgot_password" name="email" style="border-radius: 10px;" placeholder="Email"  autocomplete="off">
+                                                                <span id="forgot_password_error" class="error-message" style="color: red; font-size: smaller;"></span>
+                                                            </div> <!--End .form-group -->
+                                                            <div class="modal-footer mx-auto">
+                                                                <button type="button" class="btn btn-outline-primary-2" data-dismiss="modal" style="border-radius: 10px; height: 2.9em;">
+                                                                    <span>Close</span>
+                                                                </button>
+                                                                <button type="submit" style="border-radius: 10px;" class="btn btn-primary">Submit</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <script>
+                                            const forgot_error = document.getElementById('forgot_error')
+                                            console.log(forgot_error.textContent);
+                                            if(forgot_error.textContent){
+                                                const Toggle = document.getElementById('Toggle')
+                                                setTimeout(()=>{
+                                                    Toggle.click()
+                                                },500)
+                                                console.log('w');
+                                            }
+                                        </script>
                                         
-                                        <a href="/forgotPassword" class="forgot-link">Forgot Your Password?</a>
+                                        
                                     </div><!-- End .form-footer -->
                                     
-                                </form>
+                                
                                 <div class="form-choice">
                                     <p class="text-center">or sign in with</p>
                                     

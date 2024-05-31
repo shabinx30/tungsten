@@ -89,7 +89,8 @@ const wishlist = async(req,res)=>{
 
 const sign_in = async(req,res)=>{
     try {
-        res.render('signIn')
+        const forgot=req.flash('errmsg')
+        res.render('signIn',{forgot})
     } catch (error) {
         console.log(error.message);
     }
@@ -177,10 +178,8 @@ const insertUser = async (req, res) => {
 
                 if(userData){
                     // console.log('date is saved');
-                    const data = await User.findOne({email: email})
-                    if(data){
-                        req.session.user_id = data._id
-                    }
+                    // const data = await User.findOne({email: email})
+                    
                     // console.log(req.body.register_email);
 
                     const otp = generateOTP();
@@ -240,7 +239,7 @@ const logout = async(req,res)=>{
 const verifyOTP = async (req, res) => {
     const email = req.body.email;
     const receivedOTP = req.body.otp;
-    
+    const forgot = req.body.forgot
     try {
         const generatedOTP = await Otp.findOne({ email: email});
         
@@ -252,8 +251,14 @@ const verifyOTP = async (req, res) => {
         console.log(generatedOTP.otp);
         
         if (receivedOTP == generatedOTP.otp) {
+            const data = await User.findOne({email: email})
+            req.session.user_id = data._id
             // res.status(200).send('OTP verification successful');
-            res.redirect('/home')
+            if(req.body.forgot){
+                res.redirect('/forgotPassword')
+            }else{
+                res.redirect('/home')
+            }
         } else {
             // res.status(400).send('Invalid OTP');
             res.render('otp',{message: 'Invalid otp',email: email})
@@ -267,8 +272,8 @@ const verifyOTP = async (req, res) => {
 const loadOtp = async(req,res)=>{
     try {
         const email = req.query.email;
-
-        res.render('otp',{message: '',email})
+        const forgot = req.query.forgot;
+        res.render('otp',{message: '',email,forgot})
     } catch (error) {
         console.log(error.message);
     }
@@ -342,8 +347,7 @@ const changePassword = async (req,res)=>{
 
 const loadForgotPassword = async (req,res)=>{
     try {
-        const msg = req.flash('errmsg')
-        res.render('forgotPassword',{msg})
+        res.render('forgotPassword')
     } catch (error) {
         console.log(error.message);
         res.status(400).send(error.message)
@@ -371,10 +375,29 @@ const forgotPassword = async (req,res)=>{
                     });
                     confirmation.save()//save data into data base
 
-                    res.redirect(`/loadOtp?email=${email}`)
+                    res.redirect(`/loadOtp?email=${email}&forgot=${true}`)
         }else{
             req.flash('errmsg', 'Email is not existing...!!!');
-            return res.redirect('/forgotPassword')
+            return res.redirect('/signIn')
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send(error.message)
+    }
+}
+
+const savePassword = async (req,res)=>{
+    try {
+        const { password } = req.body
+        const userId = req.session.user_id;
+        if(userId){
+            const spassword = await securePassword(password)
+            const user = await User.findOneAndUpdate({_id:userId},{$set:{password:spassword}})
+            if(user){
+                res.redirect('/home')
+            }
+        }else{
+            res.status(400).send(error.message) 
         }
     } catch (error) {
         console.log(error.message);
@@ -446,5 +469,6 @@ module.exports = {
     loadForgotPassword,
     forgotPassword,
     googleLoginSuccess,
-    googleLoginFailure
+    googleLoginFailure,
+    savePassword
 }

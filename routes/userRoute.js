@@ -72,6 +72,7 @@ user_route.post('/changePassword',userAuth.isLogin,userController.changePassword
 //forget password
 user_route.get('/forgotPassword',userController.loadForgotPassword)
 user_route.post('/forgotPassword',userController.forgotPassword)
+user_route.post('/savePassword',userAuth.isLogin,userController.savePassword)
 
 user_route.get('/shop',userAuth.isLogin,userController.shop)
 user_route.get('/product',userAuth.isLogin,productController.loadProductDetails)

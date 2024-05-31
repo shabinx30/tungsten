@@ -37,22 +37,6 @@
                     display: flex;
                     gap: 10px; /* Space between the input fields */
                 }
-
-                .re-input {
-                    flex: 1;
-                    border-radius: 10px;
-                    color: #777777;
-                    border: 1px solid #e9e9e9;
-                    background-color: #f9f9f9;
-                    padding: 10px;
-                    font-size: 16px;
-                    height: 40px;
-                    font-size: 15px;
-                }
-                .re-input:focus{
-                    border: 1px solid #eea287;
-                    outline: none;
-                }
               </style>
             <div class="container">
                 <div class="header-left">
@@ -230,24 +214,59 @@
                                                 <form id="form" action="/addAddress" method="post">
                                                     <p class="text-danger" ><%= locals.msg %></p>
                                                     <div class="form-group">
-                                                       <label for="register-email-2">Enter Address type *</label>
-                                                        <input type="text" class="form-control" id="address_type" name="address_type" style="border-radius: 10px;" maxlength="21" placeholder="Eg :- Work address">
-                                                        <span id="address_type_error" class="error-message" style="color: red; font-size: smaller; "></span>
-                                                    </div><!-- End .form-group -->
-        
-                                                    <div class="single_anu">
-                                                        <input type="text" class="re-input" name="name" placeholder="First name">
-                                                    
-                                                        <input type="text" class="re-input" name="name" placeholder="Last name">
-                                                    </div><!-- End .form-group -->
-                                                    
-                                                    <div class="form-group">
+                                                        <label for="register-email-2">Enter Address type *</label>
                                                          <input type="text" class="form-control" id="address_type" name="address_type" style="border-radius: 10px;" maxlength="21" placeholder="Eg :- Work address">
                                                          <span id="address_type_error" class="error-message" style="color: red; font-size: smaller; "></span>
-                                                    </div><!-- End .form-group -->
+                                                     </div><!-- End .form-group -->
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <label>First Name *</label>
+                                                            <input type="text" id="first_name" class="form-control" style="border-radius: 10px;">
+                                                        </div><!-- End .col-sm-6 -->
+            
+                                                        <div class="col-sm-6">
+                                                            <label>Last Name *</label>
+                                                            <input type="text" id="last_name" class="form-control" style="border-radius: 10px;">
+                                                        </div><!-- End .col-sm-6 -->
+                                                    </div><!-- End .row -->
+            
+                                                    <label>Country *</label>
+                                                    <input type="text" id="contry" class="form-control" style="border-radius: 10px;">
+            
+                                                    <label>Street address *</label>
+                                                    <input type="text" id="street_name" class="form-control" style="border-radius: 10px;" placeholder="House number and Street name">
+            
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <label>Town / City *</label>
+                                                            <input type="text" id="town" class="form-control" style="border-radius: 10px;">
+                                                        </div><!-- End .col-sm-6 -->
+            
+                                                        <div class="col-sm-6">
+                                                            <label>State *</label>
+                                                            <input type="text" id="state" class="form-control" style="border-radius: 10px;">
+                                                        </div><!-- End .col-sm-6 -->
+                                                    </div><!-- End .row -->
+            
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <label>Postcode / ZIP *</label>
+                                                            <input type="text" id="postcode" class="form-control" style="border-radius: 10px;">
+                                                        </div><!-- End .col-sm-6 -->
+            
+                                                        <div class="col-sm-6">
+                                                            <label>Phone *</label>
+                                                            <input type="text" id="phone_number" class="form-control" style="border-radius: 10px;">
+                                                        </div><!-- End .col-sm-6 -->
+                                                    </div><!-- End .row -->
+            
+                                                    <label>Email address *</label>
+                                                    <input type="text" id="email" class="form-control" style="border-radius: 10px;">
                                             </div>  
                                                     <div class="modal-footer mx-auto">
-                                                        <button type="button" style="border-radius: 10px;" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-outline-primary-2" data-dismiss="modal" style="border-radius: 10px; height: 2.9em;">
+                                                            <span>Close</span>
+                                                        </button>
                                                         <button type="submit" style="border-radius: 10px;" class="btn btn-primary">Add</button>
                                                     </div>
                                                 </form>
@@ -464,15 +483,56 @@
 <script>
 
     form.addEventListener('submit', function(event) {
-        let usernameInput = document.getElementById('address_type').value.trim();
+        let address_type = document.getElementById('address_type').value.trim();
+        let first_name = document.getElementById('first_name').value.trim();
+        let last_name = document.getElementById('last_name').value.trim();
+        let contry = document.getElementById('contry').value.trim();
+        let street_name = document.getElementById('street_name').value.trim();
+        let town = document.getElementById('town').value.trim();
+        let state = document.getElementById('state').value.trim();
+        let postcode = document.getElementById('postcode').value.trim();
+        let emailInput = document.getElementById('email').value.trim();
+        let phoneInput = document.getElementById('phone_number').value.trim();
+
     
-        let usernameError = document.getElementById('address_type_error');
-        if (usernameInput === '') {
-            usernameError.textContent = 'Please enter a address type.';
+        let address_type_error = document.getElementById('address_type_error');
+        if (address_type === '') {
+            address_type_error.textContent = 'Please enter a address type.';
             event.preventDefault(); 
             return;
         } else {
-            usernameError.textContent = '';
+            address_type_error.textContent = '';
+        }
+
+        let emailError = document.getElementById('emailError');
+        if (emailInput === '') {
+            emailError.textContent = 'Please enter an email address.';
+            event.preventDefault(); // Prevent form submission if validation fails
+            return;
+        } else {
+            emailError.textContent = '';
+        }
+
+        let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(emailInput)) {
+            emailError.textContent = 'Please enter a valid email address.';
+            event.preventDefault(); // Prevent form submission if validation fails
+            return;
+        } else {
+            emailError.textContent = '';
+        }
+
+        let phoneError = document.getElementById('phone_number_error');
+        if (phoneInput === '') {
+            phoneError.textContent = 'Please enter a phone number.';
+            event.preventDefault(); // Prevent form submission if validation fails
+            return;
+        } else if (!/^\d{10}$/.test(phoneInput)) { // Ensure exactly 10 digits
+            phoneError.textContent = 'Please enter a valid 10-digit phone number.';
+            event.preventDefault(); // Prevent form submission if validation fails
+            return;
+        } else {
+            phoneError.textContent = '';
         }
     
     });
