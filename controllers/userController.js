@@ -140,8 +140,8 @@ const verifyLogin = async(req, res) => {
 const transporter = nodemailer.createTransport({
     service: 'Gmail', 
     auth: {
-      user: 'tungsten.industries007@gmail.com', 
-      pass: 'dcqc jbtw wibi lvtz'
+      user: process.env.user,
+      pass: process.env.pass
     }
   });
   
@@ -185,7 +185,7 @@ const insertUser = async (req, res) => {
                     const otp = generateOTP();
                     console.log(email,otp);
                     const mailOptions = {
-                        from: 'tungsten.industries007@gmail.com', // my email address
+                        from: process.env.user, // my email address
                         to: email,
                         subject: 'OTP for Email Verification',
                         text: `Your OTP (One-Time Password) for email verification is: ${otp}`
