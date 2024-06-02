@@ -164,6 +164,7 @@
                                                         <div class="cart-product-quantity d-flex" style="border: 1px solid #eea287; border-radius: 10px;">
                                                             <!-- <input  type="number" class="form-control" value="<%= product.quantity %>" min="1" max="10" step="1" data-decimals="0" required> -->
                                                             <!-- <input hidden type="text" id="max_quantity" value="<%=product.productId.quantity%>"> -->
+                                                            
                                                             <button style="border: none; border-radius: 10px 0 0 10px;" onclick="decrease('<%= product.productId._id %>', '<%= product.quantity %>')">-</button><div class="mx-auto"><p style="color: #000000;" id="quantity<%= product.productId._id %>"><%= product.quantity %></p></div><button style="border: none; border-radius: 0 10px 10px 0;" onclick="increase('<%= product.productId._id %>', '<%= product.quantity %>')">+</button>
                                                         </div>
                                                     </td>
@@ -213,10 +214,25 @@
                                     </tbody>
                                 </table><!-- End .table table-summary -->
 
-                                <a href="/checkout" class="btn btn-outline-primary-2 btn-order btn-block" style="border-radius: 10px;">PROCEED TO CHECKOUT</a>
+                                <button id="PROCEED" onclick="proceed('<%=total%>')" class="btn btn-outline-primary-2 btn-order btn-block" style="border-radius: 10px;">PROCEED TO CHECKOUT</button>
+                                <script>
+                                    function proceed(total){
+                                        const verify_quantity = document.getElementById('verify_quantity');
+                                        if(total==0){
+                                            Swal.fire({
+                                                icon : 'error',
+                                                title : "Can't place order",
+                                                text : 'Cart is empty',
+                                                showConfirmButton  :true
+                                            })
+                                        }else{
+                                            window.location.href="/checkout";
+                                        }
+                                    }
+                                </script>
                             </div><!-- End .summary -->
 
-                            <a href="/shop" class="btn btn-outline-dark-2 btn-block mb-3" style="border-radius: 10px;"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
+                            <a href="/shop" class="btn btn-outline-dark-2 btn-block mb-3" style="border-radius: 10px;"><span>CONTINUE SHOPPING</span><i class="icon-refresh" ></i></a>
                         </aside><!-- End .col-lg-3 -->
                     </div><!-- End .row -->
                 </div><!-- End .container -->

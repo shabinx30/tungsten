@@ -50,7 +50,7 @@ admin_route.get('/addProducts',adminAuth.isLogin,adminController.loadAddProduct)
 admin_route.post('/addProducts',adminAuth.isLogin,adminController.upload,adminController.addProduct);
 admin_route.get('/productStatus',adminAuth.isLogin,productController.listProduct)
 admin_route.get('/editProduct',adminAuth.isLogin,productController.loadEditProduct)
-admin_route.post('/editProduct',adminAuth.isLogin,productController.editProduct)
+admin_route.post('/editProduct',adminAuth.isLogin,adminController.upload,productController.editProduct)
 //category
 admin_route.get('/categoryList',adminAuth.isLogin,adminController.loadcategoryList)
 admin_route.get('/addCategory',adminAuth.isLogin,adminController.loadaddCategory)

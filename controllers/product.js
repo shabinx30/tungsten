@@ -79,6 +79,7 @@ const editProduct = async (req,res)=>{
         }else{
 
             const images = req.files['images'].map(e=>e.filename);
+            console.log(images);
 
             const confirmation = await Product.findOneAndUpdate({_id: productId},{
                 $set:{

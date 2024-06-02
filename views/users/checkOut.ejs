@@ -111,7 +111,7 @@
             					<label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>
             				</form>
             			</div><!-- End .checkout-discount -->
-            			<form action="#">
+            			<form id="form" action="/placeOrder" method="POST">
 		                	<div class="row">
 		                		<div class="col-lg-9">
 		                			<h2 class="checkout-title">Billing Details</h2><!-- End .checkout-title -->
@@ -144,10 +144,12 @@
 											</div>
 											<a href="/userDashboard?re=1" class="btn btn-outline-primary-2" id="addAddress" style="border-radius: 10px; cursor: pointer;"><span>Add address</span><i class="icon-long-arrow-right"></i></a>
 										<% } else { %>
-											<p class="text-danger">Add a address</p>
+											<p class="text-danger">Add a address</p><br>
+											<a href="/userDashboard?re=1" class="btn btn-outline-primary-2" id="addAddress" style="border-radius: 10px; cursor: pointer;"><span>Add address</span><i class="icon-long-arrow-right"></i></a>
 										<% } %>
 									<% }else{ %>
-										<p class="text-danger">Cart is empty</p>
+										<p class="text-danger">Cart is empty</p><br>
+										<a href="/shop" class="btn btn-outline-primary-2" id="addAddress" style="border-radius: 10px; cursor: pointer;"><span>Shop</span><i class="icon-long-arrow-right"></i></a>
 									<% } %>
 
 		                		</div><!-- End .col-lg-9 -->
@@ -164,18 +166,17 @@
 		                					</thead>
 
 		                					<tbody>
-		                						<tr>
-		                							<td><a href="#">Beige knitted elastic runner shoes</a></td>
-		                							<td>$84.00</td>
-		                						</tr>
-
-		                						<tr>
-		                							<td><a href="#">Blue utility pinafore denimdress</a></td>
-		                							<td>$76,00</td>
-		                						</tr>
+												<%let total=0 %>
+		                						<% products.forEach((product)=>{ %>
+													<% total += product.quantity*product.productId.price %>
+													<tr>
+														<td><a href="#"><%=product.productId.name%></a></td>
+														<td>₹<%=product.productId.price%></td>
+													</tr>
+												<%})%>
 		                						<tr class="summary-subtotal">
 		                							<td>Subtotal:</td>
-		                							<td>$160.00</td>
+		                							<td>₹<%=total%></td>
 		                						</tr><!-- End .summary-subtotal -->
 		                						<tr>
 		                							<td>Shipping:</td>
@@ -183,7 +184,7 @@
 		                						</tr>
 		                						<tr class="summary-total">
 		                							<td>Total:</td>
-		                							<td>$160.00</td>
+		                							<td>₹<%=total%></td>
 		                						</tr><!-- End .summary-total -->
 		                					</tbody>
 		                				</table><!-- End .table table-summary -->
@@ -472,19 +473,5 @@
             </div><!-- End .modal-content -->
         </div><!-- End .modal-dialog -->
     </div><!-- End .modal -->
-
-    <!-- Plugins JS File -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/jquery.hoverIntent.min.js"></script>
-    <script src="assets/js/jquery.waypoints.min.js"></script>
-    <script src="assets/js/superfish.min.js"></script>
-    <script src="assets/js/owl.carousel.min.js"></script>
-    <!-- Main JS File -->
-    <script src="assets/js/main.js"></script>
-</body>
-
+	
 <%- include('../layouts/footer.ejs') %>
-
-<!-- molla/checkout.html  22 Nov 2019 09:55:06 GMT -->
-</html>

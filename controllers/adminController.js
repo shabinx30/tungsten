@@ -224,7 +224,7 @@ const editCategory = async (req,res)=>{
 
         //checking the category name is existing or not
         if(exist){
-            res.render('editCategory',{errmsg: 'This category is already existing...!!!',categoryId: categoryId,categoryOldName: categoryOldName})
+            res.render('editCategory',{errmsg: 'This category is already existing...!!!',categoryId: categoryId})
         }else{
             const confirmation = await Category.findOneAndUpdate({_id: categoryId},{$set:{name: categoryName, is_listed: changes}})
             if(confirmation){

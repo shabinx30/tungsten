@@ -6,9 +6,96 @@ const OrderSchema = mongoose.Schema({
         ref: 'User',
         required: true
     },
-    Orders:[{
-        
-    }]
+    userName:{
+        type: String,
+        required: true
+    },
+    shipAddress:[{
+        address_type:{
+            type: String,
+            required: true
+        },
+        first_name:{
+            type:String,
+            required: true
+        },
+        last_name:{
+            type:String,
+            required: true
+        },
+        contry:{
+            type:String,
+            required: true
+        },
+        street_name:{
+            type:String,
+            required: true
+        },
+        town:{
+            type:String,
+            required: true
+        },
+        state:{
+            type:String,
+            required:true
+        },
+        postcode:{
+            type:String,
+            required:true
+        },
+        phone_number:{
+            type:String,
+            required:true
+        },
+        email:{
+            type:String,
+            required:true
+        }
+    }],
+    orderedProducts:[
+        {
+            productId: {
+                type: mongoose.Types.ObjectId,
+                required: true,
+                ref: 'Product'
+            },
+            quantity: {
+                type: Number,
+                required: true,
+
+            },
+            price: {
+                type: Number,
+                required: true,
+
+            },
+            totalPrice: {
+                type: Number,
+                required: true
+            },
+            status:{
+                type:String,
+                require:true,
+                default:'pending'
+            }
+        }
+    ],
+    purchasedDate: {
+        type: String,
+        required: true
+    },
+    paymentMethod: {
+        type: String,
+        required: true
+    },
+    subTotal: {
+        type: Number,
+        required: true
+    },
+    orderStatus: {
+        type: String,
+        required:true
+    }
 });
 
 module.exports = mongoose.model('Oder',OrderSchema)
