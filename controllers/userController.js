@@ -28,7 +28,7 @@ const home = async(req,res)=>{
                 res.render('home',{products: [],name: userData.name,picture: userData.picture })
             }
         }else{
-            res.render('home',{products: [],name: '',picture: '' })
+            res.render('home',{products: [],name: '',picture: undefined })
         }
     } catch (error) {
         console.log(error.message)
@@ -185,10 +185,19 @@ const insertUser = async (req, res) => {
                     const otp = generateOTP();
                     console.log(email,otp);
                     const mailOptions = {
-                        from: process.env.user, // my email address
+                        from: process.env.user,
                         to: email,
                         subject: 'OTP for Email Verification',
-                        text: `Your OTP (One-Time Password) for email verification is: ${otp}`
+                        html: `
+                        <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+                        <h2 style="color: black; text-align: center;">Email Verification</h2>
+                        <p style="color: black"><strong>Hello ${name},</strong> It seems you are registering at <strong style="color: coral">TUNGSTEN</strong> and trying to verify your email.</p>
+                        <p style="color: black">Here is the verification code. Please copy it and verify your Email.</p>
+                        <div style="background-color: #e6f0ff; padding: 10px; border-radius: 20px; text-align: center; margin: 20px 0; border: 1px solid #ccc;">
+                            <strong style="font-size: 20px;">Code: <strong style="color: coral">${otp}</strong></strong>
+                        </div>
+                        <p style="color: gray;">If this email is not intended for you, please ignore and delete it. Thank you for understanding.</p>
+                        </div>`
                     };
 
                     await transporter.sendMail(mailOptions);

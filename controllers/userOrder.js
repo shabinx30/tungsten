@@ -2,6 +2,7 @@ const Cart = require('../models/cartModel')
 const User = require('../models/userModel')
 const Order = require('../models/orders');
 const Address = require('../models/addresses')
+const Product = require('../models/productModel')
 
 const loadCheckOut = async (req,res)=>{
     try {
@@ -26,26 +27,61 @@ const loadCheckOut = async (req,res)=>{
     }
 }
 
-const placeOrder = async (req,res)=>{
+const placeOrder = async (req, res) => {
     try {
-        const {selected_address} = req.body
-        console.log(selected_address);
-        // const address = await Address.findOne({addresses:{$elemMatch:{_id:selected_address}}})
-        const cart = await Cart.findOne({userId: req.session.user_id})
-        const address = await Address.findOne(
-            {
-              "addresses._id": selected_address
-            },
-            {
-              "addresses.$": 1
+        const { selected_address } = req.body;
+        const userId = req.session.user_id;
+
+        // if (!paymentMethod) {
+        //     throw new Error('Payment method is required');
+        // }
+
+        // Fetch the cart for the current user
+        const cart = await Cart.findOne({ userId });
+
+        if (!cart || !cart.products || cart.products.length === 0) {
+            throw new Error('Cart is empty');
+        }
+
+        // Fetch the selected address
+        const addressDoc = await Address.findOne(
+            { "addresses._id": selected_address },
+            { "addresses.$": 1 }
+        );
+
+        if (!addressDoc || !addressDoc.addresses || addressDoc.addresses.length === 0) {
+            throw new Error('Address not found');
+        }
+
+        const address = addressDoc.addresses[0];
+
+        // Fetch product details
+        const orderedProducts = await Promise.all(cart.products.map(async item => {
+            const product = await Product.findById(item.productId);
+            if (!product) {
+                throw new Error(`Product with ID ${item.productId} not found`);
             }
-          );
-        console.log(address);
-        
+            const price = product.price;
+            if (typeof price !== 'number') {
+                throw new Error(`Invalid price for product ID ${item.productId}`);
+            }
+            return {
+                productId: item.productId,
+                quantity: item.quantity,
+                price: price,
+                totalPrice: price * item.quantity,
+                status: 'pending'
+            };
+        }));
+
+        // Calculate subtotal
+        const subTotal = orderedProducts.reduce((sum, item) => sum + item.totalPrice, 0);
+
+        // Create order object
         const order = new Order({
-            userId: req.session.user_id,
-            userName: address.first_name,
-            shipAddress:[{
+            userId,
+            userName: `${address.first_name} ${address.last_name}`,
+            shipAddress: [{
                 address_type: address.address_type,
                 first_name: address.first_name,
                 last_name: address.last_name,
@@ -57,13 +93,26 @@ const placeOrder = async (req,res)=>{
                 phone_number: address.phone_number,
                 email: address.email
             }],
-        })
-        res.render('orderSuccess')
+            orderedProducts,
+            purchasedDate: new Date().toISOString(),
+            paymentMethod: 'cash',
+            subTotal,
+            orderStatus: 'pending'
+        });
+
+        // Save the order to the database
+        await order.save();
+
+        // Optionally, clear the cart
+        await Cart.deleteOne({ userId });
+
+        // Respond with a success message
+        res.render('orderSuccess');
     } catch (error) {
         console.log(error.message);
-        res.status(400).send(error.message)
+        res.status(400).send(error.message);
     }
-}
+};
 
 module.exports={
     loadCheckOut,
