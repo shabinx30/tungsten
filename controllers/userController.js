@@ -6,6 +6,7 @@ const Product = require('../models/productModel')
 const Category = require('../models/categoryModel')
 const Cart = require('../models/cartModel');
 const Address = require('../models/addresses')
+const Order = require('../models/orders')
 
 const securePassword = async(password) => {
     try{
@@ -223,6 +224,7 @@ const userDashboard = async(req,res)=>{
     try {
         const userData = await User.findById({_id: req.session.user_id})
         const addresses = await Address.findOne({userId: req.session.user_id})
+        const order = await Order.findOne({userId: req.session.user_id}).populate('orderedProducts.productId').exec();
         if(req.query.re){
             req.flash('addressmsg', "Please add Address...!!!");
             return res.redirect('/userDashboard')
@@ -230,9 +232,14 @@ const userDashboard = async(req,res)=>{
         const addressmsg = req.flash('addressmsg')
         // console.log(addresses.addresses);
         if(addresses){
-            res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg})
+            if(order){
+                res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg,orders: order })
+            }
+            else{
+                res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg,orders: []})
+            }
         }else{
-            res.render('userDashboard',{user: userData,addresses: [],addressmsg})
+            res.render('userDashboard',{user: userData,addresses: [],addressmsg,orders: []})
         }
     } catch (error) {
         console.log(error.message);
