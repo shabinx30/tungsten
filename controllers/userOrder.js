@@ -31,10 +31,10 @@ const placeOrder = async (req, res) => {
     try {
         const { selected_address } = req.body;
         const userId = req.session.user_id;
-
-        // if (!paymentMethod) {
-        //     throw new Error('Payment method is required');
-        // }
+        const paymentMethod = 'cash'
+        if (!paymentMethod) {
+            throw new Error('Payment method is required');
+        }
 
         // Fetch the cart for the current user
         const cart = await Cart.findOne({ userId });
@@ -77,6 +77,9 @@ const placeOrder = async (req, res) => {
         // Calculate subtotal
         const subTotal = orderedProducts.reduce((sum, item) => sum + item.totalPrice, 0);
 
+        // Store the current date in ISO format
+        const purchasedDate = new Date().toISOString();
+
         // Create order object
         const order = new Order({
             userId,
@@ -94,8 +97,8 @@ const placeOrder = async (req, res) => {
                 email: address.email
             }],
             orderedProducts,
-            purchasedDate: new Date().toISOString(),
-            paymentMethod: 'cash',
+            purchasedDate, // Use the stored date variable here
+            paymentMethod,
             subTotal,
             orderStatus: 'pending'
         });
@@ -114,7 +117,27 @@ const placeOrder = async (req, res) => {
     }
 };
 
+module.exports = placeOrder;
+
+
+const removeFromOrders = async (req,res)=>{
+    try {
+        const { productId } = req.query
+        console.log(productId,'remove');
+        const result = await Order.findOneAndUpdate({userId: req.session.user_id},{$pull:{orderedProducts:{productId: productId}}})
+        if(result){
+            res.json({success: true})
+        }else{
+            res.json({success: false})
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send(error.message);
+    }
+}
+
 module.exports={
     loadCheckOut,
-    placeOrder
+    placeOrder,
+    removeFromOrders
 }

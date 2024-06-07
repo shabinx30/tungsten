@@ -119,5 +119,6 @@ user_route.post("/increase", cartController.quantity);
 //order
 user_route.get("/checkout", userAuth.isLogin, userOrderController.loadCheckOut);
 user_route.post("/placeOrder", userAuth.isLogin, userOrderController.placeOrder);
+user_route.put('/removeFromOrders',userAuth.isLogin,userOrderController.removeFromOrders)
 
 module.exports = user_route;

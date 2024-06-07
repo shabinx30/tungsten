@@ -23,9 +23,10 @@ admin_route.use((err, req, res, next) => {
 });
 
 const adminAuth = require('../middleware/adminAuth')
-const userAuth = require('../middleware/userAuth')
+// const userAuth = require('../middleware/userAuth')
 const adminController = require('../controllers/adminController');
 const productController = require('../controllers/product')
+const orderController = require('../controllers/order')
 
 admin_route.use(bodyParser.json());
 admin_route.use(bodyParser.urlencoded({extended: true}))
@@ -39,10 +40,12 @@ admin_route.get('/',adminAuth.isLogout,adminController.loadLogin);
 admin_route.post('/',adminController.verifyLogin);
 
 admin_route.get('/dashboard',adminAuth.isLogin,adminController.loadDashboard);
+
 //user list
 admin_route.get('/userList',adminAuth.isLogin,adminController.userList);
 admin_route.get('/blockUser',adminAuth.isLogin,adminController.blockUser)
 admin_route.get('/logout',adminAuth.isLogin,adminController.logout);
+
 //products
 admin_route.get('/productsList',adminAuth.isLogin,productController.loadProductList)
 admin_route.get('/addProducts',adminAuth.isLogin,adminController.loadAddProduct)
@@ -51,6 +54,7 @@ admin_route.post('/addProducts',adminAuth.isLogin,adminController.upload,adminCo
 admin_route.get('/productStatus',adminAuth.isLogin,productController.listProduct)
 admin_route.get('/editProduct',adminAuth.isLogin,productController.loadEditProduct)
 admin_route.post('/editProduct',adminAuth.isLogin,adminController.upload,productController.editProduct)
+
 //category
 admin_route.get('/categoryList',adminAuth.isLogin,adminController.loadcategoryList)
 admin_route.get('/addCategory',adminAuth.isLogin,adminController.loadaddCategory)
@@ -59,6 +63,10 @@ admin_route.get('/categoryStatus',adminAuth.isLogin,adminController.listCategory
 admin_route.get('/deleteCategory',adminAuth.isLogin,adminController.deleteCategory)
 admin_route.get('/editCategory',adminAuth.isLogin,adminController.loadEditCategory)
 admin_route.post('/editCategory',adminAuth.isLogin,adminController.editCategory)
+
+
+//order
+admin_route.get('/orderHistory',adminAuth.isLogin,orderController.orderlist)
 
 
 module.exports = admin_route
