@@ -9,7 +9,8 @@
     window.addEventListener("load", function () {
         let nav = document.getElementById('head_nav')
         loader.style.display = "none";
-        nav.className = "header smol"
+        nav.className = "header smol";
+        document.body.style.overflow = "auto"
     })
 </script>
 
@@ -18,6 +19,9 @@
         <header class="header" id="head_nav">
             <div class="header-bottom sticky-header">
                 <style>
+                    body{
+                        overflow: hidden;
+                    }
                     .profile{
                         width: 35px;
                         border:2px solid black;
@@ -66,13 +70,6 @@
                         transform: translateX(-50%);
                         /* opacity: 0; */
                         /* padding-left: 0; */
-                    }
-                    30%{
-                        /* transform: translateX(-8%); */
-                        /* opacity: 1; */
-                    }
-                    60%{
-                        /* opacity: 1; */
                     }
                     100% {
                         /* padding-left: 10%; */

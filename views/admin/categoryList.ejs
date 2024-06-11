@@ -99,10 +99,14 @@
           <div class="card-body">
             <div class="" style="width: 100%">
               <!-- Added div with custom class -->
+              
               <h2 class="card-title text-center mb-3">
                 CATEGORY LIST
               </h2>
-            </div>
+              <div class="text-right mb-3">
+                <a href="/admin/addCategory" class="purple-button">+ Add Category</a>
+              </div>
+            <!-- </div>
             <% if (locals.success) { %>
             <div
               class="alert text-center"
@@ -111,9 +115,8 @@
             >
               <%= locals.success %>
             </div>
-            <% } %>
-
-            <div class="table-responsive" style="border-radius: 20px">
+            <% } %> -->
+            <div class="table-responsive w-75 mx-auto" style="border-radius: 20px">
               <table class="table">
                 <thead>
                   <tr style="width: 100%; background-color: #936dd1; color: #000">
@@ -181,11 +184,6 @@
               <% } %>
             </div>
 
-            <div class="text-center mb-3">
-              <a href="/admin/addCategory" class="purple-button"
-                >+ Add Category</a
-              >
-            </div>
           </div>
         </div>
       </div>

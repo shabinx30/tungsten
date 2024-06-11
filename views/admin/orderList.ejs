@@ -114,62 +114,99 @@
             <div class="table-responsive" style="border-radius: 20px">
               <table class="table">
                 <thead>
-                  <tr
-                    style="width: 100%; background-color: #936dd1; color: #000"
-                  >
+                  <tr style="width: 100%; background-color: #936dd1; color: #000">
                     <th scope="col">NO.</th>
+                    <th scope="col">Product Image</th>
+                    <th scope="col">Product Name</th>
                     <th scope="col">UserName</th>
-                    <th scope="col">Address</th>
-                    <th scope="col" class="text-right">ACTIONS</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Changes</th>
+                    <th scope="col">More Options</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <% if (orders.length > 0) { %> 
-                    <% orders.forEach((order,index) => { %>
-                  <tr>
-                    <td><%= index + 1 %></td>
-                    <!-- Index starts from 0, so adding 1 for display -->
-                    <td><%= order.userName %></td>
-                    <td><%= order.shipAddress%></td>
-                    <td class="text-right align-middle">
-                      <a
-                        href="/admin/deleteCategory?categoryId=<%= order._id %>"
-                        class="btn-status-toggle"
-                        data-categoryid="<%= order._id %>"
-                      >
-                        <span class="btn delete-button">Delete</span>
-                      </a>
-                      <a
-                        href="/admin/editCategory?categoryId=<%= order._id %>&categoryName=<%= order.name %>"
-                        class="btn-status-toggle"
-                        data-categoryid="<%= order._id %>"
-                      >
-                        <span class="btn ml-3 edit-button">Edit</span>
-                      </a>
-
-
-                      <% if(order.is_listed==true) { %>
-                      <button
-                        id="status-button-<%= order._id %>"
-                        onclick="confirmAction('<%= order._id %>')"
-                        class="btn ml-3 red-button">Unlist</button>
-                      <%} else { %>
-                      <button
-                        id="status-button-<%= order._id %>"
-                        onclick="confirmAction('<%= order._id %>')"
-                        class="btn ml-3 green-button">List
-                      </button>
-                      <% } %>
-                    </td>
-                  </tr>
-                  <% }); %> <% } else { %>
-
-                  <tr>
-                    <td colspan="3">No orders found</td>
-                  </tr>
+                  <% let index = 1 %>
+                  <% if (orders.length > 0) { %>
+                    <% orders.forEach((order, orderIndex) => { %>
+                      <% order.orderedProducts.forEach((product, productIndex) => { %>
+                        <% const modalId = `exampleModalCenter-${orderIndex}-${productIndex}` %>
+                        <tr>
+                          <td><%= index++ %></td>
+                          <td>
+                            <img class="ml-4 mr-4" src="/productImages/<%= product.productId.images[0] %>" alt="no" style="width: 45px; border-radius: 10px; border: 1px solid #000;">
+                          </td>
+                          <td><%= product.productId.name %></td>
+                          <td><%= order.userName %></td>
+                          <td><span class="p-2" style="background-color: #353535; color: #ff6868; border-radius: 10px;"><%= product.status %></span></td>
+                          <td>
+                            <select style="background-color: #c1c1ff; border-radius: 10px;" name="" id="" class="p-1">
+                              <option value="">Shipped</option>
+                              <option value="">Delivered</option>
+                              <option value="">Cancelled</option>
+                            </select>
+                          </td>
+                          <td>
+                            <button style="background-color: #bfffea; color: #009d6e; border: none; border-radius: 10px;" data-toggle="modal" data-target="#<%= modalId %>">View</button>
+                          </td>
+              
+                          <!-- Modal -->
+                          <div class="modal fade" id="<%= modalId %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                              <div class="modal-content p-4" style="border-radius: 20px;">
+                                <div class="modal-header">
+                                  <h3 class="modal-title" id="exampleModalLongTitle" style="color: #000;"><strong>Product Details</strong></h3>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body pl-3 pr-3">
+                                  <p class="text-danger" id="addressmsg"><%= locals.addressmsg %></p>
+                                  <div class="row">
+                                    <img src="/productImages/<%= product.productId.images[0] %>" alt="no" style="width: 80px; height: 80px; border-radius: 10px;">
+                                    <div>
+                                      <p class="pl-3">
+                                        <span style="color: #000;">Product Name:</span> <%= product.productId.name %><br>
+                                        <span style="color: #000;">Quantity:</span> <%= product.quantity %><br>
+                                        <span style="color: #000;">Total Price:</span> <span class="text-success">₹<%= product.totalPrice %></span>
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <h4 style="color: #000; margin-top: 1em;"><strong>Address</strong></h4>
+                                  <div>
+                                    <% order.shipAddress.forEach((address) => { %>
+                                      <p>
+                                        <span style="color: #000;">First name:</span> <%= address.first_name %> <span style="color: #000;">Last name:</span> <%= address.last_name %><br>
+                                        <span style="color: #000;">Country:</span><%= address.contry %><br>
+                                        <span style="color: #000;">Street name:</span> <%= address.street_name %><br>
+                                        <span style="color: #000;">Town:</span> <%= address.town %> <span style="color: #000;">State:</span> <%= address.state %><br>
+                                        <span style="color: #000;">Postcode:</span> <%= address.postcode %><br>
+                                        <span style="color: #000;">Phone number:</span> <%= address.phone_number %><br>
+                                        <span style="color: #000;">Email:</span> <%= address.email %><br>
+                                      </p>
+                                    <% }) %>
+                                  </div>
+                                </div>
+                                <div class="modal-footer mx-auto">
+                                  <button type="button" class="btn btn-primary" data-dismiss="modal" style="border-radius: 10px; height: 2.9em;">
+                                    <span>Close</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </tr>
+                      <% }) %>
+                    <% }); %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="6">No orders found</td>
+                    </tr>
                   <% } %>
                 </tbody>
               </table>
+              
+
+              
 
               <% if (locals.errmsg) { %>
               <div
