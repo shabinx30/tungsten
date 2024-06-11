@@ -184,12 +184,7 @@ const deleteCategory = async (req,res)=>{
         if(checking){
             const confirmation = await Category.deleteOne({_id: categoryId})
             if(confirmation){
-                if(req.session.admin){
-                    const data = await Category.find({})
-                    res.render('categoryList',{categories: data})
-                }else{
-                    res.status(500).json({ error: 'Internal server error', message: error.message });
-                }
+                res.redirect('/admin/categoryList')
             }else{
                 res.status(500).json({ error: 'Internal server error', message: error.message });
             }

@@ -134,7 +134,7 @@
                     <td><%= category.name %></td>
                     <td class="text-right align-middle">
                       <a
-                        href="/admin/deleteCategory?categoryId=<%= category._id %>"
+                        onclick="deleteCategory('<%= category._id %>')"
                         class="btn-status-toggle"
                         data-categoryid="<%= category._id %>"
                       >
@@ -229,6 +229,23 @@
         .catch((error) => {
             console.error("There was a problem with the fetch operation:", error);
         });
+    }
+
+
+    function deleteCategory(categoryId){
+      Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, change status!'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              window.location.href = `/admin/deleteCategory?categoryId=${categoryId}`  
+          }
+      });
     }
 </script>    
   

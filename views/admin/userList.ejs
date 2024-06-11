@@ -135,37 +135,53 @@
 </div >
 
 <script>
-    function confirmAction(user_Id) {
-        console.log('function');
-        let userBtn = document.getElementById(`status-button-${user_Id}`);
-    
-        fetch(`/admin/blockUser?userId=${user_Id}`, {
-            method: "GET"
-        })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.json();
-        })
-        .then((data) => {
-            console.log("Response is working:", data.is_blocked);
-            
-                if(data.is_blocked==false){
-                    console.log("heyyyyy");
-                    userBtn.innerText = "Unblock";
-                    userBtn.className = "btn ml-3 red-button";
-                } else {
-                    console.log("haaaaaiiiiiii");
-                    userBtn.innerText = "Block";
-                    userBtn.className = "btn ml-3 green-button";
+        function confirmAction(user_Id) {
+            console.log('function');
+            let userBtn = document.getElementById(`status-button-${user_Id}`);
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, change status!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/admin/blockUser?userId=${user_Id}`, {
+                        method: "GET"
+                    })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error("Network response was not ok");
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        console.log("Response is working:", data.is_blocked);
+
+                        if(data.is_blocked == false){
+                            console.log("heyyyyy");
+                            userBtn.innerText = "Unblock";
+                            userBtn.className = "btn ml-3 red-button";
+                        } else {
+                            console.log("haaaaaiiiiiii");
+                            userBtn.innerText = "Block";
+                            userBtn.className = "btn ml-3 green-button";
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("There was a problem with the fetch operation:", error);
+                        Swal.fire(
+                            'Error!',
+                            'There was a problem changing the user status.',
+                            'error'
+                        );
+                    });
                 }
-            
-        })
-        .catch((error) => {
-            console.error("There was a problem with the fetch operation:", error);
-        });
-    }
+            });
+        }
 </script>
 
     
