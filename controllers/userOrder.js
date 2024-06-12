@@ -3,6 +3,7 @@ const User = require('../models/userModel')
 const Order = require('../models/orders');
 const Address = require('../models/addresses')
 const Product = require('../models/productModel')
+const { format } = require('date-fns');
 
 const loadCheckOut = async (req,res)=>{
     try {
@@ -27,11 +28,12 @@ const loadCheckOut = async (req,res)=>{
     }
 }
 
+
 const placeOrder = async (req, res) => {
     try {
         const { selected_address } = req.body;
         const userId = req.session.user_id;
-        const paymentMethod = 'cash'
+        const paymentMethod = 'cash';
         if (!paymentMethod) {
             throw new Error('Payment method is required');
         }
@@ -77,8 +79,8 @@ const placeOrder = async (req, res) => {
         // Calculate subtotal
         const subTotal = orderedProducts.reduce((sum, item) => sum + item.totalPrice, 0);
 
-        // Store the current date in ISO format
-        const purchasedDate = new Date().toISOString();
+        // Store the current date in the format dd/mm/yy, hh:mm AM/PM
+        const purchasedDate = format(new Date(), 'dd/MM/yy, hh:mm a');
 
         // Create order object
         const order = new Order({
@@ -97,7 +99,7 @@ const placeOrder = async (req, res) => {
                 email: address.email
             }],
             orderedProducts,
-            purchasedDate, // Use the stored date variable here
+            purchasedDate, // Use the formatted date here
             paymentMethod,
             subTotal,
             orderStatus: 'pending'
@@ -116,8 +118,6 @@ const placeOrder = async (req, res) => {
         res.status(400).send(error.message);
     }
 };
-
-module.exports = placeOrder;
 
 
 const removeFromOrders = async (req,res)=>{

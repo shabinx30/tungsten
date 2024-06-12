@@ -163,6 +163,7 @@
                                 <div class="tab-pane fade " id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
                                     <% if(orders.length>0){ %>  
                                         <% orders.forEach((order)=>{ %>
+                                            <div class="mb-3 p-4" style="border: 1px solid #eea287; border-radius: 10px;">
                                             <% order.orderedProducts.forEach((product)=>{ %>
                                                 <div class="d-flex w-100" style="margin-bottom: 10px; border: 1px solid #c2c2c2; padding: 1em; border-radius: 10px;">
                                                     <img class="text-left" src="/productImages/<%= product.productId.images[0] %>" alt="image" style="width: 50px; height: 50px;">
@@ -180,7 +181,8 @@
                                                     </script>
                                                 </div>
                                             <%})%>
-                                            <br>
+                                            <p><strong style="color: #000000;">Ordered Date: </strong> <%= order.purchasedDate %></p>
+                                            </div>
                                         <%})%>
                                     <%}else{%>
                                         <p>No order has been made yet.</p>
