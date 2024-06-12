@@ -125,6 +125,10 @@ const removeFromOrders = async (req,res)=>{
         const { productId } = req.query
         console.log(productId,'remove');
         const result = await Order.findOneAndUpdate({userId: req.session.user_id},{$pull:{orderedProducts:{productId: productId}}})
+        // console.log(result.orderedProducts.length)
+        if(result.orderedProducts.length==1){
+            await Order.deleteOne({_id: result._id})
+        }
         if(result){
             res.json({success: true})
         }else{

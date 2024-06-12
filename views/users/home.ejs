@@ -8,12 +8,21 @@
     let loader = document.getElementById("preLoader")
     window.addEventListener("load", function () {
         let nav = document.getElementById('head_nav')
+        let introContent = document.getElementById('intro_subtitle_1')
+        let introTitle = document.getElementById('intro_title')
+        let introSubtitle = document.getElementById('intro_subtitle_2')
+        //..........loading..............
         loader.style.display = "none";
-        nav.className = "header smol";
         document.body.style.overflow = "auto"
+        //..............nav..............
+        nav.className = "header smol";
+        //.............offer.............
+        introContent.className = 'intro-subtitle content'
+        introTitle.className = 'intro-title title'
+        introSubtitle.className = 'intro-subtitle subtitle'
     })
 </script>
-
+    
 
     <div class="page-wrapper">
         <header class="header" id="head_nav">
@@ -45,37 +54,26 @@
                   }
                 }
                 
-                .smol {  
-                  /* This section calls the slideInFromLeft animation we defined above */
+                .smol {
                   animation: .3s ease 0s 1 slideInFromLeft1;
-                }
-
-                @keyframes imageAnimation{
-                    0% {
-                        transform: translateX(70%);
-                        /* opacity: 0; */
-                    }
-                    /* 30%{
-                        transform: translateX(-65%);
-                        opacity: 1;
-                    } */
-                    100% {
-                        transform: translateX(0);
-                        /* opacity: 1; */
-                    }
                 }
 
                 @keyframes textAnimation{
                     0% {
                         transform: translateX(-50%);
-                        /* opacity: 0; */
-                        /* padding-left: 0; */
                     }
                     100% {
-                        /* padding-left: 10%; */
                         transform: translateX(0%);
-                        /* opacity: 1; */
                     }
+                }
+                .content{
+                    animation: .3s ease 0s 1 textAnimation;
+                }
+                .title{
+                    animation: .6s ease 0s 1 textAnimation;
+                }
+                .subtitle{
+                    animation: .8s ease 0s 1 textAnimation;
                 }
               </style>
                 <div class="container">
@@ -181,10 +179,10 @@
                 }
             }'>
             <div class="intro-slide" style="background-image: url(assets/images/demos/demo-8/slider/slide-1.jpg);">
-                <div class="container intro-content text-left" style="padding-right: 10px; ;">
-                    <h3 class="intro-subtitle" style="animation: .3s ease 0s 1 textAnimation;" >Limited time only *</h3><!-- End .h3 intro-subtitle -->
-                    <h1 class="intro-title" style="animation: .6s ease 0s 1 textAnimation;">Summer<br><strong>sale</strong></h1><!-- End .intro-title -->
-                    <h3 class="intro-subtitle" style="animation: .8s ease 0s 1 textAnimation;">Up to 50% off</h3><!-- End .h3 intro-subtitle -->
+                <div class="container intro-content text-left" style="padding-right: 10px;">
+                    <h3 class="intro-subtitle" id="intro_subtitle_1" >Limited time only *</h3><!-- End .h3 intro-subtitle -->
+                    <h1 class="intro-title" id="intro_title" >Summer<br><strong>sale</strong></h1><!-- End .intro-title -->
+                    <h3 class="intro-subtitle" id="intro_subtitle_2" >Up to 50% off</h3><!-- End .h3 intro-subtitle -->
 
                     <a href="/shop" class="btn" style="border-radius: 15px;">
                         <span>SHOP NOW</span>
