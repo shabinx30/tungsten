@@ -127,7 +127,7 @@
                   <% if (orders.length > 0) { %>
                     <% orders.forEach((value, index) => { %>
                       <tr>
-                        <td><%= index + 1 %></td>
+                        <td><%= ++index %></td>
                         <td><%= value.userName %></td>
                         <td><%= value.purchasedDate %></td>
                         <td>₹<%= value.subTotal %></td>
@@ -153,8 +153,29 @@
                                     <img class="mb-2" src="/productImages/<%= product.productId.images[0] %>" alt="no image" style="width: 50px; height: 50px; border-radius: 5px; border: 1px solid black;">
                                     <div class="d-block ml-3">
                                       <p><strong style="color: black;">Name: </strong><%= product.productId.name %> <br>
-                                      <strong style="color: black;">Price: </strong><%= product.productId.price %> <br>
-                                      <strong style="color: black;">Quantity: </strong><%= product.productId.quantity %></p>
+                                        <strong style="color: black;">Price: </strong><%= product.productId.price %> <br>
+                                        <strong style="color: black;">Quantity: </strong><%= product.quantity %> <strong class="ml-4" style="color: #000;">Status:</strong>
+                                        <select class="btn" id="<%= product.productId %>" style="background-color: #7b7bff; border-radius: 10px; color: #000;" onchange="ProductStatus(event,'<%= product._id %>')">
+                                          <% if (product.status == 'pending') { %>
+                                            <option value="pending" hidden>Pending</option>
+                                            <option value="shipped">Shipped</option>
+                                            <option value="delivered">Delivered</option>
+                                            <option value="cancelled">Cancelled</option>
+                                          <% } else if (product.status == 'shipped') { %>
+                                            <option value="shipped" hidden>Shipped</option>
+                                            <option value="delivered">Delivered</option>
+                                            <option value="cancelled">Cancelled</option>
+                                          <% } else if (product.status == 'delivered') { %>
+                                            <option value="delivered" hidden>Delivered</option>
+                                            <option value="shipped">Shipped</option>
+                                            <option value="cancelled">Cancelled</option>
+                                          <% } else if (product.status == 'cancelled') { %>
+                                            <option value="cancelled" hidden>Cancelled</option>
+                                            <option value="shipped">Shipped</option>
+                                            <option value="delivered">Delivered</option>
+                                          <% } %>
+                                        </select>                                        
+                                      </p>
                                     </div>
                                   </div>
                                 <% }) %>
@@ -165,7 +186,7 @@
                                   <strong style="color: #000;">Postcode: </strong><%= value.shipAddress[0].postcode %> <strong style="color: #000;">Phone number: </strong><%= value.shipAddress[0].phone_number %> <br>
                                   <strong style="color: #000;">Email: </strong><%= value.shipAddress[0].email %> 
                                 </p>
-                                <p class="mt-5"><strong style="color: #000;">Order Date: </strong><%= value.purchasedDate %></p>
+                                <p class="mt-4"><strong style="color: #000;">Order Date: </strong><%= value.purchasedDate %></p>
                               </div>
                               <div class="modal-footer mx-auto">
                                 <button type="button" class="btn btn-primary" data-dismiss="modal" style="border-radius: 10px;">
@@ -240,12 +261,21 @@
 </script>
 
 
-//.............status................
+<!-- //.............status................ -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-  function changeStatus(event){
-    if(event.target.value=='Shipped'){
+  function ProductStatus(event,productId){
+    console.log(event.target.value);
+    axios.post('/admin/productStatus', {
+      status: event.target.value,
+      productId
+    })
+    .then(response => {
       window.location.reload()
-    }
+    })
+    .catch(error => {
+      console.error('Error posting data:', error);
+    });
   }
 </script>
 

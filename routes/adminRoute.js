@@ -67,6 +67,7 @@ admin_route.post('/editCategory',adminAuth.isLogin,adminController.editCategory)
 
 //order
 admin_route.get('/orderHistory',adminAuth.isLogin,orderController.orderlist)
+admin_route.post('/productStatus',adminAuth.isLogin,orderController.changeStatus)
 
 
 module.exports = admin_route

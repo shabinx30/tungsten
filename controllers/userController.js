@@ -224,7 +224,7 @@ const userDashboard = async(req,res)=>{
     try {
         const userData = await User.findById({_id: req.session.user_id})
         const addresses = await Address.findOne({userId: req.session.user_id})
-        const order = await Order.find({userId: req.session.user_id}).sort({purchasedDate: -1}).populate('orderedProducts.productId').exec()
+        const order = await Order.find({userId: req.session.user_id}).sort({_id: -1}).populate('orderedProducts.productId').exec()
         // console.log(order);
         if(req.query.re){
             req.flash('addressmsg', "Please add Address...!!!");
