@@ -2,7 +2,7 @@ const Order = require('../models/orders')
 
 const orderlist = async (req,res)=>{
     try {
-        const orders = await Order.find({}).populate('orderedProducts.productId').exec();
+        const orders = await Order.find({}).sort({purchasedDate: -1}).populate('orderedProducts.productId').exec();
         console.log(orders.orderedProducts);
         res.render('orderList',{orders})
     } catch (error) {

@@ -124,18 +124,57 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- <% let index = 1 %> -->
                   <% if (orders.length > 0) { %>
-                    <% orders.forEach((value,index)=>{ %>
+                    <% orders.forEach((value, index) => { %>
                       <tr>
-                        <td><%= ++index %></td>
+                        <td><%= index + 1 %></td>
                         <td><%= value.userName %></td>
                         <td><%= value.purchasedDate %></td>
-                        <td><%= value.subTotal %></td>
+                        <td>₹<%= value.subTotal %></td>
                         <td><%= value.paymentMethod %></td>
-                        <td><a >
-                          <span class="btn ml-3 edit-button">View</span>
-                        </a></td>
+                        <td>
+                          <a style="cursor: pointer;" data-toggle="modal" data-target="#modal-<%= index %>">
+                            <span class="btn ml-3 edit-button">View</span>
+                          </a>
+                        </td>
+                        <!-- Modal -->
+                        <div class="modal fade" id="modal-<%= index %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content p-4" style="border-radius: 20px;">
+                              <div class="modal-header">
+                                <h2 class="modal-title" id="exampleModalLongTitle" style="color: #000;">Order Details</h2>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body pl-3 pr-3">
+                                <% value.orderedProducts.forEach(product => { %>
+                                  <div class="row">
+                                    <img class="mb-2" src="/productImages/<%= product.productId.images[0] %>" alt="no image" style="width: 50px; height: 50px; border-radius: 5px; border: 1px solid black;">
+                                    <div class="d-block ml-3">
+                                      <p><strong style="color: black;">Name: </strong><%= product.productId.name %> <br>
+                                      <strong style="color: black;">Price: </strong><%= product.productId.price %> <br>
+                                      <strong style="color: black;">Quantity: </strong><%= product.productId.quantity %></p>
+                                    </div>
+                                  </div>
+                                <% }) %>
+                                <h3 class="mt-3" style="color: #000;">Address</h3>
+                                <p><strong style="color: #000;">First name: </strong><%= value.shipAddress[0].first_name %> <strong style="color: #000;">Last name: </strong><%= value.shipAddress[0].last_name %> <br>
+                                  <strong style="color: #000;">Country: </strong><%= value.shipAddress[0].contry %> <strong style="color: #000;">Street name: </strong><%= value.shipAddress[0].street_name %> <br>
+                                  <strong style="color: #000;">Town: </strong><%= value.shipAddress[0].town %> <strong style="color: #000;">State: </strong><%= value.shipAddress[0].state %> <br>
+                                  <strong style="color: #000;">Postcode: </strong><%= value.shipAddress[0].postcode %> <strong style="color: #000;">Phone number: </strong><%= value.shipAddress[0].phone_number %> <br>
+                                  <strong style="color: #000;">Email: </strong><%= value.shipAddress[0].email %> 
+                                </p>
+                                <p class="mt-5"><strong style="color: #000;">Order Date: </strong><%= value.purchasedDate %></p>
+                              </div>
+                              <div class="modal-footer mx-auto">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" style="border-radius: 10px;">
+                                  <span>Close</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </tr>
                     <% }) %>
                   <% } else { %>
@@ -145,20 +184,14 @@
                   <% } %>
                 </tbody>
               </table>
-              
-
-              
-
+            
               <% if (locals.errmsg) { %>
-              <div
-                class="alert text-center"
-                role="alert"
-                style="color: blueviolet; background: white"
-              >
-                <%= locals.errmsg %>
-              </div>
+                <div class="alert text-center" role="alert" style="color: blueviolet; background: white">
+                  <%= locals.errmsg %>
+                </div>
               <% } %>
             </div>
+            
           </div>
         </div>
       </div>
