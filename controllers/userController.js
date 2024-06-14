@@ -20,16 +20,17 @@ const securePassword = async(password) => {
 const home = async(req,res)=>{
     try {
         const userId = req.session.user_id
+        const productData = await Product.find({is_listed: true})
         const userData = await User.findOne({ _id: userId })
         if(userData){
             const cart = await Cart.findOne({ userId: userId }).populate('products.productId').exec();
             if(cart){
-                res.render('home',{products: cart.products,name: userData.name,picture: userData.picture })
+                res.render('home',{products: cart.products,name: userData.name,picture: userData.picture,productData })
             }else{
-                res.render('home',{products: [],name: userData.name,picture: userData.picture })
+                res.render('home',{products: [],name: userData.name,picture: userData.picture,productData })
             }
         }else{
-            res.render('home',{products: [],name: '',picture: undefined })
+            res.render('home',{products: [],name: '',picture: undefined,productData})
         }
     } catch (error) {
         console.log(error.message)
