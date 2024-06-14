@@ -177,7 +177,7 @@
                                                     <%}else{%>
                                                         <p class="text-right mr-3" style="color: red; margin-top: auto; margin-bottom: auto;"><strong style="color: #000000;">Status:</strong> <%= product.status %></p>
                                                     <%}%>
-                                                    <% if(product.status!='cancelled'){ %>
+                                                    <% if(product.status!='cancelled' && product.status!='delivered'){ %>
                                                         <div class="mt-1 mr-3" style="height: 50%; width: 10%;">
                                                             <button onclick="remove('<%= product.productId.name %>','<%= product._id %>')" style="width: 5em; font-size: small; border-radius: 10px; border: 1px solid #eea287; background-color: white;">Cancell</button>
                                                         </div>
@@ -226,7 +226,7 @@
                                                             <%= address.town %> <%= address.state %> <br>
                                                             <%= address.postcode %> <%= address.phone_number %> <br>
                                                             <%= address.email %></p>
-                                                            <a href="#">Edit <i class="icon-edit"></i></a></p>
+                                                            <a href="/editAddress?addressId=<%= address._id %>">Edit <i class="icon-edit"></i></a></p>
                                                         </div><!-- End .card-body -->
                                                     </div><!-- End .card-dashboard -->
                                                 </div><!-- End .col-lg-6 -->

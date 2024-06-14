@@ -86,7 +86,22 @@ const removeAddress = async (req,res)=>{
     }
 }
 
+const loadEditAddress = async (req,res)=>{
+    try {
+        const address = await Address.findOne(
+            { 'addresses._id': req.query.addressId },
+            { 'addresses.$': 1 }
+        );
+        console.log(address.addresses[0]);
+        res.render()
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send(error.message)
+    }
+}
+
 module.exports = {
     addAddress,
-    removeAddress
+    removeAddress,
+    loadEditAddress
 }
