@@ -468,6 +468,35 @@ const googleLoginFailure = async(req,res)=>{
     }
 }
 
+
+const searchProducts = async (req,res)=>{
+    try {
+
+        let searchString = req.query.search
+        if (!searchString) {
+            return res.status(400).json({ error: 'Search string is required' });
+        }
+
+        let searchNumber = parseInt(searchString, 10);
+
+        let searchQuery = {
+            $or: [
+                { name: { $regex: new RegExp(searchString, 'i') } }
+            ]
+        };
+
+        if (!isNaN(searchNumber)) {
+            searchQuery.$or.push({ price: { $lte: searchNumber } });
+        }
+
+        let products = await Product.find(searchQuery).sort({ price: -1 })
+        res.render('shop', { products, searchString })
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send(error.message)
+    }
+}
+
 module.exports = {
     home,
     shop,
@@ -492,5 +521,6 @@ module.exports = {
     forgotPassword,
     googleLoginSuccess,
     googleLoginFailure,
-    savePassword
+    savePassword,
+    searchProducts
 }

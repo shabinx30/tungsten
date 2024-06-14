@@ -71,6 +71,7 @@ user_route.post("/editProfile", userAuth.isLogin, userController.editProfile);
 
 //Address
 user_route.post("/addAddress", userAuth.isLogin, userAddress.addAddress);
+user_route.put('/removeAddress',userAuth.isLogin,userAddress.removeAddress)
 
 //change password
 user_route.get(
@@ -89,12 +90,15 @@ user_route.get("/forgotPassword", userController.loadForgotPassword);
 user_route.post("/forgotPassword", userController.forgotPassword);
 user_route.post("/savePassword", userAuth.isLogin, userController.savePassword);
 
+//shop
 user_route.get("/shop", userAuth.isLogin, userController.shop);
 user_route.get(
   "/product",
   userAuth.isLogin,
   productController.loadProductDetails
 );
+user_route.get('/searchProducts',userAuth.isLogin,userController.searchProducts)
+
 user_route.get("/category", userController.category);
 user_route.get("/about", userController.about);
 user_route.get("/contact", userController.contact);

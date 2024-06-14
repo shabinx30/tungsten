@@ -83,10 +83,10 @@
                 <div class="header-right">
                     <div class="header-search">
                         <a href="#" class="search-toggle" role="button"><i class="icon-search"></i></a>
-                        <form action="#" method="get">
+                        <form action="/searchProducts" method="get">
                             <div class="header-search-wrapper">
                                 <label for="q" class="sr-only">Search</label>
-                                <input type="search" class="form-control" name="q" id="q" placeholder="Search in..." required>
+                                <input type="search" class="form-control" name="search" id="q" placeholder="Search in..." required>
                             </div><!-- End .header-search-wrapper -->
                         </form>
                     </div><!-- End .header-search -->
@@ -163,13 +163,25 @@
                                 <div class="tab-pane fade " id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
                                     <% if(orders.length>0){ %>  
                                         <% orders.forEach((order)=>{ %>
-                                            <div class="mb-3 p-4" style="border: 1px solid #eea287; border-radius: 10px;">
+                                            <div class="mb-3 p-4 shadow-lg " style="border: 1px solid #eea287; border-radius: 10px;">
                                             <% order.orderedProducts.forEach((product)=>{ %>
-                                                <div class="d-flex w-100" style="margin-bottom: 10px; border: 1px solid #c2c2c2; padding: 1em; border-radius: 10px;">
-                                                    <img class="text-left" src="/productImages/<%= product.productId.images[0] %>" alt="image" style="width: 50px; height: 50px;">
+                                                <div class="d-flex w-100 <%=product.status=='cancelled'?'product-media':''%>" style="margin-bottom: 10px; border: 1px solid #c2c2c2; padding: 1em; border-radius: 10px;">
+                                                    <% if(product.status!='cancelled'){ %>
+                                                        <img class="text-left" src="/productImages/<%= product.productId.images[0] %>" alt="image" style="width: 50px; height: 50px;">
+                                                    <%}else{%>
+                                                        <img class="text-left" src="/productImages/<%= product.productId.images[0] %>" alt="image" style="width: 50px; height: 50px; filter: saturate(0);">
+                                                    <%}%>
                                                     <p class="pl-3 mx-auto" id="order_name_<%= product.productId._id %>" style="margin-top: auto; margin-bottom: auto;"><%=product.productId.name%></p>
-                                                    <p class="text-right mr-3" style="color: #eea287; margin-top: auto; margin-bottom: auto;"><strong style="color: #000000;">Status:</strong> <%= product.status %></p>
-                                                    <button class="btn-remove text-right" style="margin-top: auto; margin-bottom: auto;" onclick="remove('<%=product.productId.name%>','<%= product.productId._id%>')" id="remove_button<%= product.productId._id%>"><i class="icon-close"></i></button>
+                                                    <% if(product.status!='cancelled'){ %>
+                                                        <p class="text-right mr-3" style="color: #eea287; margin-top: auto; margin-bottom: auto;"><strong style="color: #000000;">Status:</strong> <%= product.status %></p>
+                                                    <%}else{%>
+                                                        <p class="text-right mr-3" style="color: red; margin-top: auto; margin-bottom: auto;"><strong style="color: #000000;">Status:</strong> <%= product.status %></p>
+                                                    <%}%>
+                                                    <% if(product.status!='cancelled'){ %>
+                                                        <div class="mt-1 mr-3" style="height: 50%; width: 10%;">
+                                                            <button onclick="remove('<%= product.productId.name %>','<%= product._id %>')" style="width: 5em; font-size: small; border-radius: 10px; border: 1px solid #eea287; background-color: white;">Cancell</button>
+                                                        </div>
+                                                    <%}%>
                                                     <script>
                                                         document.addEventListener('DOMContentLoaded', () => {
                                                             const nameElement = document.getElementById('order_name_<%= product.productId._id %>');
@@ -203,8 +215,8 @@
                                         <div class="row">
                                         <% addresses.forEach(address=>{ %>
                                                 <div class="col-lg-6" >
-                                                    <div class="card card-dashboard" style="border-radius: 20px;">
-                                                        <button class="btn-remove" style="margin-left: 90%; margin-top: 2%;" onclick="remove('<%= address._id%>')" id="remove_button<%= address._id%>"><i class="icon-close"></i></button>
+                                                    <div class="card card-dashboard shadow-lg" style="border-radius: 20px; border: 1px solid #eea287;">
+                                                        <button class="btn-remove" style="margin-left: 90%; margin-top: 2%;" onclick="removeAddress('<%= address.address_type %>','<%= address._id%>')" id="remove_button<%= address._id%>"><i class="icon-close"></i></button>
                                                         <div class="card-body">
                                                             <h3 class="card-title"><%= address.address_type %></h3><!-- End .card-title -->
 
@@ -652,7 +664,7 @@
 <!--  Ask for confirmation for deleting  using SweetAlert -->
 <script>
 	
-	function remove(productName , productId){
+	function remove(productName ,productId){
         console.log(productName,productId);
     Swal.fire({
         title: "Are you sure?",
@@ -697,4 +709,50 @@
         }
     });
 }
+
+    function removeAddress(addressName, addressId){
+        console.log(addressName,addressId)
+        Swal.fire({
+        title: "Are you sure?",
+        text: `You Sure you want to delete ${addressName} ? `,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Delete it!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/removeAddress?addressId=${addressId}`, { method: 'PUT' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: "Address Deleted",
+                            text: "Address deleted Successfully",
+                            icon: "success"
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                        $('#main-id').load('/cart #main-id');
+                    } else {
+                        Swal.fire({
+                            title: "Error",
+                            text: "An error occurred while deleting the address.",
+                            icon: "error"
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: "Error",
+                        text: "An error occurred while processing your request."+error,
+                        icon: "error"
+                    });
+                });
+        }
+    });
+    }
 </script>

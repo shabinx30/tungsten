@@ -67,6 +67,22 @@ const addAddress = async (req,res)=>{
     }
 }
 
+const removeAddress = async (req,res)=>{
+    try {
+        const { addressId } = req.body
+        const result = await Address.deleteOne({_id: addressId})
+        if(result){
+            res.json(true)
+        }else{
+            res.json(false)
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send(error.message)
+    }
+}
+
 module.exports = {
-    addAddress
+    addAddress,
+    removeAddress
 }
