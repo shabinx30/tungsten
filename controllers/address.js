@@ -26,7 +26,8 @@ const addAddress = async (req,res)=>{
                 }]
             })
             await addressData.save()
-            res.redirect('/userDashboard')
+            req.flash('addressop', 'open');
+            return res.redirect('/userDashboard')
         }else{
             const result = await Address.findOne({
                 userId: userId,
@@ -54,7 +55,8 @@ const addAddress = async (req,res)=>{
                     req.flash('addressmsg', "Couldn't add Address...!!!");
                     return res.redirect('/userDashboard')
                 }else{
-                    res.redirect('/userDashboard')
+                    req.flash('addressop', 'open');
+                    return res.redirect('/userDashboard')
                 }
             }else{
                 req.flash('addressmsg', 'This Address is already exist...!!!');
@@ -69,12 +71,14 @@ const addAddress = async (req,res)=>{
 
 const removeAddress = async (req,res)=>{
     try {
-        const { addressId } = req.body
-        const result = await Address.deleteOne({_id: addressId})
+        const result = await Address.findOneAndUpdate(
+            {userId: req.session.user_id},
+            {$pull: { addresses: {_id: req.query.addressId}}}
+        )
         if(result){
-            res.json(true)
+            res.json({success: true})
         }else{
-            res.json(false)
+            res.json({success: false})
         }
     } catch (error) {
         console.log(error.message);

@@ -229,18 +229,22 @@ const userDashboard = async(req,res)=>{
         if(req.query.re){
             req.flash('addressmsg', "Please add Address...!!!");
             return res.redirect('/userDashboard')
+        }else if(req.query.op){
+            req.flash('addressop','open')
+            return res.redirect('/userDashboard')
         }
+        const addressop = req.flash('addressop')
         const addressmsg = req.flash('addressmsg')
         // console.log(addresses.addresses);
         if(addresses){
             if(order){
-                res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg,orders: order })
+                res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg,orders: order,addressop })
             }
             else{
-                res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg,orders: []})
+                res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg,orders: [],addressop})
             }
         }else{
-            res.render('userDashboard',{user: userData,addresses: [],addressmsg,orders: []})
+            res.render('userDashboard',{user: userData,addresses: [],addressmsg,orders: [],addressop})
         }
     } catch (error) {
         console.log(error.message);
