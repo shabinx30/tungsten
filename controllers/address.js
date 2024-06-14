@@ -86,22 +86,82 @@ const removeAddress = async (req,res)=>{
     }
 }
 
-const loadEditAddress = async (req,res)=>{
+const loadEditAddress = async (req, res) => {
     try {
         const address = await Address.findOne(
             { 'addresses._id': req.query.addressId },
             { 'addresses.$': 1 }
         );
-        console.log(address.addresses[0]);
-        res.render()
+
+        if (!address || !address.addresses || !address.addresses.length) {
+            req.flash('addressmsg', 'Address is already existing try to add a new address');
+            return res.redirect('/userDashboard');
+        }
+
+        const addressmsg = req.flash('addressmsg');
+        res.render('editAddress', { address: address.addresses[0], addressmsg });
     } catch (error) {
-        console.log(error.message);
-        res.status(400).send(error.message)
+        console.error('Error in loadEditAddress:', error.message);
+        res.status(400).send(error.message);
     }
-}
+};
+
+const editAddress = async (req, res) => {
+    try {
+        const addressId = req.body.addressId;
+        const address_type = req.body.address_type.toUpperCase()
+        const { first_name, last_name, contry, street_name, town, state, postcode, phone_number, email } = req.body;
+        console.log(addressId);
+        const result = await Address.findOne({
+            userId: req.session.user_id,
+            addresses: {
+                $elemMatch: {
+                    address_type: address_type
+                }
+            }
+        })
+        if(!result){
+            const address = await Address.findOneAndUpdate(
+                { 'addresses._id': addressId },
+                {
+                    $set: {
+                        'addresses.$.address_type': address_type,
+                        'addresses.$.first_name': first_name,
+                        'addresses.$.last_name': last_name,
+                        'addresses.$.contry': contry,
+                        'addresses.$.street_name': street_name,
+                        'addresses.$.town': town,
+                        'addresses.$.state': state,
+                        'addresses.$.postcode': postcode,
+                        'addresses.$.phone_number': phone_number,
+                        'addresses.$.email': email,
+                    }
+                },
+                { new: true } // Return the updated document
+            );
+    
+            if (!address) {
+                req.flash('addressmsg', 'Address not found or not updated');
+                return res.redirect('/editAddress');
+            }
+    
+            req.flash('addressop', 'open');
+            return res.redirect('/userDashboard');
+        }else{
+            // console.log('else');
+            req.flash('addressmsg');
+            return res.redirect('/editAddress');
+        }
+    } catch (error) {
+        console.error('Error in editAddress post:', error.message);
+        req.flash('addressmsg', 'An error occurred while updating the address');
+        res.status(400).send(error.message);
+    }
+};
 
 module.exports = {
     addAddress,
     removeAddress,
-    loadEditAddress
+    loadEditAddress,
+    editAddress
 }
