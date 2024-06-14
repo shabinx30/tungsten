@@ -163,8 +163,8 @@
                                                     <td class="quantity-col">
                                                         <div class="cart-product-quantity d-flex" style="border: 1px solid #eea287; border-radius: 10px;">
                                                             <!-- <input  type="number" class="form-control" value="<%= product.quantity %>" min="1" max="10" step="1" data-decimals="0" required> -->
-                                                            <!-- <input hidden type="text" id="max_quantity" value="<%=product.productId.quantity%>"> -->
-                                                            
+                                                            <input hidden type="text" id="max_quantity<%= product.productId._id %>" value="<%=product.productId.quantity%>">
+                                                            <% console.log(product.productId.quantity) %>
                                                             <button style="border: none; border-radius: 10px 0 0 10px;" onclick="decrease('<%= product.productId._id %>', '<%= product.quantity %>')">-</button><div class="mx-auto"><p style="color: #000000;" id="quantity<%= product.productId._id %>"><%= product.quantity %></p></div><button style="border: none; border-radius: 0 10px 10px 0;" onclick="increase('<%= product.productId._id %>', '<%= product.quantity %>')">+</button>
                                                         </div>
                                                     </td>
@@ -439,39 +439,57 @@
 
 <script>
     function remove(productId) {
-    console.log('function '+productId);
-        fetch('/removeProductFromCart', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ productId })
-        })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.json();
-        })
-        .then((data) => {
-            console.log("Response is working:");
-            
-                
-            if(data.success) window.location.reload()
-            else {
-                Swal.fire({
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you really want to remove this product from your cart?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, remove it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            console.log('function ' + productId);
+            fetch('/removeProductFromCart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ productId })
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Response is working:");
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    Swal.fire({
                         icon: 'error',
                         title: 'Error!',
                         text: data.error || "Can't remove the product.",
                         showConfirmButton: false,
                         timer: 1500
                     });
-            }
-        })
-        .catch((error) => {
-            console.error("There was a problem with the fetch operation:", error);
-        });
-    }
+                }
+            })
+            .catch((error) => {
+                console.error("There was a problem with the fetch operation:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: "There was a problem with the fetch operation.",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            });
+        }
+    });
+}
 </script>
 
 <script>
@@ -505,14 +523,13 @@
         let total_price = document.getElementById(`total_price${productId}`)
         let sub_total = document.getElementById('sub_total')
         let total_amount = document.getElementById('total_amount')
-        // let max_quantity = document.getElementById('max_quantity').value
+        let max_quantity = parseInt(document.getElementById(`max_quantity${productId}`).value)
         let sub_total_price = 0
         // let products = document.getElementById('products').value
         let quantity = parseInt(quantityEle.textContent); // Ensure quantity is a number
 
         // Increment the quantity
-        
-        if(quantity<10){
+        if(quantity<max_quantity){
             quantity++
 
         fetch('/increase', {
@@ -545,6 +562,13 @@
         .catch((error) => {
             console.error("There was a problem with the fetch operation:", error);
         });
+        }else{
+            Swal.fire({
+                icon : 'error',
+                title : "Can't increase quantity",
+                text : 'Stock is not available',
+                showConfirmButton  :true
+            })
         }
     };
 
