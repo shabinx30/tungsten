@@ -91,10 +91,6 @@ const OrderSchema = mongoose.Schema({
     subTotal: {
         type: Number,
         required: true
-    },
-    orderStatus: {
-        type: String,
-        required:true
     }
 });
 

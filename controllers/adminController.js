@@ -100,7 +100,7 @@ const loadaddCategory = async (req,res)=>{
 const addCategory = async (req,res)=>{
     try {
         // const name = req.body.name.trim().toUpperCase();
-        const category = req.body.category;
+        const category = req.body.category.toUpperCase();
         let changes = true
         console.log(req.body.changes);
         const exist = await Category.findOne({name: category})
@@ -120,14 +120,14 @@ const addCategory = async (req,res)=>{
             if(categoryData){
                 const categoriesData = await Category.find({})
                 if(categoriesData){
-                    res.render('categoryList',{success:"ok",categories:categoriesData})
+                    res.redirect('/admin/categoryList')
                 }else{
                     res.render('categoryList',{errmsg:"error"})
                 }
             }else{
                 const categoriesData = await Category.find({})
                 if(categoriesData){
-                    res.render('categoryList',{success:"ok",categories:categoriesData})
+                    res.redirect('/admin/categoryList')
                 }else{
                     res.render('categoryList',{errmsg:"error"})
                 }
@@ -208,7 +208,7 @@ const editCategory = async (req,res)=>{
     try {
         const categoryId = req.body.categoryId;
         // const categoryOldName = req.body.categoryOldName
-        const categoryName = req.body.categoryName;
+        const categoryName = req.body.categoryName.toUpperCase()
         let changes = true;
 
         if(req.body.changes=='unlisted'){
@@ -223,8 +223,7 @@ const editCategory = async (req,res)=>{
         }else{
             const confirmation = await Category.findOneAndUpdate({_id: categoryId},{$set:{name: categoryName, is_listed: changes}})
             if(confirmation){
-                const data = await Category.find({})
-                res.render('categoryList',{categories: data})
+                res.redirect('/admin/categoryList')
             }else{
                 res.status(500).json({ error: 'Internal server error', message: error.message });
             }
@@ -303,12 +302,10 @@ const addProduct = async (req, res) => {
 
                 const data = await product.save();
                 if(data){
-                    const productsData = await Product.find({})
-                    res.render('productList',{products: productsData,success: 'New Product added'})
+                    res.redirect('/admin/productsList')
                 }else{
                     res.render('productList',{products: productsData,success: 'Cannot add new Product'})
                 }
-              
                 
             }
         

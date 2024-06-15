@@ -2,11 +2,12 @@ const Product = require('../models/productModel')
 const Category = require('../models/categoryModel')
 const multer = require('multer')
 const path = require('path')
+const flash = require('express-flash')
 
 const loadProductDetails = async (req,res)=>{
     try {
         const productDetails = req.query.productDetails
-        const product = await Product.findById({_id: productDetails})
+        const product = await Product.findById({_id: productDetails}).populate('categoryName').exec();
         res.render('product',{product: product})
     } catch (error) {
         console.log(error.message);
@@ -15,7 +16,8 @@ const loadProductDetails = async (req,res)=>{
 
 const loadProductList = async (req,res)=>{
     try {
-        const productsData = await Product.find({})
+        const productsData = await Product.find({}).populate('categoryName').exec();
+        console.log('darf'+productsData);
         res.render('productList',{products: productsData,success: ''});
     } catch (error) {
         console.log(error.message);
@@ -55,54 +57,54 @@ const loadEditProduct = async (req,res)=>{
 }
 
 const storage = multer.diskStorage({
-    destination: function(req,file,callback){
-        callback(null,path.join(__dirname,'../public/productImages'));
+    destination: function(req, file, callback) {
+        callback(null, path.join(__dirname, '../public/productImages'));
     },
-    filename: function(req,file,callback){
-        callback(null, Date.now()+'-'+file.originalname)
+    filename: function(req, file, callback) {
+        callback(null, Date.now() + '-' + file.originalname);
     }
-})
+});
 
-const upload = multer({storage: storage }).fields([
-    { name: "images",maxCount: 4},
+const upload = multer({ storage: storage }).fields([
+    { name: "images", maxCount: 4 },
 ]);
 
-const editProduct = async (req,res)=>{
+const editProduct = async (req, res) => {
     try {
         const productId = req.body.productId;
-        const productName = req.body.productName;
+        const productName = req.body.name; // Ensure the form sends the correct field name
 
-        const exist = await Product.findOne({name: productName})
-        if(exist){
-            req.flash('errmsg','Sorry this product is already existing...!!!')
-            return res.redirect('/admin/editProduct')
-        }else{
-
-            const images = req.files['images'].map(e=>e.filename);
+        const exist = await Product.findOne({ name: productName });
+        if (exist && exist._id.toString() !== productId) { // Ensure the check doesn't fail for the same product
+            req.flash('errmsg', 'Sorry this product already exists...!!!');
+            return res.redirect(`/admin/editProduct?productId=${productId}`);
+        } else {
+            const images = req.files['images'] ? req.files['images'].map(e => e.filename) : [];
             console.log(images);
 
-            const confirmation = await Product.findOneAndUpdate({_id: productId},{
-                $set:{
+            const confirmation = await Product.findOneAndUpdate({ _id: productId }, {
+                $set: {
                     name: req.body.name,
                     price: req.body.price,
                     quantity: req.body.quantity,
                     description: req.body.description,
-                    images,
+                    images: images.length ? images : req.body.existingImages, // Handle existing images
                     categoryName: req.body.category,
                     is_listed: true
                 }
-            });
-            if(confirmation){
-                const products = await Product.find({});
-                res.render('productList',{products,success: ''});
-            }else{
-                res.status(500).json({ error: 'Internal server error', message: error.message });
+            }, { new: true });
+
+            if (confirmation) {
+                res.redirect('/admin/productsList')
+            } else {
+                res.status(500).json({ error: 'Internal server error', message: 'Could not update product' });
             }
         }
     } catch (error) {
         console.log(error.message);
+        res.status(500).json({ error: 'Internal server error', message: error.message });
     }
-}
+};
 
 module.exports = {
     loadProductDetails,

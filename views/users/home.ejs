@@ -98,10 +98,10 @@
                                     <a href="/shop">Shop</a>
 
                                 </li>
-                                <li>
+                                <!-- <li>
                                     <a href="/category">Category</a>
 
-                                </li>
+                                </li> -->
                                 <li>
                                     <a href="/about" >About Us</a>
 
@@ -389,7 +389,7 @@
             <div class="tab-pane p-0 fade show active" id="recent-all-tab" role="tabpanel" aria-labelledby="recent-all-link">
                 <div class="products">
                     <div class="row justify-content-center">
-                        <%let count=0%>
+                        <%let count=1%>
                         <% productData.forEach(product=>{ %>
                             <%if(count<=8){%>
                                 <% count++ %>
@@ -399,7 +399,7 @@
                                         <% if(product.quantity==0){ %>
                                             <span class="product-label label-sale" style="border-radius: 7px;">Out of stock</span>
                                         <% } %>
-                                        <a href="product.html">
+                                        <a href="/product?productDetails=<%= product._id %>">
                                             <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image">
                                             <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image-hover">
                                         </a>
@@ -415,7 +415,7 @@
     
                                     <div class="product-body">
                                         <div class="product-cat">
-                                            <a href="#"><%= product.categoryName %></a>
+                                            <a href="#"><%= product.categoryName.name %></a>
                                         </div><!-- End .product-cat -->
                                         <h3 class="product-title"><a href="product.html"><%= product.name %></a></h3><!-- End .product-title -->
                                         <div class="product-price">
@@ -434,14 +434,14 @@
                 <div class="products">
                     <div class="row justify-content-center">
                         <% productData.forEach(product=>{ %>
-                        <% if(product.categoryName=='WOMEN') {%>
+                        <% if(product.categoryName.name=='WOMEN') {%>
                             <div class="col-6 col-md-4 col-lg-3">
                                 <div class="product product-2 text-center">
                                     <figure class="product-media">
                                         <% if(product.quantity==0){ %>
                                             <span class="product-label label-sale" style="border-radius: 7px;">Out of stock</span>
                                         <% } %>
-                                        <a href="product.html">
+                                        <a href="/product?productDetails=<%= product._id %>">
                                             <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image">
                                             <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image-hover">
                                         </a>
@@ -457,7 +457,7 @@
     
                                     <div class="product-body">
                                         <div class="product-cat">
-                                            <a href="#"><%= product.categoryName %></a>
+                                            <a href="#"><%= product.categoryName.name %></a>
                                         </div><!-- End .product-cat -->
                                         <h3 class="product-title"><a href="product.html"><%= product.name %></a></h3><!-- End .product-title -->
                                         <div class="product-price">
@@ -476,14 +476,14 @@
                 <div class="products">
                     <div class="row justify-content-center">
                         <% productData.forEach(product=>{ %>
-                            <% if(product.categoryName=='Mens') {%>
+                            <% if(product.categoryName.name=='MENS') {%>
                                 <div class="col-6 col-md-4 col-lg-3">
                                     <div class="product product-2 text-center">
                                         <figure class="product-media">
                                             <% if(product.quantity==0){ %>
                                                 <span class="product-label label-sale" style="border-radius: 7px;">Out of stock</span>
                                             <% } %>
-                                            <a href="product.html">
+                                            <a href="/product?productDetails=<%= product._id %>">
                                                 <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image">
                                                 <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image-hover">
                                             </a>
@@ -499,7 +499,7 @@
         
                                         <div class="product-body">
                                             <div class="product-cat">
-                                                <a href="#"><%= product.categoryName %></a>
+                                                <a href="#"><%= product.categoryName.name %></a>
                                             </div><!-- End .product-cat -->
                                             <h3 class="product-title"><a href="product.html"><%= product.name %></a></h3><!-- End .product-title -->
                                             <div class="product-price">
@@ -517,108 +517,50 @@
             <div class="tab-pane p-0 fade" id="recent-shoes-tab" role="tabpanel" aria-labelledby="recent-shoes-link">
                 <div class="products">
                     <div class="row justify-content-center">
-                        <div class="col-6 col-md-4 col-lg-3">
-                            <div class="product product-2 text-center">
-                                <figure class="product-media">
-                                    <a href="product.html">
-                                        <img src="assets/images/demos/demo-8/products/product-7-1.jpg" alt="Product image" class="product-image">
-                                        <img src="assets/images/demos/demo-8/products/product-7-2.jpg" alt="Product image" class="product-image-hover">
-                                    </a>
+                        <% productData.forEach(product=>{ %>
+                            <% if(product.categoryName.name=='SHOES') {%>
+                                <div class="col-6 col-md-4 col-lg-3">
+                                    <div class="product product-2 text-center">
+                                        <figure class="product-media">
+                                            <% if(product.quantity==0){ %>
+                                                <span class="product-label label-sale" style="border-radius: 7px;">Out of stock</span>
+                                            <% } %>
+                                            <a href="/product?productDetails=<%= product._id %>">
+                                                <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image">
+                                                <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image-hover">
+                                            </a>
+        
+                                            <div class="product-action-vertical">
+                                                <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                            </div><!-- End .product-action-vertical -->
+        
+                                            <div class="product-action">
+                                                <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                            </div><!-- End .product-action -->
+                                        </figure><!-- End .product-media -->
+        
+                                        <div class="product-body">
+                                            <div class="product-cat">
+                                                <a href="#"><%= product.categoryName.name %></a>
+                                            </div><!-- End .product-cat -->
+                                            <h3 class="product-title"><a href="product.html"><%= product.name %></a></h3><!-- End .product-title -->
+                                            <div class="product-price">
+                                                <span class="new-price">Now $<%= product.price %></span>
+                                                <span class="old-price">Was $<%= product.price+10 %></span>
+                                            </div><!-- End .product-price -->
+                                        </div><!-- End .product-body -->
+                                    </div><!-- End .product -->
+                                </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
+                            <%}%>
+                            <% }) %>
 
-                                    <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-                                    </div><!-- End .product-action-vertical -->
-
-                                    <div class="product-action">
-                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                    </div><!-- End .product-action -->
-                                </figure><!-- End .product-media -->
-
-                                <div class="product-body">
-                                    <div class="product-cat">
-                                        <a href="#">Bags</a>
-                                    </div><!-- End .product-cat -->
-                                    <h3 class="product-title"><a href="product.html">Small bucket bag</a></h3><!-- End .product-title -->
-                                    <div class="product-price">
-                                        $14.99
-                                    </div><!-- End .product-price -->
-
-                                    <div class="product-nav product-nav-thumbs">
-                                        <a href="#" class="active">
-                                            <img src="assets/images/demos/demo-8/products/product-7-thumb.jpg" alt="product desc">
-                                        </a>
-                                        <a href="#">
-                                            <img src="assets/images/demos/demo-8/products/product-7-2-thumb.jpg" alt="product desc">
-                                        </a>
-                                    </div><!-- End .product-nav -->
-                                </div><!-- End .product-body -->
-                            </div><!-- End .product -->
-                        </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
-
-                        <div class="col-6 col-md-4 col-lg-3">
-                            <div class="product product-2 text-center">
-                                <figure class="product-media">
-                                    <a href="product.html">
-                                        <img src="assets/images/demos/demo-8/products/product-8-1.jpg" alt="Product image" class="product-image">
-                                        <img src="assets/images/demos/demo-8/products/product-8-2.jpg" alt="Product image" class="product-image-hover">
-                                    </a>
-
-                                    <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-                                    </div><!-- End .product-action-vertical -->
-
-                                    <div class="product-action">
-                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                    </div><!-- End .product-action -->
-                                </figure><!-- End .product-media -->
-
-                                <div class="product-body">
-                                    <div class="product-cat">
-                                        <a href="#">Clothing</a>
-                                    </div><!-- End .product-cat -->
-                                    <h3 class="product-title"><a href="product.html">Denim jacket</a></h3><!-- End .product-title -->
-                                    <div class="product-price">
-                                        $34.99
-                                    </div><!-- End .product-price -->
-                                </div><!-- End .product-body -->
-                            </div><!-- End .product -->
-                        </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
-
-                        <div class="col-6 col-md-4 col-lg-3">
-                            <div class="product product-2 text-center">
-                                <figure class="product-media">
-                                    <a href="product.html">
-                                        <img src="assets/images/demos/demo-8/products/product-9-1.jpg" alt="Product image" class="product-image">
-                                        <img src="assets/images/demos/demo-8/products/product-9-2.jpg" alt="Product image" class="product-image-hover">
-                                    </a>
-
-                                    <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-                                    </div><!-- End .product-action-vertical -->
-
-                                    <div class="product-action">
-                                        <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                    </div><!-- End .product-action -->
-                                </figure><!-- End .product-media -->
-
-                                <div class="product-body">
-                                    <div class="product-cat">
-                                        <a href="#">Clothing</a>
-                                    </div><!-- End .product-cat -->
-                                    <h3 class="product-title"><a href="product.html">BShort wrap dress</a></h3><!-- End .product-title -->
-                                    <div class="product-price">
-                                        $17.99
-                                    </div><!-- End .product-price -->
-                                </div><!-- End .product-body -->
-                            </div><!-- End .product -->
-                        </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
                     </div><!-- End .row -->
                 </div><!-- End .products -->
             </div><!-- .End .tab-pane -->
         </div><!-- End .tab-content -->
 
         <div class="more-container text-center mt-3 mb-3">
-            <a href="category.html" class="btn btn-outline-dark-3 btn-more"><span>View More</span><i class="icon-long-arrow-right"></i></a>
+            <a href="category.html" class="btn btn-outline-dark-3 btn-more" style="border-radius: 20px;"><span>View More</span><i class="icon-long-arrow-right"></i></a>
         </div><!-- End .more-container -->
     </div><!-- End .container -->
 
@@ -626,8 +568,8 @@
     
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-4 col-sm-6">
-                <div class="icon-box icon-box-card text-center">
+            <div class="col-lg-4 col-sm-6" >
+                <div class="icon-box icon-box-card text-center" style="border-radius: 20px;">
                     <span class="icon-box-icon">
                         <i class="icon-rocket"></i>
                     </span>
@@ -639,7 +581,7 @@
             </div><!-- End .col-lg-4 col-sm-6 -->
 
             <div class="col-lg-4 col-sm-6">
-                <div class="icon-box icon-box-card text-center">
+                <div class="icon-box icon-box-card text-center" style="border-radius: 20px;">
                     <span class="icon-box-icon">
                         <i class="icon-rotate-left"></i>
                     </span>
@@ -651,7 +593,7 @@
             </div><!-- End .col-lg-4 col-sm-6 -->
 
             <div class="col-lg-4 col-sm-6">
-                <div class="icon-box icon-box-card text-center">
+                <div class="icon-box icon-box-card text-center" style="border-radius: 20px;">
                     <span class="icon-box-icon">
                         <i class="icon-life-ring"></i>
                     </span>

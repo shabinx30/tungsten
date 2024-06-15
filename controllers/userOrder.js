@@ -72,7 +72,7 @@ const placeOrder = async (req, res) => {
                 quantity: item.quantity,
                 price: price,
                 totalPrice: price * item.quantity,
-                status: 'pending'
+                status: 'placed'
             };
         }));
 
@@ -101,8 +101,7 @@ const placeOrder = async (req, res) => {
             orderedProducts,
             purchasedDate, // Use the formatted date here
             paymentMethod,
-            subTotal,
-            orderStatus: 'pending'
+            subTotal
         });
 
         // Save the order to the database

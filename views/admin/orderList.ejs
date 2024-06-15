@@ -156,21 +156,24 @@
                                         <strong style="color: black;">Price: </strong><%= product.productId.price %> <br>
                                         <strong style="color: black;">Quantity: </strong><%= product.quantity %> <strong class="ml-4" style="color: #000;">Status:</strong>
                                         <select class="btn" id="<%= product.productId %>" style="background-color: #7b7bff; border-radius: 10px; color: #000;" onchange="ProductStatus(event,'<%= product._id %>')">
-                                          <% if (product.status == 'pending') { %>
-                                            <option value="pending" hidden>Pending</option>
+                                          <% if (product.status == 'placed') { %>
+                                            <option value="placed" hidden>Placed</option>
                                             <option value="shipped">Shipped</option>
                                             <option value="delivered">Delivered</option>
                                             <option value="cancelled">Cancelled</option>
                                           <% } else if (product.status == 'shipped') { %>
                                             <option value="shipped" hidden>Shipped</option>
+                                            <option value="placed">Placed</option>
                                             <option value="delivered">Delivered</option>
                                             <option value="cancelled">Cancelled</option>
                                           <% } else if (product.status == 'delivered') { %>
                                             <option value="delivered" hidden>Delivered</option>
+                                            <!-- <option value="placed">Placed</option>
                                             <option value="shipped">Shipped</option>
-                                            <option value="cancelled">Cancelled</option>
+                                            <option value="cancelled">Cancelled</option> -->
                                           <% } else if (product.status == 'cancelled') { %>
                                             <option value="cancelled" hidden>Cancelled</option>
+                                            <option value="placed">Placed</option>
                                             <option value="shipped">Shipped</option>
                                             <option value="delivered">Delivered</option>
                                           <% } %>

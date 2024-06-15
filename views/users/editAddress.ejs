@@ -25,10 +25,10 @@
                                 <a href="/shop">Shop</a>
 
                             </li>
-                            <li>
+                            <!-- <li>
                                 <a href="/category">Category</a>
 
-                            </li>
+                            </li> -->
                             <li>
                                 <a href="/about" >About Us</a>
 
@@ -576,4 +576,126 @@
         </div><!-- End .modal-content -->
     </div><!-- End .modal-dialog -->
 </div><!-- End .modal -->
+
+<script>
+
+    form.addEventListener('submit', function(event) {
+        let address_type = document.getElementById('address_type').value.trim();
+        let first_name = document.getElementById('first_name').value.trim();
+        let last_name = document.getElementById('last_name').value.trim();
+        let contry = document.getElementById('contry').value.trim();
+        let street_name = document.getElementById('street_name').value.trim();
+        let town = document.getElementById('town').value.trim();
+        let state = document.getElementById('state').value.trim();
+        let postcode = document.getElementById('postcode').value.trim();
+        let emailInput = document.getElementById('email').value.trim();
+        let phoneInput = document.getElementById('phone_number').value.trim();
+
+    
+        let address_type_error = document.getElementById('address_type_error');
+        if (address_type === '') {
+            address_type_error.textContent = 'Please enter a address type.';
+            event.preventDefault(); 
+            return;
+        } else {
+            address_type_error.textContent = '';
+        }
+
+        let first_name_error = document.getElementById('first_name_error');
+        if (first_name === '') {
+            first_name_error.textContent = 'Please enter your first name.';
+            event.preventDefault(); 
+            return;
+        } else {
+            first_name_error.textContent = '';
+        }
+
+        let last_name_error = document.getElementById('last_name_error');
+        if (last_name === '') {
+            last_name_error.textContent = 'Please enter your first name.';
+            event.preventDefault(); 
+            return;
+        } else {
+            last_name_error.textContent = '';
+        }
+
+        let contry_error = document.getElementById('contry_error');
+        if (contry === '') {
+            contry_error.textContent = 'Please enter your contry name.';
+            event.preventDefault(); 
+            return;
+        } else {
+            contry_error.textContent = '';
+        }
+
+        let street_name_error = document.getElementById('street_name_error');
+        if (street_name === '') {
+            street_name_error.textContent = 'Please enter your street name.';
+            event.preventDefault(); 
+            return;
+        } else {
+            street_name_error.textContent = '';
+        }
+
+        let town_error = document.getElementById('town_error');
+        if (town === '') {
+            town_error.textContent = 'Please enter the town name.';
+            event.preventDefault(); 
+            return;
+        } else {
+            town_error.textContent = '';
+        }
+
+        let state_error = document.getElementById('state_error');
+        if (state === '') {
+            state_error.textContent = 'Please enter the state name.';
+            event.preventDefault(); 
+            return;
+        } else {
+            state_error.textContent = '';
+        }
+
+        let postcode_error = document.getElementById('postcode_error');
+        if (postcode === '') {
+            postcode_error.textContent = 'Please enter the postcode.';
+            event.preventDefault(); 
+            return;
+        } else {
+            postcode_error.textContent = '';
+        }
+
+        let emailError = document.getElementById('emailError');
+        if (emailInput === '') {
+            emailError.textContent = 'Please enter an email address.';
+            event.preventDefault(); // Prevent form submission if validation fails
+            return;
+        } else {
+            emailError.textContent = '';
+        }
+
+        let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(emailInput)) {
+            emailError.textContent = 'Please enter a valid email address.';
+            event.preventDefault(); // Prevent form submission if validation fails
+            return;
+        } else {
+            emailError.textContent = '';
+        }
+
+        let phoneError = document.getElementById('phone_number_error');
+        if (phoneInput === '') {
+            phoneError.textContent = 'Please enter a phone number.';
+            event.preventDefault(); // Prevent form submission if validation fails
+            return;
+        } else if (!/^\d{10}$/.test(phoneInput)) { // Ensure exactly 10 digits
+            phoneError.textContent = 'Please enter a valid 10-digit phone number.';
+            event.preventDefault(); // Prevent form submission if validation fails
+            return;
+        } else {
+            phoneError.textContent = '';
+        }
+    
+    });
+</script>
+
 <%- include('../layouts/footer.ejs') %>

@@ -60,10 +60,10 @@
                                 <a >Shop</a>
 
                             </li>
-                            <li>
+                            <!-- <li>
                                 <a href="/category">Category</a>
 
-                            </li>
+                            </li> -->
                             <li>
                                 <a href="/about" >About Us</a>
 
@@ -153,6 +153,8 @@
                                   <a class="dropdown-item" href="/shop"><p>none</p></a>
                                   <a class="dropdown-item" href="/shop?type=1"><p>low-high</p></a>
                                   <a class="dropdown-item" href="/shop?type=-1"><p>high-low</p></a>
+                                  <a class="dropdown-item" href="/shop?type=a"><p>aA-zZ</p></a>
+                                  <a class="dropdown-item" href="/shop?type=z"><p>zZ-aA</p></a>
                                 </div>
                               </div>
                         </div><!-- End .toolbox-sort -->
@@ -188,7 +190,7 @@
 
                                 <div class="product-body">
                                     <div class="product-cat">
-                                        <a href="#"><%= product.categoryName %></a>
+                                        <a href="#"><%= product.categoryName.name %></a>
                                     </div><!-- End .product-cat -->
                                     <h3 class="product-title"><a href="/product"><%= product.name %></a></h3><!-- End .product-title -->
                                     <div class="product-price">
@@ -201,10 +203,10 @@
                                         <span class="ratings-text">( 0 Reviews )</span>
                                     </div><!-- End .rating-container -->
 
-                                    <div class="product-nav product-nav-dots">
+                                    <!-- <div class="product-nav product-nav-dots">
                                         <a href="#" style="background: #cc9966;"><span class="sr-only">Color name</span></a>
                                         <a href="#" class="active" style="background: #ebebeb;"><span class="sr-only">Color name</span></a>
-                                    </div><!-- End .product-nav -->
+                                    </div>End .product-nav -->
                                 </div><!-- End .product-body -->
                             </div><!-- End .product -->
                         </div><!-- End .col-sm-6 col-lg-4 col-xl-3 -->

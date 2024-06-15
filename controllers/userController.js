@@ -20,17 +20,22 @@ const securePassword = async(password) => {
 const home = async(req,res)=>{
     try {
         const userId = req.session.user_id
-        const productData = await Product.find({is_listed: true})
+        const productData = await Product.find({ is_listed: true })
+            .populate('categoryName')
+            .exec();
+
+        // Filter products where the category is listed
+        const filteredProductData = productData.filter(product => product.categoryName && product.categoryName.is_listed);
         const userData = await User.findOne({ _id: userId })
         if(userData){
             const cart = await Cart.findOne({ userId: userId }).populate('products.productId').exec();
             if(cart){
-                res.render('home',{products: cart.products,name: userData.name,picture: userData.picture,productData })
+                res.render('home',{products: cart.products,name: userData.name,picture: userData.picture,productData: filteredProductData })
             }else{
-                res.render('home',{products: [],name: userData.name,picture: userData.picture,productData })
+                res.render('home',{products: [],name: userData.name,picture: userData.picture,productData: filteredProductData })
             }
         }else{
-            res.render('home',{products: [],name: '',picture: undefined,productData})
+            res.render('home',{products: [],name: '',picture: undefined,productData: filteredProductData})
         }
     } catch (error) {
         console.log(error.message)
@@ -39,12 +44,27 @@ const home = async(req,res)=>{
 const shop = async(req,res)=>{
     try {
         // console.log(typeof(req.query.type));
-        if(req.query.type){
-            const productData = await Product.find({is_listed: true}).sort({price:parseInt(req.query.type)})
+        if(req.query.type==1){
+            const productData = await Product.find({is_listed: true}).sort({price:1}).populate('categoryName').exec()
+            res.render('shop',{products: productData})
+        }else if(req.query.type==-1){
+            const productData = await Product.find({is_listed: true}).sort({price:-1}).populate('categoryName').exec()
+            res.render('shop',{products: productData})
+        }else if(req.query.type=='a'){
+            const productData = await Product.find({is_listed: true}).sort({name:1}).populate('categoryName').exec()
+            res.render('shop',{products: productData})
+        }else if(req.query.type=='z'){
+            const productData = await Product.find({is_listed: true}).sort({name:-1}).populate('categoryName').exec()
             res.render('shop',{products: productData})
         }else{
-            const productData = await Product.find({is_listed: true})
-            res.render('shop',{products: productData})
+            const productData = await Product.find({ is_listed: true })
+            .populate('categoryName')
+            .exec();
+
+            // Filter products where the category is listed
+            const filteredProductData = productData.filter(product => product.categoryName && product.categoryName.is_listed);
+
+            res.render('shop', { products: filteredProductData });
         }
     } catch (error) {
         console.log(error.message);

@@ -93,13 +93,13 @@
                                             <label for="quantity">QUANTITY</label>
                                             <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Enter Quantity">
                                             <p id="quantityError" style="color:red;"></p>
-                                            <div id="quantityContainer" class="text-danger"></div>
+                                             <div id="quantityContainer" class="text-danger"></div>
                                         </div>
                                         <div class="form-group">
                                             <label for="category">CATEGORY</label>
                                             <select class="custom-select mr-sm-2" id="category" name="category">
                                                 <% categories.forEach(category => { %>
-                                                    <option value="<%=category.name %>"><%= category.name %></option>
+                                                    <option value="<%=category._id %>"><%= category.name %></option>
                                                 <% }) %>
                                                 
                                                 

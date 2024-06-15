@@ -118,7 +118,7 @@
                                                 
                                             </td>
                                             <td>₹<%= product.price %></td>
-                                            <td><%= product.categoryName %></td>
+                                            <td><%= product.categoryName.name %></td>
                                             <td><%= product.quantity %></td>
                                             <td class="text-right align-middle">
                                                 <a href="/admin/editProduct?productId=<%= product._id %>" class="btn-status-toggle" data-productid="<%= product._id %>">
@@ -162,22 +162,33 @@
 
 <script>
     function confirmAction(productId) {
-        let productBtn = document.getElementById(`status-button-${productId}`);
-        console.log(productBtn);
-    
-        fetch(`/admin/productStatus?productId=${productId}`, {
-            method: "GET"
-        })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.json();
-        })
-        .then((data) => {
-            console.log("Response is working:", data.is_listed);
-            
-                if(data.is_listed==false){
+    let productBtn = document.getElementById(`status-button-${productId}`);
+    console.log(productBtn);
+
+    // Show SweetAlert confirmation dialog
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You are about to change the product status.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, change it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/admin/productStatus?productId=${productId}`, {
+                method: "GET"
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Response is working:", data.is_listed);
+                
+                if (data.is_listed == false) {
                     console.log("heyyyyy");
                     productBtn.innerText = "Unlist";
                     productBtn.className = "btn ml-3 red-button";
@@ -190,12 +201,20 @@
                     productBtn.style.backgroundColor = "#a2ff97";
                     productBtn.style.color = "#009f18";
                 }
-            
-        })
-        .catch((error) => {
-            console.error("There was a problem with the fetch operation:", error);
-        });
-    }
+            })
+            .catch((error) => {
+                console.error("There was a problem with the fetch operation:", error);
+                // Show error alert
+                Swal.fire(
+                    'Error!',
+                    'There was a problem changing the product status.',
+                    'error'
+                );
+            });
+        }
+    });
+}
+
 </script> 
      
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>

@@ -10,8 +10,9 @@ const productSchema = mongoose.Schema({
         required:true
     },
     categoryName:{
-        type:String,
-        required:true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        required: true
     },
     quantity:{
         type:Number,

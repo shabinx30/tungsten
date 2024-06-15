@@ -68,17 +68,16 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="text-center mb-5"> <!-- Added div with custom class -->
-                             
-                            <h2 class="card-title">EDIT PRODUCTS DETAILS</h2>
+                        <div class="text-center mb-5">
+                            <h2 class="card-title">EDIT PRODUCT DETAILS</h2>
                         </div>
                         
                         <% if (errmsg) { %> 
-                            <div class="alert text-center" role="alert" style="color: red;" >
+                            <div class="alert text-center" role="alert" style="color: red;">
                                 <%= errmsg %>
                             </div>
                         <% } %>
-                        <form action="/admin/editProduct?productId=<%=productDetails._id%>" method="POST" >
+                        <form action="/admin/editProduct" method="POST" enctype="multipart/form-data">
                            <input type="hidden" id="productId" name="productId" value="<%= productDetails._id %>">
                             <div class="form-body">
                                 <div class="row">
@@ -86,8 +85,6 @@
                                         <div class="form-group">
                                             <label for="name">PRODUCT NAME</label>
                                             <input type="text" class="form-control" id="name" name="name" placeholder="Enter Product Name" value="<%= productDetails && productDetails.name ? productDetails.name : '' %>">
-
-                                            
                                             <div id="nameContainer" class="text-danger"></div>
                                         </div>
                                         <div class="form-group">
@@ -104,45 +101,37 @@
                                             <label for="category">CATEGORY</label>
                                             <select class="custom-select mr-sm-2" id="category" name="category">
                                                 <% categories.forEach(category => { %>
-                                                    <option value="<%=category._id%>"><%=category.name%></option>
-                                                <%    }) %>
-                                                
+                                                    <option value="<%=category._id %>"><%= category.name %></option>
+                                                <% }) %>
                                             </select>
                                             <div id="categoryContainer" class="text-danger"></div>
                                         </div>
-                                        
                                         <div class="form-group">
                                             <label for="description">DESCRIPTION</label>
-                                            <textarea class="form-control" rows="3" id="description" name="description" placeholder="Text Here..." value=""><%= productDetails && productDetails.description ? productDetails.description : '' %></textarea>
+                                            <textarea class="form-control" rows="3" id="description" name="description" placeholder="Text Here..."><%= productDetails && productDetails.description ? productDetails.description : '' %></textarea>
                                             <div id="descriptionContainer" class="text-danger"></div>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
-                                        <input type="file"  class="form-control-file" id="imageInput"   accept="image/*" name="images" multiple>
+                                        <input type="file" class="form-control-file" id="imageInput" accept="image/*" name="images" multiple>
                                         <p id="err" class="text-danger"></p>
                                         <div id="imagePreview" class="d-flex flex-wrap mt-2">
                                             <% if (productDetails && productDetails.images) { %>
-                                                    <% for (let i = 0; i < productDetails.images.length; i++) { %>
-                                                        <div class="image-wrapper mr-3 mb-3">
-                                                            <img style="height: 100px; max-width: 100px;" src="/productImages/<%= productDetails.images[i] %>" alt="Product Image">
-                                                        </div>
-                                                    <% } %>
-                                             <% } %>  
-                                            
+                                                <% productDetails.images.forEach(image => { %>
+                                                    <div class="image-wrapper mr-3 mb-3">
+                                                        <img style="height: 100px; max-width: 100px;" src="/productImages/<%= image %>" alt="Product Image">
+                                                        <input type="hidden" name="existingImages" value="<%= image %>">
+                                                    </div>
+                                                <% }) %>
+                                            <% } %>
                                         </div> 
                                         <br><br>
-                                        
-                                       
-
                                     </div>
                                 </div>                              
                             </div>
-
                             <div class="form-actions text-right">
                                 <button type="submit" class="purple-button">Save Changes</button>
-                                <!-- <button type="button" class="btn purple-button btn-reset" onclick="resetForm()">Reset</button> -->
                             </div>
-                            
                         </form>
                     </div>
                 </div>
@@ -152,50 +141,35 @@
 </div>
 
 <script>
-
-    function previewImage (input , previewElement) {
+    function previewImage(input, previewElement) {
         const preview = document.getElementById(previewElement);
         preview.innerHTML = '';
-        const err=document.getElementById('err')
+        const err = document.getElementById('err');
 
-        if(input.files.length>=4){
-            input.files=null;
-            input.value=null
-            return  err.textContent='file upload limit is 4'
-        }else err.textContent='';
+        if (input.files.length > 4) {
+            input.value = null;
+            return err.textContent = 'File upload limit is 4';
+        } else err.textContent = '';
 
-        if(input.files){
-            Array.from(input.files).forEach(file=>{
+        if (input.files) {
+            Array.from(input.files).forEach(file => {
                 const reader = new FileReader();
-                reader.onload = function(e){
-                    const img = document.createElement('img')
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
                     img.src = e.target.result;
                     img.style.maxWidth = '100px';
                     img.style.maxHeight = '100px';
-                    img.style.marginRight = '10px'; // Add some right margin for gap
+                    img.style.marginRight = '10px';
                     img.style.marginBottom = '10px';
-                    preview.appendChild(img)
+                    preview.appendChild(img);
                 }
-                reader.readAsDataURL(file)
-            })
+                reader.readAsDataURL(file);
+            });
         }
     }
 
-    document.getElementById('imageInput').addEventListener('change',function(){
-        previewImage(this,'imagePreview')
-    })
-</script>
-
-<script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const gameId = urlParams.get('gameId');
-
-    fetchGameDetails(gameId)
-    .then(game => {
-        document.getElementById('gameId').value = game._id;
-    })
-    .catch(error => {
-        console.error("Error while fetching game details", error);
+    document.getElementById('imageInput').addEventListener('change', function() {
+        previewImage(this, 'imagePreview');
     });
 </script>
 
