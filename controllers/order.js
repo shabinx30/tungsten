@@ -14,7 +14,7 @@ const orderlist = async (req,res)=>{
 const changeStatus = async (req,res)=>{
     try {
         const { status,productId } = req.body
-        // console.log('status',status);
+        console.log('status',status);
         const result = await Order.findOneAndUpdate(
             { "orderedProducts._id": productId },
             { $set: { "orderedProducts.$.status": status } },

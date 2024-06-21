@@ -100,13 +100,6 @@ const blog = async(req,res)=>{
         console.log(error.message);
     }
 }
-const wishlist = async(req,res)=>{
-    try {
-        res.render('wishlist')
-    } catch (error) {
-        console.log(error.message);
-    }
-}
 
 
 const sign_in = async(req,res)=>{
@@ -529,7 +522,6 @@ module.exports = {
     about,
     contact,
     blog,
-    wishlist,
     sign_in,
     register,
     insertUser,

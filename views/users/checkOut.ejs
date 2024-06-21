@@ -117,36 +117,73 @@
 		                			<h2 class="checkout-title">Billing Details</h2><!-- End .checkout-title -->
 									
 									<% if(products.length>0) { %>
-										<% if(addresses.length>0) { %>
+										<% if(addresses.length > 0) { %>
 											<div class="row">
-											<% addresses.forEach((address,index)=>{ %>
-
-												<div class="col-lg-6" >
-													<div class="card card-dashboard" style="border-radius: 20px; border: 1px solid black;">
+												<% addresses.forEach((address, index) => { %>
+												<div class="col-lg-6">
+													<% if(index==0){ %>
+														<div class="card card-dashboard address-card" style="border-radius: 20px; border: 3px solid #000000;" data-index="<%= index %>">r
+													<%}else{%>
+														<div class="card card-dashboard address-card" style="border-radius: 20px; border: 1px solid #9f9f9f;" data-index="<%= index %>">
+													<%}%>
 														<div class="card-body">
-															<%if(index==0){%>
-																<h3 class="card-title"><input type="radio" checked name="selected_address" value="<%= address.id %>" required> <%= address.address_type %></h3>
-															<%}else{%>
-																<h3 class="card-title"><input type="radio" name="selected_address" value="<%= address.id %>" required> <%= address.address_type %></h3>
-															<%}%>
-                                                            <p><%= address.first_name %> <%=address.last_name%><br>
-                                                            <%= address.contry %> <br>
-                                                            <%= address.street_name %> <br>
-                                                            <%= address.town %> <%= address.state %> <br>
-                                                            <%= address.postcode %> <%= address.phone_number %> <br>
-                                                            <%= address.email %></p>
-                                                            <a href="#">Edit <i class="icon-edit"></i></a></p>
-                                                        </div><!-- End .card-body -->
-                                                    </div><!-- End .card-dashboard -->
-                                                </div><!-- End .col-lg-6 -->
-
-											<%})%>
+															<% if(index == 0) { %>
+															<h3 class="card-title">
+																<input class="styled-radio" type="radio" checked id="address_select<%= index %>" name="selected_address" value="<%= address.id %>" required> <%= address.address_type %>
+															</h3>
+															<% } else { %>
+															<h3 class="card-title">
+																<input class="styled-radio" type="radio" id="address_select<%= index %>" name="selected_address" value="<%= address.id %>" required> <%= address.address_type %>
+															</h3>
+															<% } %>
+															<p>
+																<%= address.first_name %> <%= address.last_name %><br>
+																<%= address.country %> <br>
+																<%= address.street_name %> <br>
+																<%= address.town %> <%= address.state %> <br>
+																<%= address.postcode %> <%= address.phone_number %> <br>
+																<%= address.email %>
+															</p>
+															<a href="#">Edit <i class="icon-edit"></i></a>
+														</div><!-- End .card-body -->
+													</div><!-- End .card-dashboard -->
+												</div><!-- End .col-lg-6 -->
+												<% }) %>
 											</div>
 											<a href="/userDashboard?re=1" class="btn btn-outline-primary-2" id="addAddress" style="border-radius: 10px; cursor: pointer;"><span>Add address</span><i class="icon-long-arrow-right"></i></a>
-										<% } else { %>
-											<p class="text-danger">Add a address</p><br>
+											<% } else { %>
+											<p class="text-danger">Add an address</p><br>
 											<a href="/userDashboard?re=1" class="btn btn-outline-primary-2" id="addAddress" style="border-radius: 10px; cursor: pointer;"><span>Add address</span><i class="icon-long-arrow-right"></i></a>
-										<% } %>
+											<% } %>
+											
+											<style>
+												.styled-radio {
+													width: 0.8em;
+													height: 0.8em;
+													accent-color: black;
+												}
+											</style>
+											
+											<script>
+												document.addEventListener('DOMContentLoaded', function() {
+													const addressCards = document.querySelectorAll('.address-card');
+											
+													addressCards.forEach(card => {
+														card.addEventListener('click', function() {
+															// Remove border from all cards
+															addressCards.forEach(c => c.style.border = '1px solid #9f9f9f');
+															
+															// Add border to the clicked card
+															this.style.border = '3px solid black';
+											
+															// Check the corresponding radio button
+															const index = this.getAttribute('data-index');
+															const radioButton = document.getElementById(`address_select${index}`);
+															radioButton.checked = true;
+														});
+													});
+												});
+											</script>																							
 									<% }else{ %>
 										<p class="text-danger">Cart is empty</p><br>
 										<a href="/shop" class="btn btn-outline-primary-2" id="addAddress" style="border-radius: 10px; cursor: pointer;"><span>Shop</span><i class="icon-long-arrow-right"></i></a>

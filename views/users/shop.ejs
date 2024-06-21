@@ -177,8 +177,8 @@
                                         <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image">
                                     </a>
 
-                                    <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                    <div class="product-action-vertical" onclick="addToWishlist('<%= product._id %>')" >
+                                        <a class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
                                     </div><!-- End .product-action -->
 
                                     <div class="product-action action-icon-top">
@@ -686,28 +686,64 @@
             },
             body: JSON.stringify({ productId, quantity })
         })
-            .then(response => response.json())
-            .then(data=>{
-                if(data.success){
-                    Swal.fire({
-                        icon : 'success',
-                        title : 'Success',
-                        text : 'Product added successfully',
-                        showConfirmButton  :false,
-                        timer : 1500
-                    })
-                }else{
-                    Swal.fire({
-                        icon: 'error',
-                        title: "Can't add to cart!",
-                        text: data.error || 'Product is already existing.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            })
-
-        
+        .then(response => response.json())
+        .then(data=>{
+            if(data.success){
+                Swal.fire({
+                    icon : 'success',
+                    title : 'Success',
+                    text : 'Product added successfully',
+                    showConfirmButton  :false,
+                    timer : 1500
+                })
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: "Can't add to cart!",
+                    text: data.error || 'Product is already existing.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        })
+    }
+</script>
+<script>
+    function addToWishlist(productId) {
+        console.log(productId);
+        axios.post('/addToWishlist', {
+            productId: productId
+        })
+        .then(response => {
+            if (response.data.success) {
+                console.log('success');
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Added to wishlist successfully!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: response.data.error || 'Product already existing...',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: 'An error occurred',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        });
     }
 </script>
 

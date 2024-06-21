@@ -36,6 +36,7 @@ const productController = require("../controllers/product");
 const cartController = require("../controllers/cart");
 const userOrderController = require("../controllers/userOrder");
 const userAddress = require("../controllers/address");
+const wishlistController = require('../controllers/wishlist')
 
 //auth
 user_route.get(
@@ -105,7 +106,13 @@ user_route.get("/category", userController.category);
 user_route.get("/about", userController.about);
 user_route.get("/contact", userController.contact);
 user_route.get("/blog", userController.blog);
-user_route.get("/wishlist", userAuth.isLogin, userController.wishlist);
+
+//wishlist
+user_route.get("/wishlist", userAuth.isLogin, wishlistController.loadWishlist);
+user_route.post('/addToWishlist',userAuth.isLogin, wishlistController.addToWishlist)
+user_route.post('/removeProductFromWishlist',userAuth.isLogin, wishlistController.removeProductFromWishlist)
+
+
 user_route.get("/signIn", userAuth.isLogout, userController.sign_in);
 user_route.post("/signIn", userAuth.isLogout, userController.verifyLogin);
 user_route.get("/register", userAuth.isLogout, userController.register);

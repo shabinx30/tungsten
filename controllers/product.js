@@ -16,7 +16,7 @@ const loadProductDetails = async (req,res)=>{
 
 const loadProductList = async (req,res)=>{
     try {
-        const productsData = await Product.find({}).populate('categoryName').exec();
+        const productsData = await Product.find({}).populate('categoryName').exec()
         console.log('darf'+productsData);
         res.render('productList',{products: productsData,success: ''});
     } catch (error) {
