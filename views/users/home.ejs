@@ -131,7 +131,7 @@
 
                         <a href="/wishlist" class="wishlist-link">
                             <i class="icon-heart-o"></i>
-                            <span class="wishlist-count">3</span>
+                            <span class="wishlist-count"><%= wishlist.length %></span>
                         </a>
 
                         <div class="dropdown cart-dropdown">
@@ -404,11 +404,11 @@
                                             <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image-hover">
                                         </a>
     
-                                        <div class="product-action-vertical">
+                                        <div class="product-action-vertical" onclick="addToWishlist('<%= product._id %>')">
                                             <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
                                         </div><!-- End .product-action-vertical -->
     
-                                        <div class="product-action">
+                                        <div class="product-action" onclick="addToCart('<%= product._id %>')">
                                             <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
                                         </div><!-- End .product-action -->
                                     </figure><!-- End .product-media -->
@@ -822,3 +822,73 @@
 </div><!-- End .modal-dialog -->
 </div><!-- End .modal -->
 <%- include('../layouts/footer.ejs') %>
+<script>
+    function addToCart(productId){
+        const quantity = 1
+        fetch('/addCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ productId, quantity })
+        })
+        .then(response => response.json())
+        .then(data=>{
+            if(data.success){
+                Swal.fire({
+                    icon : 'success',
+                    title : 'Success',
+                    text : 'Product added successfully',
+                    showConfirmButton  :false,
+                    timer : 1500
+                })
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: "Can't add to cart!",
+                    text: data.error || 'Product is already existing.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        })
+    }
+</script>
+<script>
+    function addToWishlist(productId) {
+        console.log(productId);
+        axios.post('/addToWishlist', {
+            productId: productId
+        })
+        .then(response => {
+            if (response.data.success) {
+                console.log('success');
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Added to wishlist successfully!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: response.data.error || 'Product already existing...',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: 'An error occurred',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        });
+    }
+</script>

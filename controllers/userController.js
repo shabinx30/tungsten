@@ -7,6 +7,7 @@ const Category = require('../models/categoryModel')
 const Cart = require('../models/cartModel');
 const Address = require('../models/addresses')
 const Order = require('../models/orders')
+const Wishlist = require('../models/wishlistModel')
 
 const securePassword = async(password) => {
     try{
@@ -29,13 +30,18 @@ const home = async(req,res)=>{
         const userData = await User.findOne({ _id: userId })
         if(userData){
             const cart = await Cart.findOne({ userId: userId }).populate('products.productId').exec();
-            if(cart){
-                res.render('home',{products: cart.products,name: userData.name,picture: userData.picture,productData: filteredProductData })
+            const wishlist = await Wishlist.findOne({ userId: userId }).populate('products.productId').exec();
+            if(cart&&wishlist){
+                res.render('home',{products: cart.products,name: userData.name,picture: userData.picture,productData: filteredProductData,wishlist: wishlist.products })
+            }else if(cart){
+                res.render('home',{products: cart.products,name: userData.name,picture: userData.picture,productData: filteredProductData,wishlist: [] })
+            }else if(wishlist){
+                res.render('home',{products: [],name: userData.name,picture: userData.picture,productData: filteredProductData,wishlist: wishlist.products })
             }else{
-                res.render('home',{products: [],name: userData.name,picture: userData.picture,productData: filteredProductData })
+                res.render('home',{products: [],name: userData.name,picture: userData.picture,productData: filteredProductData,wishlist:[] })
             }
         }else{
-            res.render('home',{products: [],name: '',picture: undefined,productData: filteredProductData})
+            res.render('home',{products: [],name: '',picture: undefined,productData: filteredProductData,wishlist: [] })
         }
     } catch (error) {
         console.log(error.message)
