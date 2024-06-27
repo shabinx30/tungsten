@@ -214,18 +214,18 @@
                                     <a href="#" class="size-guide"><i class="icon-th-list"></i>size guide</a>
                                 </div>End .details-filter-row -->
 
-                                <div class="details-filter-row details-row-size">
-                                    <label for="qty">Qty:</label>
-                                    <div class="product-details-quantity">
+                                <!-- <div class="details-filter-row details-row-size">
+                                    <label for="qty">Qty:</label> -->
+                                    <!-- <div class="product-details-quantity">
                                         <input type="number" id="qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
-                                    </div><!-- End .product-details-quantity -->
-                                </div><!-- End .details-filter-row -->
+                                    </div>End .product-details-quantity -->
+                                <!-- </div>End .details-filter-row -->
 
                                 <div class="product-details-action">
                                     <a onclick="addToCart('<%= product._id %>')" class="btn-product btn-cart"><span>add to cart</span></a>
 
                                     <div class="details-action-wrapper">
-                                        <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
+                                        <a onclick="addToWishlist('<%= product._id %>')" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
                                         <a href="" class="btn-product btn-compare" title="Compare"><span>Add to Compare</span></a>
                                     </div><!-- End .details-action-wrapper -->
                                 </div><!-- End .product-details-action -->
@@ -688,13 +688,13 @@
                 <div class="product-price">
                     $84.00
                 </div><!-- End .product-price -->
-                <div class="product-details-quantity">
-                    <input type="number" id="sticky-cart-qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
-                </div><!-- End .product-details-quantity -->
+                <!-- <div class="product-details-quantity">
+                   < <input type="number" id="sticky-cart-qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
+                </div>End .product-details-quantity -->
 
                 <div class="product-details-action">
                     <a onclick="addToCart('<%= product._id %>')" class="btn-product btn-cart"><span>add to cart</span></a>
-                    <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
+                    <a onclick="addToWishlist('<%= product._id %>')" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
                 </div><!-- End .product-details-action -->
             </div><!-- End .col-6 -->
         </div><!-- End .row -->
@@ -855,5 +855,43 @@
             })
 
         
+    }
+</script>
+<script>
+    function addToWishlist(productId) {
+        console.log(productId);
+        axios.post('/addToWishlist', {
+            productId: productId
+        })
+        .then(response => {
+            if (response.data.success) {
+                console.log('success');
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Added to wishlist successfully!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: response.data.error || 'Product already existing...',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: 'An error occurred',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        });
     }
 </script>

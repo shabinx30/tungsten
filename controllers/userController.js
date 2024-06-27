@@ -47,6 +47,8 @@ const home = async(req,res)=>{
         console.log(error.message)
     }
 }
+
+//rendering the shop page
 const shop = async(req,res)=>{
     try {
         // console.log(typeof(req.query.type));
@@ -76,6 +78,8 @@ const shop = async(req,res)=>{
         console.log(error.message);
     }
 }
+
+//category rendeing
 const category = async(req,res)=>{
     try {
         const data = await Category.findOne({is_listed:true})
@@ -85,6 +89,7 @@ const category = async(req,res)=>{
     }
 }
 
+//about
 const about = async(req,res)=>{
     try {
         res.render('about')
@@ -92,6 +97,8 @@ const about = async(req,res)=>{
         console.log(error.message);
     }
 }
+
+//contact
 const contact = async(req,res)=>{
     try {
         res.render('contact')
@@ -99,6 +106,8 @@ const contact = async(req,res)=>{
         console.log(error.message);
     }
 }
+
+//blog
 const blog = async(req,res)=>{
     try {
         res.render('blog')
@@ -107,18 +116,22 @@ const blog = async(req,res)=>{
     }
 }
 
-
+// rendering sign in page
 const sign_in = async(req,res)=>{
     try {
         const forgot=req.flash('errmsg')
-        res.render('signIn',{forgot})
+        const message = req.flash('message')
+        res.render('signIn',{forgot,message})
     } catch (error) {
         console.log(error.message);
     }
 }
+
+//register page
 const register = async(req,res)=>{
     try {
-        res.render('register')
+        const message = req.flash('message')
+        res.render('register',{message})
     } catch (error) {
         console.log(error.message);
     }
@@ -139,16 +152,19 @@ const verifyLogin = async(req, res) => {
                     res.redirect('/home');
                 }
                 else{
-                    console.log('blocked');
-                    res.render('signIn',{message:"Blocked"});
+                    console.log('blocked user: ',userData.name,userData.email);
+                    req.flash('message',"You're Blocked")
+                    return res.redirect('/signIn')
                 }
             }
             else {
-                res.render('signIn',{message:"Email and Password is incorrect...!!!"});
+                req.flash('message',"Email and Password is incorrect...!!!")
+                return res.redirect('/signIn')
             }
         }
         else{
-            res.render('signIn',{message:"User not existing..!!"});
+            req.flash('message',"User not existing..!!")
+            return res.redirect('/signIn')
         }
 
     } catch (error) {
@@ -231,12 +247,14 @@ const insertUser = async (req, res) => {
                     res.redirect(`/loadOtp?email=${email}`)
                     // res.redirect('/home')
                 }else{
-                    res.render('register', {message: "Your registration has been failed...!!!"});
+                    req.flash('message',"Your registration has been failed...!!!")
+                    return res.redirect('/register')
                 }
     
         }
     } catch(error){
         console.log(error.message);
+        res.status(500).send('Internal Server Error');
     }
 }
 
@@ -268,15 +286,17 @@ const userDashboard = async(req,res)=>{
         }
     } catch (error) {
         console.log(error.message);
+        res.status(500).send('Internal Server Error');
     }
 }
 
 const logout = async(req,res)=>{
     try {
-        req.session.destroy()
+        req.session.user_id = null
         res.redirect('/')
     } catch (error) {
         console.log(error.message);
+        res.status(500).send('Internal Server Error');
     }
 }
 

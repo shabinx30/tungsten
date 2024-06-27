@@ -4,7 +4,13 @@ const Order = require('../models/orders');
 const Address = require('../models/addresses')
 const Product = require('../models/productModel')
 const { format } = require('date-fns');
+const Razorpay = require('razorpay');
+const userHelper = require('../helpers/user-helper')
 
+
+
+
+//load checkout page
 const loadCheckOut = async (req,res)=>{
     try {
         const userId = req.session.user_id
@@ -31,9 +37,9 @@ const loadCheckOut = async (req,res)=>{
 
 const placeOrder = async (req, res) => {
     try {
-        const { selected_address } = req.body;
+        const { selected_address,paymentMethod } = req.body;
         const userId = req.session.user_id;
-        const paymentMethod = 'cash';
+        console.log(req.body);
         if (!paymentMethod) {
             throw new Error('Payment method is required');
         }
@@ -81,10 +87,11 @@ const placeOrder = async (req, res) => {
 
         // Store the current date in the format dd/mm/yy, hh:mm AM/PM
         const purchasedDate = format(new Date(), 'dd/MM/yy, hh:mm a');
-
+        const orderId = userHelper.orderIdgenerator()
         // Create order object
         const order = new Order({
             userId,
+            orderId,
             userName: `${address.first_name} ${address.last_name}`,
             shipAddress: [{
                 address_type: address.address_type,
@@ -110,13 +117,28 @@ const placeOrder = async (req, res) => {
         // Optionally, clear the cart
         await Cart.deleteOne({ userId });
 
-        // Respond with a success message
-        res.render('orderSuccess');
+        if(paymentMethod=='cash'){
+            res.redirect('/orderSuccess')
+        }else if(paymentMethod=='online'){
+            let result = await userHelper.razorpayRes(subTotal,orderId)
+            console.log(result);
+            res.json({result})
+        }
     } catch (error) {
         console.log(error.message);
         res.status(400).send(error.message);
     }
 };
+
+
+const orderSuccess = async (req,res)=>{
+    try {
+        res.render('orderSuccess');
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send(error.message);
+    }
+}
 
 
 const removeFromOrders = async (req,res)=>{
@@ -142,5 +164,6 @@ const removeFromOrders = async (req,res)=>{
 module.exports={
     loadCheckOut,
     placeOrder,
-    removeFromOrders
+    removeFromOrders,
+    orderSuccess
 }

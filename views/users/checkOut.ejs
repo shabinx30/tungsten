@@ -1,4 +1,34 @@
 <%- include('../layouts/header.ejs') %>
+<style>
+	input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 17px;
+    height: 17px;
+    border: 1px solid #eea287;
+    border-radius: 60%;
+    outline: none;
+    cursor: pointer;
+  }
+
+  /* Style the checked radio button */
+  input[type="radio"]:checked {
+    background-color: #f9f9f9;
+    border: 1px solid #eea287;
+  }
+
+  /* Add a custom "dot" to the checked radio button */
+  input[type="radio"]:checked::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    background-color: #eea287;
+    border-radius: 60%;
+    margin: 4.65px;
+  }
+</style>
     <div class="page-wrapper">
         <header class="header">
             <div class="header-bottom sticky-header">
@@ -122,7 +152,7 @@
 												<% addresses.forEach((address, index) => { %>
 												<div class="col-lg-6">
 													<% if(index==0){ %>
-														<div class="card card-dashboard address-card" style="border-radius: 20px; border: 3px solid #000000;" data-index="<%= index %>">r
+														<div class="card card-dashboard address-card" style="border-radius: 20px; border: 3px solid #000000;" data-index="<%= index %>">
 													<%}else{%>
 														<div class="card card-dashboard address-card" style="border-radius: 20px; border: 1px solid #9f9f9f;" data-index="<%= index %>">
 													<%}%>
@@ -225,83 +255,18 @@
 		                						</tr><!-- End .summary-total -->
 		                					</tbody>
 		                				</table><!-- End .table table-summary -->
-
-		                				<div class="accordion-summary" id="accordion-payment">
-										    <div class="card">
-										        <div class="card-header" id="heading-1">
-										            <h2 class="card-title">
-										                <a role="button" data-toggle="collapse" href="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
-										                    Direct bank transfer
-										                </a>
-										            </h2>
-										        </div><!-- End .card-header -->
-										        <div id="collapse-1" class="collapse show" aria-labelledby="heading-1" data-parent="#accordion-payment">
-										            <div class="card-body">
-										                Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.
-										            </div><!-- End .card-body -->
-										        </div><!-- End .collapse -->
-										    </div><!-- End .card -->
-
-										    <div class="card">
-										        <div class="card-header" id="heading-2">
-										            <h2 class="card-title">
-										                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
-										                    Check payments
-										                </a>
-										            </h2>
-										        </div><!-- End .card-header -->
-										        <div id="collapse-2" class="collapse" aria-labelledby="heading-2" data-parent="#accordion-payment">
-										            <div class="card-body">
-										                Ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. 
-										            </div><!-- End .card-body -->
-										        </div><!-- End .collapse -->
-										    </div><!-- End .card -->
-
-										    <div class="card">
-										        <div class="card-header" id="heading-3">
-										            <h2 class="card-title">
-										                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
-										                    Cash on delivery
-										                </a>
-										            </h2>
-										        </div><!-- End .card-header -->
-										        <div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion-payment">
-										            <div class="card-body">Quisque volutpat mattis eros. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. 
-										            </div><!-- End .card-body -->
-										        </div><!-- End .collapse -->
-										    </div><!-- End .card -->
-
-										    <div class="card">
-										        <div class="card-header" id="heading-4">
-										            <h2 class="card-title">
-										                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
-										                    PayPal <small class="float-right paypal-link">What is PayPal?</small>
-										                </a>
-										            </h2>
-										        </div><!-- End .card-header -->
-										        <div id="collapse-4" class="collapse" aria-labelledby="heading-4" data-parent="#accordion-payment">
-										            <div class="card-body">
-										                Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum.
-										            </div><!-- End .card-body -->
-										        </div><!-- End .collapse -->
-										    </div><!-- End .card -->
-
-										    <div class="card">
-										        <div class="card-header" id="heading-5">
-										            <h2 class="card-title">
-										                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-5" aria-expanded="false" aria-controls="collapse-5">
-										                    Credit Card (Stripe)
-										                    <img src="assets/images/payments-summary.png" alt="payments cards">
-										                </a>
-										            </h2>
-										        </div><!-- End .card-header -->
-										        <div id="collapse-5" class="collapse" aria-labelledby="heading-5" data-parent="#accordion-payment">
-										            <div class="card-body"> Donec nec justo eget felis facilisis fermentum.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Lorem ipsum dolor sit ame.
-										            </div><!-- End .card-body -->
-										        </div><!-- End .collapse -->
-										    </div><!-- End .card -->
-										</div><!-- End .accordion -->
-
+										
+										<p id="errorMessage" class="text-danger"></p>																		
+										<div class="mb-3">
+											<div class="d-flex align-items-center">
+												<input type="radio" name="paymentMethod" id="cod" value="cash">
+												<label for="cod" class="ml-3" style="margin-top: 1px;">Cash On Delivery</label>
+											</div>
+											<div class="d-flex align-items-center">
+												<input type="radio" name="paymentMethod" id="op" value="online">
+												<label for="op" class="ml-3" style="margin-top: 1px;">Online Payment</label>
+											</div>
+										</div>
 		                				<button type="submit" class="btn btn-outline-primary-2 btn-order btn-block" style="border-radius: 10px;">
 		                					<span class="btn-text">Place Order</span>
 		                					<span class="btn-hover-text">Place Order</span>
@@ -512,3 +477,113 @@
     </div><!-- End .modal -->
 	
 <%- include('../layouts/footer.ejs') %>
+
+<!-- <script>
+	
+		var options = {
+    "key": "[YOUR_KEY_ID]", // Enter the Key ID generated from the Dashboard
+    "amount": "1000",
+    "currency": "INR",
+    "description": "Acme Corp",
+    "image": "example.com/image/rzp.jpg",
+    "prefill":
+    {
+      "email": "gaurav.kumar@example.com",
+      "contact": +919900000000,
+    },
+    config: {
+      display: {
+        blocks: {
+          utib: { //name for Axis block
+            name: "Pay using Axis Bank",
+            instruments: [
+              {
+                method: "card",
+                issuers: ["UTIB"]
+              },
+              {
+                method: "netbanking",
+                banks: ["UTIB"]
+              },
+            ]
+          },
+          other: { //  name for other block
+            name: "Other Payment modes",
+            instruments: [
+              {
+                method: "card",
+                issuers: ["ICIC"]
+              },
+              {
+                method: 'netbanking',
+              }
+            ]
+          }
+        },
+        hide: [
+          {
+          method: "upi"
+          }
+        ],
+        sequence: ["block.utib", "block.other"],
+        preferences: {
+          show_default_blocks: false // Should Checkout show its default blocks?
+        }
+      }
+    },
+    "handler": function (response) {
+      alert(response.razorpay_payment_id);
+    },
+    "modal": {
+      "ondismiss": function () {
+        if (confirm("Are you sure, you want to close the form?")) {
+          txt = "You pressed OK!";
+          console.log("Checkout form closed by the user");
+        } else {
+          txt = "You pressed Cancel!";
+          console.log("Complete the Payment")
+        }
+      }
+    }
+  };
+  var rzp1 = new Razorpay(options);
+  document.getElementById('rzp-button1').onclick = function (e) {
+	rzp1.open();
+    e.preventDefault();
+  }
+</script> -->
+
+<script>
+        document.getElementById('form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+            const selectedAddress = document.querySelector('input[name="selected_address"]:checked');
+            const selectedValue = selectedPaymentMethod ? selectedPaymentMethod.value : null;
+			console.log(selectedValue,selectedAddress.value);
+
+            if (!selectedValue) {
+                document.getElementById('errorMessage').innerText = 'Please select a payment method.';
+
+            } else {
+				const data ={
+					selected_address: selectedAddress,
+					paymentMethod: selectedPaymentMethod
+				}
+                document.getElementById('errorMessage').innerText = '';
+				axios.post('/placeOrder',data)
+				.then(response=>{
+					console.log(response.order)
+				})
+				.catch(error => {
+            	console.log(error);
+            	Swal.fire({
+                	position: 'top-end',
+                	icon: 'error',
+                	title: 'An error occurred',
+                	showConfirmButton: false,
+                	timer: 1500
+            	});
+        });
+            }
+        });
+    </script>
