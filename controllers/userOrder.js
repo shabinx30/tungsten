@@ -4,9 +4,9 @@ const Order = require('../models/orders');
 const Address = require('../models/addresses')
 const Product = require('../models/productModel')
 const { format } = require('date-fns');
-const Razorpay = require('razorpay');
 const userHelper = require('../helpers/user-helper')
-
+const walletController = require('../controllers/walletController')
+const Wallet = require('../models/wallet')
 
 
 
@@ -39,7 +39,7 @@ const placeOrder = async (req, res) => {
     try {
         const { selected_address,paymentMethod } = req.body;
         const userId = req.session.user_id;
-        console.log(req.body);
+        // console.log(req.body);
         if (!paymentMethod) {
             throw new Error('Payment method is required');
         }
@@ -85,7 +85,7 @@ const placeOrder = async (req, res) => {
         // Calculate subtotal
         const subTotal = orderedProducts.reduce((sum, item) => sum + item.totalPrice, 0);
 
-        // Store the current date in the format dd/mm/yy, hh:mm AM/PM
+        // Store the current date in the format 
         const purchasedDate = format(new Date(), 'dd/MM/yy, hh:mm a');
         const orderId = userHelper.orderIdgenerator()
         // Create order object
@@ -108,24 +108,46 @@ const placeOrder = async (req, res) => {
             orderedProducts,
             purchasedDate, // Use the formatted date here
             paymentMethod,
+            paymentStatus: false,
             subTotal
         });
 
-        // Save the order to the database
-        await order.save();
-
-        // Optionally, clear the cart
-        await Cart.deleteOne({ userId });
+        
 
         if(paymentMethod=='cash'){
-            res.redirect('/orderSuccess')
+            res.json({result:'redirect',location:'/orderSuccess'})
+
+            await order.save();
+
+            await Cart.deleteOne({ userId });
+
         }else if(paymentMethod=='online'){
             let result = await userHelper.razorpayRes(subTotal,orderId)
-            console.log(result);
+            // console.log('from user helper:',result);
+
+            await order.save();
+
+            await Cart.deleteOne({ userId });
+
             res.json({result})
+        }else{
+            let result = await walletController.paymentWithWallet(subTotal,userId)
+            console.log(result);
+            if(result.success==true){
+
+                await order.save();
+
+                await Cart.deleteOne({ userId });
+                
+                res.json({success: true,location: '/orderSuccess'})
+                console.log(true);
+            }else if(result.success==false){
+                console.log(false);
+                res.json({success: false,error: result.error})
+            }
         }
     } catch (error) {
-        console.log(error.message);
+        console.log(error.message,'from place order');
         res.status(400).send(error.message);
     }
 };
@@ -141,20 +163,50 @@ const orderSuccess = async (req,res)=>{
 }
 
 
-const removeFromOrders = async (req,res)=>{
+const removeFromOrders = async (req, res) => {
     try {
-        const { productId } = req.query
-        console.log(productId,'remove');
+        const { productId } = req.query;
+        console.log(productId, 'remove');
+
         const result = await Order.findOneAndUpdate(
             { "orderedProducts._id": productId },
             { $set: { "orderedProducts.$.status": 'cancelled' } },
             { new: true }
         );
-        if(result){
-            res.json({success: true})
-        }else{
-            res.json({success: false})
+
+        if (result) {
+            const orderedProduct = result.orderedProducts.find(product => product._id.toString() === productId);
+            if (orderedProduct && (result.paymentMethod === 'wallet' || result.paymentMethod === 'online')) {
+                const amount = orderedProduct.price;
+                console.log(amount);
+
+                const wallet = await Wallet.findOneAndUpdate(
+                    { userId: req.session.user_id },
+                    { $inc: { balance: amount } },
+                    { new: true }
+                );
+
+                console.log(wallet); // log wallet to see if the update was successful
+            }
+
+            res.json({ success: true });
+        } else {
+            res.json({ success: false });
         }
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send(error.message);
+    }
+};
+
+const verifyPayment = async (req,res)=>{
+    try {
+        const { orderId } = req.body
+        console.log('coming',orderId);
+        const status = await Order.findOneAndUpdate({orderId: orderId},{paymentStatus: true})
+        console.log('status changing',status);
+        res.json({status: status? true:false,redirect: '/orderSuccess'})
+
     } catch (error) {
         console.log(error.message);
         res.status(400).send(error.message);
@@ -165,5 +217,6 @@ module.exports={
     loadCheckOut,
     placeOrder,
     removeFromOrders,
-    orderSuccess
+    orderSuccess,
+    verifyPayment
 }

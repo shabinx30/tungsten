@@ -167,9 +167,9 @@
                                     <% } %>
                                     <td class="action-col">
                                         <% if(product.productId.quantity>0){ %>
-                                            <button class="btn btn-block btn-outline-primary-2" onclick="addToCart('<%= product.productId._id %>')"><i class="icon-cart-plus"></i>Add to Cart</button>
+                                            <button class="btn btn-block btn-outline-primary-2" style="border-radius: 10px;" onclick="addToCart('<%= product.productId._id %>')"><i class="icon-cart-plus"></i>Add to Cart</button>
                                         <% }else{ %>
-                                            <button class="btn btn-block btn-outline-primary-2 disabled">Out of Stock</button>
+                                            <button class="btn btn-block btn-outline-primary-2 disabled" style="border-radius: 10px;">Out of Stock</button>
                                         <% } %>
                                     </td>
                                     <td class="remove-col"><button class="btn-remove" onclick="remove('<%= product.productId._id %>')"><i class="icon-close"></i></button></td>

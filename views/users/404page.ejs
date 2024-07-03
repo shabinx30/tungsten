@@ -10,11 +10,12 @@
 <script>
     let current = window.location.href
     setTimeout(()=>{
-        if(current.includes('/admin')){
-            window.location.href = "/admin"
-        }else{
-            window.location.href = "/"
-        }
-    },3000)
+        // if(current.includes('/admin')){
+        //     window.location.href = "/admin"
+        // }else{
+        //     window.location.href = "/"
+        // }
+        history.back()
+    },3500)
 </script>
 <%- include('../layouts/adminFooter.ejs') %>

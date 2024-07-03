@@ -92,6 +92,10 @@ const OrderSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    paymentStatus: {
+        type: Boolean,
+        required: true
+    },
     subTotal: {
         type: Number,
         required: true

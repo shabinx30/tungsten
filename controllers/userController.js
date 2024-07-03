@@ -7,7 +7,8 @@ const Category = require('../models/categoryModel')
 const Cart = require('../models/cartModel');
 const Address = require('../models/addresses')
 const Order = require('../models/orders')
-const Wishlist = require('../models/wishlistModel')
+const Wishlist = require('../models/wishlistModel');
+const Wallet = require('../models/wallet');
 
 const securePassword = async(password) => {
     try{
@@ -45,37 +46,6 @@ const home = async(req,res)=>{
         }
     } catch (error) {
         console.log(error.message)
-    }
-}
-
-//rendering the shop page
-const shop = async(req,res)=>{
-    try {
-        // console.log(typeof(req.query.type));
-        if(req.query.type==1){
-            const productData = await Product.find({is_listed: true}).sort({price:1}).populate('categoryName').exec()
-            res.render('shop',{products: productData})
-        }else if(req.query.type==-1){
-            const productData = await Product.find({is_listed: true}).sort({price:-1}).populate('categoryName').exec()
-            res.render('shop',{products: productData})
-        }else if(req.query.type=='a'){
-            const productData = await Product.find({is_listed: true}).sort({name:1}).populate('categoryName').exec()
-            res.render('shop',{products: productData})
-        }else if(req.query.type=='z'){
-            const productData = await Product.find({is_listed: true}).sort({name:-1}).populate('categoryName').exec()
-            res.render('shop',{products: productData})
-        }else{
-            const productData = await Product.find({ is_listed: true })
-            .populate('categoryName')
-            .exec();
-
-            // Filter products where the category is listed
-            const filteredProductData = productData.filter(product => product.categoryName && product.categoryName.is_listed);
-
-            res.render('shop', { products: filteredProductData });
-        }
-    } catch (error) {
-        console.log(error.message);
     }
 }
 
@@ -189,6 +159,7 @@ const transporter = nodemailer.createTransport({
   }
 
 
+//************** insert new user ****************
 const insertUser = async (req, res) => {
 
     try{
@@ -258,12 +229,15 @@ const insertUser = async (req, res) => {
     }
 }
 
+
+//********** load userDashBoard ***********
 const userDashboard = async(req,res)=>{
     try {
         const userData = await User.findById({_id: req.session.user_id})
         const addresses = await Address.findOne({userId: req.session.user_id})
         const order = await Order.find({userId: req.session.user_id}).sort({_id: -1}).populate('orderedProducts.productId').exec()
-        // console.log(order);
+        const wallet = await Wallet.findOne({userId: req.session.user_id})
+        // console.log(wallet);
         if(req.query.re){
             req.flash('addressmsg', "Please add Address...!!!");
             return res.redirect('/userDashboard')
@@ -276,19 +250,20 @@ const userDashboard = async(req,res)=>{
         // console.log(addresses.addresses);
         if(addresses){
             if(order){
-                res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg,orders: order,addressop })
+                res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg,orders: order,addressop,wallet })
             }
             else{
-                res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg,orders: [],addressop})
+                res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg,orders: [],addressop,wallet })
             }
         }else{
-            res.render('userDashboard',{user: userData,addresses: [],addressmsg,orders: [],addressop})
+            res.render('userDashboard',{user: userData,addresses: [],addressmsg,orders: [],addressop,wallet })
         }
     } catch (error) {
         console.log(error.message);
         res.status(500).send('Internal Server Error');
     }
 }
+
 
 const logout = async(req,res)=>{
     try {
@@ -299,7 +274,6 @@ const logout = async(req,res)=>{
         res.status(500).send('Internal Server Error');
     }
 }
-
 
 
 const verifyOTP = async (req, res) => {
@@ -335,6 +309,7 @@ const verifyOTP = async (req, res) => {
     }
 }
 
+
 const loadOtp = async(req,res)=>{
     try {
         const email = req.query.email;
@@ -344,6 +319,7 @@ const loadOtp = async(req,res)=>{
         console.log(error.message);
     }
 }
+
 
 const loadEditUser = async (req,res)=>{
     try {
@@ -355,6 +331,7 @@ const loadEditUser = async (req,res)=>{
         res.status(400).send(error.message)
     }
 }
+
 
 const editProfile = async (req,res)=>{
     try {
@@ -382,6 +359,7 @@ const loadChangePassword = async (req,res)=>{
         res.status(400).send(error.message)
     }
 }
+
 
 const changePassword = async (req,res)=>{
     try {
@@ -420,6 +398,7 @@ const loadForgotPassword = async (req,res)=>{
     }
 }
 
+
 const forgotPassword = async (req,res)=>{
     try {
         const email = req.body.email;
@@ -452,6 +431,7 @@ const forgotPassword = async (req,res)=>{
     }
 }
 
+
 const savePassword = async (req,res)=>{
     try {
         const { password } = req.body
@@ -470,6 +450,7 @@ const savePassword = async (req,res)=>{
         res.status(400).send(error.message)
     }
 }
+
 
 const googleLoginSuccess = async (req,res)=>{
     try {
@@ -503,6 +484,7 @@ const googleLoginSuccess = async (req,res)=>{
     }
 }
 
+
 const googleLoginFailure = async(req,res)=>{
     try {
         res.send('Error')
@@ -513,37 +495,8 @@ const googleLoginFailure = async(req,res)=>{
 }
 
 
-const searchProducts = async (req,res)=>{
-    try {
-
-        let searchString = req.query.search
-        if (!searchString) {
-            return res.status(400).json({ error: 'Search string is required' });
-        }
-
-        let searchNumber = parseInt(searchString, 10);
-
-        let searchQuery = {
-            $or: [
-                { name: { $regex: new RegExp(searchString, 'i') } }
-            ]
-        };
-
-        if (!isNaN(searchNumber)) {
-            searchQuery.$or.push({ price: { $lte: searchNumber } });
-        }
-
-        let products = await Product.find(searchQuery).sort({ price: -1 })
-        res.render('shop', { products, searchString })
-    } catch (error) {
-        console.log(error.message);
-        res.status(400).send(error.message)
-    }
-}
-
 module.exports = {
     home,
-    shop,
     category,
     about,
     contact,
@@ -564,6 +517,5 @@ module.exports = {
     forgotPassword,
     googleLoginSuccess,
     googleLoginFailure,
-    savePassword,
-    searchProducts
+    savePassword
 }

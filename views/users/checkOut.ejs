@@ -266,6 +266,10 @@
 												<input type="radio" name="paymentMethod" id="op" value="online">
 												<label for="op" class="ml-3" style="margin-top: 1px;">Online Payment</label>
 											</div>
+                                            <div class="d-flex align-items-center">
+												<input type="radio" name="paymentMethod" id="op" value="wallet">
+												<label for="op" class="ml-3" style="margin-top: 1px;">Wallet</label>
+											</div>
 										</div>
 		                				<button type="submit" class="btn btn-outline-primary-2 btn-order btn-block" style="border-radius: 10px;">
 		                					<span class="btn-text">Place Order</span>
@@ -553,37 +557,111 @@
   }
 </script> -->
 
+<!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 <script>
-        document.getElementById('form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
-            const selectedAddress = document.querySelector('input[name="selected_address"]:checked');
-            const selectedValue = selectedPaymentMethod ? selectedPaymentMethod.value : null;
-			console.log(selectedValue,selectedAddress.value);
+    document.getElementById('form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+        const selectedAddress = document.querySelector('input[name="selected_address"]:checked');
+        
+        const selectedPaymentValue = selectedPaymentMethod ? selectedPaymentMethod.value : null;
+        const selectedAddressValue = selectedAddress ? selectedAddress.value : null;
+        
+        if (!selectedPaymentValue) {
+            document.getElementById('errorMessage').innerText = 'Please select a payment method.';
+        } else if (!selectedAddressValue) {
+            document.getElementById('errorMessage').innerText = 'Please select an address.';
+        } else {
+            document.getElementById('errorMessage').innerText = '';
+            
+            axios.post('/placeOrder', {
+                selected_address: selectedAddressValue,
+                paymentMethod: selectedPaymentValue
+            })
+            .then(response => {
+                const result = response.data.result;
+                console.log(result);
 
-            if (!selectedValue) {
-                document.getElementById('errorMessage').innerText = 'Please select a payment method.';
+                if(result=='redirect'){
 
-            } else {
-				const data ={
-					selected_address: selectedAddress,
-					paymentMethod: selectedPaymentMethod
-				}
-                document.getElementById('errorMessage').innerText = '';
-				axios.post('/placeOrder',data)
-				.then(response=>{
-					console.log(response.order)
-				})
-				.catch(error => {
-            	console.log(error);
-            	Swal.fire({
-                	position: 'top-end',
-                	icon: 'error',
-                	title: 'An error occurred',
-                	showConfirmButton: false,
-                	timer: 1500
-            	});
-        });
-            }
-        });
-    </script>
+                    window.location.href=response.data.location;
+
+                }else if(response.data.success==true){
+
+                    window.location.href=response.data.location;
+
+                }else if(response.data.success==false){
+
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: response.data.error,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                }else if (result!='redirect') {
+
+                    const options = {
+                        key: "rzp_test_NlKpT8z0NsaS7K", 
+                        amount: result.amount, 
+                        currency: "INR",
+                        name: "Tungsten",
+                        description: "Test Transaction",
+                        image: "https://example.com/your_logo",
+                        order_id: null, 
+                        handler: function (response) {
+                            // alert('payment success')
+                            axios.post('/verifyPayment',{
+                                orderId: result.receipt
+                            })
+                            .then(response=>{
+                                console.log('payment verification response',response.data.status);
+                                if(response.data.status==true){
+                                    window.location.href = response.data.redirect
+                                }else{
+                                    alert('payment failed')
+                                }
+                            })
+                            .catch(error=>{
+                                console.log(error);
+                                alert('There was a problem while payment')
+                            })
+                        },
+                        prefill: {
+                            name: "Customer Name",
+                            email: "customer@example.com",
+                            contact: "1234567890"
+                        },
+                        notes: {
+                            address: "Customer Address"
+                        },
+                        theme: {
+                            color: "#eea287"
+                        }
+                    };
+
+                    var rzp1 = new Razorpay(options);
+                    rzp1.on('payment.failed', function (response){
+                        console.error('Payment failed:', response.error);
+                        alert('Payment failed. Please try again.');
+                    });
+                    rzp1.open();
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'An error occurred',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            });
+        }
+    });
+</script>

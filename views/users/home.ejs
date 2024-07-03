@@ -1,5 +1,5 @@
 <%- include('../layouts/header.ejs') %>
-<div id="preLoader" class="centerImage" style="width: 100%; height: 100vh; padding-top: 35vh; background-color: #000000;">
+<div id="preLoader" class="centerImage" style="width: 100%; height: 100%; padding-top: 35vh; background-color: #000000; position: absolute; z-index: 1001;">
     <img class="img-fluid" style="width: 20%; display: block; margin-left: auto;margin-right: auto;" src="animation/preloading_animation.gif">
 </div>
 
@@ -12,8 +12,8 @@
         let introTitle = document.getElementById('intro_title')
         let introSubtitle = document.getElementById('intro_subtitle_2')
         //..........loading..............
-        loader.style.display = "none";
         document.body.style.overflow = "auto"
+        loader.style.display = "none";
         //..............nav..............
         nav.className = "header smol";
         //.............offer.............
@@ -222,7 +222,7 @@
                             <div class="banner-content">
                                 <h4 class="banner-subtitle"><a href="#">Final reduction</a></h4><!-- End .banner-subtitle -->
                                 <h3 class="banner-title"><a href="#"><strong>Sandals & <br>Flip Flops</strong> <br>up to 60% off</a></h3><!-- End .banner-title -->
-                                <a href="#" class="btn btn-outline-white banner-link">Shop Now <i class="icon-long-arrow-right"></i></a>
+                                <a href="#" class="btn btn-outline-white banner-link" style="border-radius: 10px;">Shop Now <i class="icon-long-arrow-right"></i></a>
                             </div><!-- End .banner-content -->
                         </div><!-- End .banner -->
                     </div><!-- End .col-lg-4 -->
@@ -236,7 +236,7 @@
                             <div class="banner-content">
                                 <h4 class="banner-subtitle"><a href="#">Limited time only.</a></h4><!-- End .banner-subtitle -->
                                 <h3 class="banner-title"><a href="#"><strong>Trainers & <br>Sportwear</strong> <br>40 -70% off</a></h3><!-- End .banner-title -->
-                                <a href="/category" class="btn btn-outline-white banner-link">Shop Now <i class="icon-long-arrow-right"></i></a>
+                                <a href="/category" class="btn btn-outline-white banner-link" style="border-radius: 10px;">Shop Now <i class="icon-long-arrow-right"></i></a>
                             </div><!-- End .banner-content -->
                         </div><!-- End .banner -->
                     </div><!-- End .col-lg-4 -->
@@ -250,7 +250,7 @@
                             <div class="banner-content">
                                 <h4 class="banner-subtitle"><a href="#">This week we love...</a></h4><!-- End .banner-subtitle -->
                                 <h3 class="banner-title"><a href="#"><strong>Women's <br>Accessories </strong> <br>from $6.99</a></h3><!-- End .banner-title -->
-                                <a href="#" class="btn btn-outline-white banner-link">Shop Now <i class="icon-long-arrow-right"></i></a>
+                                <a href="#" class="btn btn-outline-white banner-link" style="border-radius: 10px;">Shop Now <i class="icon-long-arrow-right"></i></a>
                             </div><!-- End .banner-content -->
                         </div><!-- End .banner -->
                     </div><!-- End .col-lg-4 -->
@@ -328,7 +328,7 @@
                 <h3 class="banner-title text-white">New League</h3><!-- End .banner-title -->
                 <p class="d-none d-lg-block text-white">Lorem ipsum dolor sit amet, consectetuer adipiscing elit.<br>Donec odio. Quisque volutpat mattis eros. </p> 
 
-                <a href="category.html" class="btn btn-primary-white"><span>Shop Now</span><i class="icon-long-arrow-right"></i></a>
+                <a href="category.html" class="btn btn-primary-white" style="border-radius: 20px;"><span>Shop Now</span><i class="icon-long-arrow-right"></i></a>
             </div><!-- End .banner-content -->
         </div><!-- End .banner -->
     </div>
@@ -343,7 +343,7 @@
                     <div class="banner-content">
                         <h4 class="banner-subtitle d-none d-lg-block"><a href="#">New Arrivals</a></h4><!-- End .banner-subtitle -->
                         <h3 class="banner-title"><a href="#">Women’s</a></h3><!-- End .banner-title -->
-                        <a href="#" class="btn btn-outline-white banner-link">Shop Now <i class="icon-long-arrow-right"></i></a>
+                        <a href="#" class="btn btn-outline-white banner-link" style="border-radius: 10px;">Shop Now <i class="icon-long-arrow-right"></i></a>
                     </div><!-- End .banner-content -->
                 </div><!-- End .banner -->
             </div><!-- End .col-md-6 -->
@@ -357,7 +357,7 @@
                     <div class="banner-content">
                         <h4 class="banner-subtitle d-none d-lg-block"><a href="#">New Arrivals</a></h4><!-- End .banner-subtitle -->
                         <h3 class="banner-title "><a href="#">Men’s</a></h3><!-- End .banner-title -->
-                        <a href="#" class="btn btn-outline-white banner-link">Shop Now <i class="icon-long-arrow-right"></i></a>
+                        <a href="#" class="btn btn-outline-white banner-link" style="border-radius: 10px;">Shop Now <i class="icon-long-arrow-right"></i></a>
                     </div><!-- End .banner-content -->
                 </div><!-- End .banner -->
             </div><!-- End .col-md-6 -->

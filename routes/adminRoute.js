@@ -27,6 +27,7 @@ const adminAuth = require('../middleware/adminAuth')
 const adminController = require('../controllers/adminController');
 const productController = require('../controllers/product')
 const orderController = require('../controllers/order')
+const offerController = require('../controllers/offerController')
 
 admin_route.use(bodyParser.json());
 admin_route.use(bodyParser.urlencoded({extended: true}))
@@ -68,6 +69,9 @@ admin_route.post('/editCategory',adminAuth.isLogin,adminController.editCategory)
 //order
 admin_route.get('/orderHistory',adminAuth.isLogin,orderController.orderlist)
 admin_route.post('/productStatus',adminAuth.isLogin,orderController.changeStatus)
+
+//offer
+admin_route.get('/offerList',adminAuth.isLogin,offerController.loadOffers)
 
 
 module.exports = admin_route

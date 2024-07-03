@@ -37,6 +37,7 @@ const cartController = require("../controllers/cart");
 const userOrderController = require("../controllers/userOrder");
 const userAddress = require("../controllers/address");
 const wishlistController = require('../controllers/wishlist')
+const walletController = require('../controllers/walletController')
 
 //auth
 user_route.get(
@@ -94,13 +95,13 @@ user_route.post("/forgotPassword", userController.forgotPassword);
 user_route.post("/savePassword", userAuth.isLogin, userController.savePassword);
 
 //shop
-user_route.get("/shop", userAuth.isLogin, userController.shop);
+user_route.get("/shop", userAuth.isLogin, productController.shop);
 user_route.get(
   "/product",
   userAuth.isLogin,
   productController.loadProductDetails
 );
-user_route.get('/searchProducts',userAuth.isLogin,userController.searchProducts)
+user_route.get('/searchProducts',userAuth.isLogin,productController.searchProducts)
 
 user_route.get("/category", userController.category);
 user_route.get("/about", userController.about);
@@ -134,5 +135,10 @@ user_route.get("/checkout", userAuth.isLogin, userOrderController.loadCheckOut);
 user_route.post("/placeOrder", userAuth.isLogin, userOrderController.placeOrder);
 user_route.put('/removeFromOrders',userAuth.isLogin,userOrderController.removeFromOrders)
 user_route.get('/orderSuccess',userAuth.isLogin,userOrderController.orderSuccess)
+user_route.post('/verifyPayment',userAuth.isLogin,userOrderController.verifyPayment)
 
+
+//wallet
+user_route.post('/addToWallet',userAuth.isLogin,walletController.addToWallet)
+user_route.post('/withdrawFromWallet',userAuth.isLogin,walletController.withdrawFromWallet)
 module.exports = user_route;

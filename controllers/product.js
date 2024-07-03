@@ -4,6 +4,39 @@ const multer = require('multer')
 const path = require('path')
 const flash = require('express-flash')
 
+
+//rendering the shop page
+const shop = async(req,res)=>{
+    try {
+        // console.log(typeof(req.query.type));
+        if(req.query.type==1){
+            const productData = await Product.find({is_listed: true}).sort({price:1}).populate('categoryName').exec()
+            res.render('shop',{products: productData})
+        }else if(req.query.type==-1){
+            const productData = await Product.find({is_listed: true}).sort({price:-1}).populate('categoryName').exec()
+            res.render('shop',{products: productData})
+        }else if(req.query.type=='a'){
+            const productData = await Product.find({is_listed: true}).sort({name:1}).populate('categoryName').exec()
+            res.render('shop',{products: productData})
+        }else if(req.query.type=='z'){
+            const productData = await Product.find({is_listed: true}).sort({name:-1}).populate('categoryName').exec()
+            res.render('shop',{products: productData})
+        }else{
+            const productData = await Product.find({ is_listed: true })
+            .populate('categoryName')
+            .exec();
+
+            // Filter products where the category is listed
+            const filteredProductData = productData.filter(product => product.categoryName && product.categoryName.is_listed);
+
+            res.render('shop', { products: filteredProductData });
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+//loading product data in admin
 const loadProductDetails = async (req,res)=>{
     try {
         const productDetails = req.query.productDetails
@@ -106,11 +139,43 @@ const editProduct = async (req, res) => {
     }
 };
 
+
+//************** search product ****************
+const searchProducts = async (req,res)=>{
+    try {
+
+        let searchString = req.query.search
+        if (!searchString) {
+            return res.status(400).json({ error: 'Search string is required' });
+        }
+
+        let searchNumber = parseInt(searchString, 10);
+
+        let searchQuery = {
+            $or: [
+                { name: { $regex: new RegExp(searchString, 'i') } }
+            ]
+        };
+
+        if (!isNaN(searchNumber)) {
+            searchQuery.$or.push({ price: { $lte: searchNumber } });
+        }
+
+        let products = await Product.find(searchQuery).sort({ price: -1 })
+        res.render('shop', { products, searchString })
+    } catch (error) {
+        console.log(error.message);
+        res.status(400).send(error.message)
+    }
+}
+
 module.exports = {
     loadProductDetails,
     loadProductList,
     listProduct,
     loadEditProduct,
     editProduct,
-    upload
+    upload,
+    searchProducts,
+    shop
 }

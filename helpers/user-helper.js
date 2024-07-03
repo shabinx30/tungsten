@@ -20,19 +20,19 @@ const orderIdgenerator = ()=>{
 
 const razorpayRes = async (subTotal,orderId)=>{
     try {
-        console.log(subTotal,orderId);
+        // console.log(subTotal,orderId);
         const options = {
-            amount: subTotal,
+            amount: subTotal*100,
             currency: "INR",
-            receipt: orderId,
+            receipt : orderId
         }
         const order = await new Promise((resolve, reject) => {
             instance.orders.create(options, (err, order) => {
                 if (err) {
-                    console.log('err', err);
+                    // console.log('err', err);
                     reject(err);
                 } else {
-                    console.log('new order:', order);
+                    // console.log('new order:', order);
                     resolve(order);
                 }
             });

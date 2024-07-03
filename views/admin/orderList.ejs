@@ -116,6 +116,7 @@
                 <thead>
                   <tr style="width: 100%; background-color: #936dd1; color: #000">
                     <th scope="col">NO.</th>
+                    <th scope="col">Order Id</th>
                     <th scope="col">Customer</th>
                     <th scope="col">Order Date</th>
                     <th scope="col">Total</th>
@@ -128,6 +129,7 @@
                     <% orders.forEach((value, index) => { %>
                       <tr>
                         <td><%= ++index %></td>
+                        <td><%= value.orderId %></td>
                         <td><%= value.userName %></td>
                         <td><%= value.purchasedDate %></td>
                         <td>₹<%= value.subTotal %></td>
@@ -149,6 +151,7 @@
                               </div>
                               <div class="modal-body pl-3 pr-3">
                                 <% value.orderedProducts.forEach(product => { %>
+                                  <p class="mb-3"><strong style="color: black;">Order Id: </strong><%= value.orderId %> </p>
                                   <div class="row">
                                     <img class="mb-2" src="/productImages/<%= product.productId.images[0] %>" alt="no image" style="width: 50px; height: 50px; border-radius: 5px; border: 1px solid black;">
                                     <div class="d-block ml-3">
