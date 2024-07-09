@@ -110,7 +110,7 @@
                 OFFER LIST
               </h2>
               <div class="text-right mb-3">
-                <a href="/admin/addOffer" class="purple-button">+ Add offer</a>
+                <a class="purple-button" data-toggle="modal" data-target="#addOffer" style="color: white;">+ Add offer</a>
               </div>
             <!-- </div>
             <% if (locals.success) { %>
@@ -122,34 +122,34 @@
               <%= locals.success %>
             </div>
             <% } %> -->
-            <div class="table-responsive w-75 mx-auto" style="border-radius: 20px">
+            <div class="table-responsive mx-auto" style="border-radius: 20px">
               <table class="table">
                 <thead>
                   <tr style="width: 100%; background-color: #936dd1; color: #000">
-                    <th scope="col">NO.</th>
-                    <th scope="col">Offer</th>
-                    <th scope="col">Discription</th>
+                    <th scope="col">No.</th>
+                    <th scope="col">Product Name</th>
                     <th scope="col">Discount</th>
-                    <th scope="col">Type</th>
-                    <th scope="col" class="text-right">ACTIONS</th>
+                    <th scope="col">Start Date</th>
+                    <th scope="col">Expiry</th>
+                    <th scope="col" class="text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   <% if (offers.length > 0) { %> <%
-                  offers.forEach((category, index) => { %>
-                  <tr>
-                    <td><%= index + 1 %></td>
+                  offers.forEach((offer, index) => { %>
+                  <tr style="font-size: 14px;">
+                    <td><%= ++index %></td>
                     <!-- Index starts from 0, so adding 1 for display -->
-                    <td><%= category.offerName %></td>
-                    <td><%= category.description %></td>
-                    <td><%= category.offPercentage %></td>
-                    <td><%= category.type %></td>
+                    <td><%= offer.productName.name %></td>
+                    <td><%= offer.discount %></td>
+                    <td><%= offer.startingDate %></td>
+                    <td><%= offer.expiryDate %></td>
 
                     <td class="text-right align-middle">
                       <a
-                        onclick="deleteCategory('<%= category._id %>')"
+                        onclick="deleteCategory('<%= offer._id %>')"
                         class="btn-status-toggle"
-                        data-categoryid="<%= category._id %>"
+                        data-categoryid="<%= offer._id %>"
                       >
                         <span
                           class="btn delete-button"
@@ -157,9 +157,9 @@
                         >
                       </a>
                       <a
-                        href="/admin/editCategory?categoryId=<%= category._id %>&categoryName=<%= category.name %>"
+                        href="/admin/editProductOffer?offerId=<%= offer._id %>&offerName=<%= offer.productName %>"
                         class="btn-status-toggle"
-                        data-categoryid="<%= category._id %>"
+                        data-categoryid="<%= offer._id %>"
                       >
                         <span
                           class="btn ml-3 edit-button"
@@ -167,12 +167,11 @@
                         >
                       </a>
 
-                      <!-- <button id="status-button-<%= category._id %>" onclick="confirmAction('<%= category._id %>')" class="btn ml-3 purple-button" ><%= category.is_listed? "unlist":"list" %></button> -->
 
-                      <% if(category.is_listed==true) { %>
-                        <button id="status-button-<%= category._id %>" onclick="confirmAction('<%= category._id %>')" class="btn ml-3 red-button">Unlist</button>
+                      <% if(offer.is_listed==true) { %>
+                        <button id="status-button-<%= offer._id %>" onclick="confirmAction('<%= offer._id %>')" class="btn ml-3 red-button">Deactivate</button>
                       <%} else { %>
-                        <button id="status-button-<%= category._id %>" onclick="confirmAction('<%= category._id %>')" class="btn ml-3 green-button">List</button>
+                        <button id="status-button-<%= offer._id %>" onclick="confirmAction('<%= offer._id %>')" class="btn ml-3 green-button">Activate</button>
                       <% } %>  
                     </td> 
                   </tr>
@@ -180,7 +179,7 @@
 
 
                   <tr>
-                    <td colspan="3">No categories found</td>
+                    <td colspan="3">No offers found</td>
                   </tr>
                   <% } %>
                 </tbody>
@@ -197,22 +196,50 @@
               <% } %>
             </div>
 
-            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal fade" id="addOffer" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content p-4" style="border-radius: 20px;">
+                  <div class="modal-content p-3" style="border-radius: 20px;">
                       <div class="modal-header">
-                          <h4 class="modal-title" id="exampleModalLongTitle">Forgot Password</h4>
+                          <h3 class="modal-title" id="exampleModalLongTitle" style="color: #000;">Add new Offer</h3>
                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                           </button>
                       </div>
                       <div class="modal-body pl-3 pr-3">
-                          <form id="forgotForm" action="/forgotPassword" method="post">
+                          <form id="forgotForm" action="/admin/addOffer" method="post">
                               <p class="text-danger" aria-live="polite" id="forgot_error"><%= locals.forgot %></p>
-                              <div class="form-group p-4">
-                                  <label for="forgot_password">Enter email *</label>
-                                  <input type="email" class="form-control" id="forgot_password" name="email" style="border-radius: 10px;" placeholder="Email"  autocomplete="off">
+                              <div class="form-group">
+                                  <label for="forgot_password" style="color: #000;">Product Name *</label>
+                                  <select name="productName" id="" style="border-radius: 5px; font-size: 14px; width: 100%; height: 2.5em; padding: .5em;">
+                                    <% if(products.length>0) {%>
+                                      <% products.forEach((val)=>{ %>
+                                        <option value="<%= val._id %>"><%= val.name %></option>
+                                      <% }) %>
+                                    <% }else{ %>
+                                      <p>No product</p>
+                                    <% } %>
+                                  </select>
                                   <span id="forgot_password_error" class="error-message" style="color: red; font-size: smaller;"></span>
+                              </div> <!--End .form-group -->
+                              <div class="form-group">
+                                <label for="description" style="color: #000;">Description *</label><br>
+                                <textarea name="description" id="description" style="border-radius: 10px; font-size: 14px; width: 100%; padding: .5em;"></textarea>
+                                <span id="forgot_password_error" class="error-message" style="color: red; font-size: smaller;"></span>
+                              </div> <!--End .form-group -->
+                              <div class="form-group">
+                                <label for="forgot_password" style="color: #000;">Discount % *</label>
+                                <input type="number" class="form-control" id="forgot_password" name="discount" style="border-radius: 10px;" placeholder="Discount"  autocomplete="off">
+                                <span id="forgot_password_error" class="error-message" style="color: red; font-size: smaller;"></span>
+                              </div> <!--End .form-group -->
+                              <div class="form-group">
+                                <label for="forgot_password" style="color: #000;">Starting Date *</label>
+                                <input type="date" class="form-control" id="forgot_password" name="startingDate" style="border-radius: 10px;" placeholder="Discount"  autocomplete="off">
+                                <span id="forgot_password_error" class="error-message" style="color: red; font-size: smaller;"></span>
+                              </div> <!--End .form-group -->
+                              <div class="form-group">
+                                <label for="forgot_password" style="color: #000;">Expiry Date *</label>
+                                <input type="date" class="form-control" id="forgot_password" name="expiryDate" style="border-radius: 10px;" placeholder="Discount"  autocomplete="off">
+                                <span id="forgot_password_error" class="error-message" style="color: red; font-size: smaller;"></span>
                               </div> <!--End .form-group -->
                       </div>
                               <div class="modal-footer mx-auto">
@@ -222,7 +249,6 @@
                                   <button type="submit" style="border-radius: 10px;" class="btn btn-primary">Submit</button>
                               </div>
                           </form>
-                      
                   </div>
               </div>
             </div>
@@ -266,13 +292,13 @@
             
                     if(data.is_listed==false){
                       console.log("heyyyyy");
-                      categoryBtn.innerText = "Unlist";
+                      categoryBtn.innerText = "Deactivate";
                       categoryBtn.className = "btn ml-3 red-button";
                       categoryBtn.style.backgroundColor = "#ff9797";
                       categoryBtn.style.color = "#9f0000";
                     } else {
                       console.log("haaaaaiiiiiii");
-                      categoryBtn.innerText = "List";
+                      categoryBtn.innerText = "Activate";
                       categoryBtn.className = "btn ml-3 green-button";
                       categoryBtn.style.backgroundColor = "#a2ff97";
                       categoryBtn.style.color = "#009f18";

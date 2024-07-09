@@ -181,7 +181,7 @@
                                                         <div class="mt-1 mr-3" style="height: 50%; width: 10%;">
                                                             <button onclick="remove('<%= product.productId.name %>','<%= product._id %>')" style="width: 5em; font-size: small; border-radius: 10px; border: 1px solid #eea287; background-color: white;">Cancell</button>
                                                         </div>
-                                                    <%}%>
+                                                    <% } %>
                                                     <script>
                                                         document.addEventListener('DOMContentLoaded', () => {
                                                             const nameElement = document.getElementById('order_name_<%= product.productId._id %>');
@@ -204,13 +204,13 @@
                                 </div><!-- .End .tab-pane -->
 
                                 <div class="tab-pane fade" id="tab-downloads" role="tabpanel" aria-labelledby="tab-downloads-link">
-                                    
-                                    <% if(wallet!=null) { %>
+                                    <% console.log(wallet.length) %>
+                                    <% if(wallet.length>0) { %>
                                         <div class="col-lg-6" >
                                             <div class="card card-dashboard shadow-lg" style="border-radius: 20px; border: 1px solid #eea287;">
                                                 <div class="card-body">
                                                     <div class="d-flex ">
-                                                        <strong style="color: #000000; font-size: medium;">Balance: ₹</strong><p style="color: #1b91ff; font-size: medium;" id="wallet_balance"><%= wallet.balance%></p>
+                                                        <strong style="color: #000000; font-size: medium;">Balance: ₹</strong><p style="color: #1b91ff; font-size: medium;" id="wallet_balance"><%= wallet.balance %></p>
                                                     </div>
                                                     <div class="d-flex">
                                                         <a href="/addWallet" class="btn btn-outline-primary-2 mx-auto" style="border-radius: 10px;" data-toggle="modal" data-target="#WalletWithDraw">
@@ -334,8 +334,8 @@
                                                                   </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    <% if(wallet.transactionHistory.length > 0) { %>
-                                                                        <% let history = wallet.transactionHistory.reverse() %>
+                                                                    <% if(transactionHistory && transactionHistory.length > 0) { %>
+                                                                        <% let history = transactionHistory.reverse() %>
                                                                         <% history.forEach((val, index) => { %>
                                                                             <tr>
                                                                                 <td><%= ++index %></td>

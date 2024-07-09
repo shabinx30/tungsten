@@ -237,6 +237,7 @@ const userDashboard = async(req,res)=>{
         const addresses = await Address.findOne({userId: req.session.user_id})
         const order = await Order.find({userId: req.session.user_id}).sort({_id: -1}).populate('orderedProducts.productId').exec()
         const wallet = await Wallet.findOne({userId: req.session.user_id})
+        const transactionHistory = wallet && wallet.transactionHistory ? wallet.transactionHistory : []
         // console.log(wallet);
         if(req.query.re){
             req.flash('addressmsg', "Please add Address...!!!");
@@ -250,13 +251,16 @@ const userDashboard = async(req,res)=>{
         // console.log(addresses.addresses);
         if(addresses){
             if(order){
-                res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg,orders: order,addressop,wallet })
+                console.log('add&ord');
+                res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg,orders: order,addressop,wallet, transactionHistory })
             }
             else{
-                res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg,orders: [],addressop,wallet })
+                console.log('add');
+                res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg,orders: [],addressop,wallet: [],transactionHistory:[] })
             }
         }else{
-            res.render('userDashboard',{user: userData,addresses: [],addressmsg,orders: [],addressop,wallet })
+            console.log('noadd');
+            res.render('userDashboard',{user: userData,addresses: [],addressmsg,orders: [],addressop, wallet: [],transactionHistory:[] })
         }
     } catch (error) {
         console.log(error.message);

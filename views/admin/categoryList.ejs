@@ -163,9 +163,9 @@
                       <!-- <button id="status-button-<%= category._id %>" onclick="confirmAction('<%= category._id %>')" class="btn ml-3 purple-button" ><%= category.is_listed? "unlist":"list" %></button> -->
 
                       <% if(category.is_listed==true) { %>
-                        <button id="status-button-<%= category._id %>" onclick="confirmAction('<%= category._id %>')" class="btn ml-3 red-button">Unlist</button>
+                        <button id="status-button-<%= category._id %>" onclick="confirmAction('<%= category._id %>','unlist')" class="btn ml-3 red-button">Unlist</button>
                       <%} else { %>
-                        <button id="status-button-<%= category._id %>" onclick="confirmAction('<%= category._id %>')" class="btn ml-3 green-button">List</button>
+                        <button id="status-button-<%= category._id %>" onclick="confirmAction('<%= category._id %>','list')" class="btn ml-3 green-button">List</button>
                       <% } %>  
                     </td> 
                   </tr>
@@ -201,18 +201,18 @@
 </div>
 
 <script>
-    function confirmAction(categoryId) {
+    function confirmAction(categoryId,status) {
         let categoryBtn = document.getElementById(`status-button-${categoryId}`);
         console.log(categoryBtn);
     
         Swal.fire({
                 title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                text: `Are you sure to ${status} this category!`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, change status!'
+                confirmButtonText: `Yes, ${status} this!`
             }).then((result) => {
                 if (result.isConfirmed) {
                   fetch(`/admin/categoryStatus?categoryId=${categoryId}`, {

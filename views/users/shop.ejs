@@ -171,10 +171,14 @@
                             <div class="product" style="border-radius: 10px; border: 1px solid #d4d4d4;">
                                 <figure class="product-media">
                                     <% if(product.quantity==0){ %>
-                                        <span class="product-label label-sale" style="border-radius: 7px;">Out of stock</span>
+                                        <span class="product-label label-sale" style="border-radius: 7px; ">Out of stock</span>
                                     <% } %>
                                     <a href="/product?productDetails=<%= product._id %>">
-                                        <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image">
+                                        <% if(product.quantity == 0) {%>
+                                            <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image" style="filter: saturate(0);">
+                                        <% }else{ %>
+                                            <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image">
+                                        <% } %>
                                     </a>
 
                                     <div class="product-action-vertical" onclick="addToWishlist('<%= product._id %>')" >

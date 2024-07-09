@@ -71,7 +71,8 @@ admin_route.get('/orderHistory',adminAuth.isLogin,orderController.orderlist)
 admin_route.post('/productStatus',adminAuth.isLogin,orderController.changeStatus)
 
 //offer
-admin_route.get('/offerList',adminAuth.isLogin,offerController.loadOffers)
+admin_route.get('/ProductOfferList',adminAuth.isLogin,offerController.loadOffers)
+admin_route.post('/addOffer',adminAuth.isLogin,offerController.addOffer)
 
 
 module.exports = admin_route

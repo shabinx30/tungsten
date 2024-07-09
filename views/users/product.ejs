@@ -154,15 +154,15 @@
                                         </a>
                                     </figure><!-- End .product-main-image -->
 
-                                    <div id="product-zoom-gallery" class="product-image-gallery">
+                                    <div id="product-zoom-gallery" class="product-image-gallery" >
                                         <% if(product.images.length>1) { %>
                                             <% for(let i=0;i< product.images.length;i++) { %>
-                                                <a class="product-gallery-item <%=i==0? 'active':''%>" href="#" data-image="/productImages/<%= product.images[i] %>" data-zoom-image="/productImages/<%= product.images[i] %>">
+                                                <a class="product-gallery-item <%=i==0? 'active':''%>" href="#" style="height: 7.6em;" data-image="/productImages/<%= product.images[i] %>" data-zoom-image="/productImages/<%= product.images[i] %>">
                                                     <img src="/productImages/<%= product.images[i] %>" alt="product side">
                                                 </a>
                                             <%}%>
                                         <%}%>
-                                    </div><!-- End .product-image-gallery -->
+                                    </div><!--End .product-image-gallery -->
                                 </div><!-- End .row -->
                             </div><!-- End .product-gallery -->
                         </div><!-- End .col-md-6 -->
@@ -222,7 +222,11 @@
                                 <!-- </div>End .details-filter-row -->
 
                                 <div class="product-details-action">
-                                    <a onclick="addToCart('<%= product._id %>')" class="btn-product btn-cart"><span>add to cart</span></a>
+                                    <% if(product.quantity == 0) {%>
+                                        <button class="btn btn-block btn-outline-primary-2 disabled" style="border-radius: 10px; border: 1px solid #bcbcbc; background-color: #dfdfdf; color: #aaaaaa; width: 15em;" onclick="addToCart('<%= product._id %>')"><i class="icon-cart-plus"></i>Add to Cart</button>
+                                    <% }else{ %>
+                                        <button class="btn btn-block btn-outline-primary-2" style="border-radius: 10px; width: 15em;" onclick="addToCart('<%= product._id %>')"><i class="icon-cart-plus"></i>Add to Cart</button>
+                                    <% } %>
 
                                     <div class="details-action-wrapper">
                                         <a onclick="addToWishlist('<%= product._id %>')" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
@@ -237,11 +241,7 @@
                                     </div><!-- End .product-cat -->
 
                                     <div class="social-icons social-icons-sm">
-                                        <span class="social-label">Share:</span>
-                                        <a href="#" class="social-icon" title="Facebook" target="_blank"><i class="icon-facebook-f"></i></a>
-                                        <a href="#" class="social-icon" title="Twitter" target="_blank"><i class="icon-twitter"></i></a>
-                                        <a href="#" class="social-icon" title="Instagram" target="_blank"><i class="icon-instagram"></i></a>
-                                        <a href="#" class="social-icon" title="Pinterest" target="_blank"><i class="icon-pinterest"></i></a>
+                                        <button class="btn btn-block btn-outline-primary-2" style="border-radius: 10px; width: 15em;" onclick="share('tungsten.online/product?productDetails=<%= product._id %>')">Share</button>
                                     </div>
                                 </div><!-- End .product-details-footer -->
                             </div><!-- End .product-details -->
@@ -692,10 +692,17 @@
                    < <input type="number" id="sticky-cart-qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
                 </div>End .product-details-quantity -->
 
-                <div class="product-details-action">
-                    <a onclick="addToCart('<%= product._id %>')" class="btn-product btn-cart"><span>add to cart</span></a>
-                    <a onclick="addToWishlist('<%= product._id %>')" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
-                </div><!-- End .product-details-action -->
+                <!-- <div class="product-details-action"> -->
+                <div class="d-flex">
+                    <% if(product.quantity == 0) {%>
+                        <button class="btn btn-block btn-outline-primary-2 disabled mt-1" style="border-radius: 10px; border: 1px solid #bcbcbc; background-color: #dfdfdf; color: #aaaaaa; height: 3em;" onclick="addToCart('<%= product._id %>')"><i class="icon-cart-plus"></i>Add to Cart</button>
+                    <% }else{ %>
+                        <button class="btn btn-block btn-outline-primary-2 mt-1" style="border-radius: 10px; height: 3em;" onclick="addToCart('<%= product._id %>')"><i class="icon-cart-plus"></i>Add to Cart</button>
+                    <% } %>
+                    <a onclick="addToWishlist('<%= product._id %>')" class="ml-4 btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
+                </div>
+                <!-- </div>End .product-details-action -->
+
             </div><!-- End .col-6 -->
         </div><!-- End .row -->
     </div><!-- End .container -->
@@ -893,5 +900,26 @@
                 timer: 1500
             });
         });
+    }
+</script>
+
+<script>
+    function share(productId) {
+        console.log('coming');
+        if (navigator.share) {
+            try {
+                navigator.share({
+                    title: 'Check this out!',
+                    text: 'I found this interesting link for you.',
+                    url: 'https://'+productId
+                });
+                console.log('Link shared successfully');
+            } catch (error) {
+                console.error('Error sharing the link:', error);
+            }
+        } else {
+            console.log('Web Share API is not supported in this browser.');
+            alert('Sharing is not supported in this browser.');
+        }
     }
 </script>

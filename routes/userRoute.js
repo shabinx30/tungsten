@@ -63,11 +63,7 @@ user_route.get("/", userController.home);
 user_route.get("/home", userController.home);
 
 //userDashboard
-user_route.get(
-  "/userDashboard",
-  userAuth.isLogin,
-  userController.userDashboard
-);
+user_route.get("/userDashboard",userAuth.isLogin,userController.userDashboard);
 user_route.get("/editProfile", userAuth.isLogin, userController.loadEditUser);
 user_route.post("/editProfile", userAuth.isLogin, userController.editProfile);
 
@@ -118,7 +114,7 @@ user_route.get("/signIn", userAuth.isLogout, userController.sign_in);
 user_route.post("/signIn", userAuth.isLogout, userController.verifyLogin);
 user_route.get("/register", userAuth.isLogout, userController.register);
 user_route.post("/register", userAuth.isLogout, userController.insertUser);
-user_route.get("/logout", userAuth.isLogin, userController.logout);
+user_route.get("/logout", userAuth.isLogin,userController.logout);
 
 //Otp
 user_route.get("/loadOtp", userController.loadOtp);
