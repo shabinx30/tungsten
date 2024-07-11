@@ -6,35 +6,43 @@ const flash = require('express-flash')
 
 
 //rendering the shop page
-const shop = async(req,res)=>{
+const shop = async (req, res) => {
     try {
-        // console.log(typeof(req.query.type));
-        if(req.query.type==1){
-            const productData = await Product.find({is_listed: true}).sort({price:1}).populate('categoryName').exec()
-            res.render('shop',{products: productData})
-        }else if(req.query.type==-1){
-            const productData = await Product.find({is_listed: true}).sort({price:-1}).populate('categoryName').exec()
-            res.render('shop',{products: productData})
-        }else if(req.query.type=='a'){
-            const productData = await Product.find({is_listed: true}).sort({name:1}).populate('categoryName').exec()
-            res.render('shop',{products: productData})
-        }else if(req.query.type=='z'){
-            const productData = await Product.find({is_listed: true}).sort({name:-1}).populate('categoryName').exec()
-            res.render('shop',{products: productData})
-        }else{
-            const productData = await Product.find({ is_listed: true })
-            .populate('categoryName')
-            .exec();
+        // Get the page number from query, default to 0 if not provided
+        let page = parseInt(req.query.page) || 0;
+        let type = req.query.type;
 
+        // Define limit for pagination
+        const limit = 4;
+        const skip = (page * limit);
+
+        let productData;
+        let productCount;
+
+        if (type == 1) {
+            productCount = await Product.find({ is_listed: true }).countDocuments();
+            productData = await Product.find({ is_listed: true }).sort({ price: 1 }).populate('categoryName').skip(skip).limit(limit);
+        } else if (type == -1) {
+            productData = await Product.find({ is_listed: true }).sort({ price: -1 }).populate('categoryName').skip(skip).limit(limit);
+        } else if (type == 'a') {
+            productData = await Product.find({ is_listed: true }).sort({ name: 1 }).populate('categoryName').skip(skip).limit(limit);
+        } else if (type == 'z') {
+            productData = await Product.find({ is_listed: true }).sort({ name: -1 }).populate('categoryName').skip(skip).limit(limit);
+        } else {
+            productCount = await Product.find({ is_listed: true }).countDocuments();
+            productData = await Product.find({ is_listed: true }).populate('categoryName').skip(skip).limit(limit);
+            
             // Filter products where the category is listed
-            const filteredProductData = productData.filter(product => product.categoryName && product.categoryName.is_listed);
-
-            res.render('shop', { products: filteredProductData });
+            productData = productData.filter(product => product.categoryName && product.categoryName.is_listed);
         }
+
+        // Render the shop view with the fetched product data and product count
+        res.render('shop', { products: productData, productCount, page });
     } catch (error) {
         console.log(error.message);
+        res.status(500).send("Internal Server Error");
     }
-}
+};
 
 //loading product data in admin
 const loadProductDetails = async (req,res)=>{

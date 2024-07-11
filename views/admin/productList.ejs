@@ -30,13 +30,20 @@
     margin-right: 10px; /* Adjust spacing between search bar and button */
 }
 .btn-primary {
-    border-radius: 5px; /* Slight curve */
+    border-radius: 10px; /* Slight curve */
     background-color: #936dd1; /* Purple background */
-    border-color: #0a0a0a; /* Border color same as background for a consistent look */
-    color: #050404; /* Black text color */
+    border-color: #b0b0b0; /* Border color same as background for a consistent look */
+    color: #ffffff; /* Black text color */
     font-size: 14px; /* Adjust font size */
     padding: 8px 20px; /* Adjust padding */
 }
+
+.btn-primary:hover{
+    background-color: #9e85c8;
+    color: #000;
+    border-color: #9e85c8;
+}
+
 .custom-table-header {
     background-color: grey;
     color: black;
@@ -92,9 +99,13 @@
                 <div class="card">
                     <div class="card-body">
                         
-                        <div class="text-center mb-5"> <!-- Added div with custom class -->
-                             
+                        <div class="text-center"> <!-- Added div with custom class -->
+
                             <h2 class="card-title">Products Informations</h2>
+                            <div class="text-right">
+                                <a href="/admin/addProducts" class="btn btn-primary mb-4">+ Add Products</a>
+                            </div>
+                            
                         </div>
                         <div class="table-responsive" style="border-radius: 20px;">
                             <table class="table">
@@ -109,48 +120,54 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% products.forEach((product,index) => { %>
-                                        <tr>
-                                            <td><%= product.name %></td>
-                                            <td>
-                                               <% console.log( product)%>
-                                                <img style="height: 50px; width: 50px; border: 2px solid #000; border-radius: 10px;" src="/productImages/<%= product.images[0] %>" alt="<%= product.name %> main image" class="img-fluid" data-toggle="modal" data-target="#modal-<%= index %>">
-                                                
-                                            </td>
-                                            <td>₹<%= product.price %></td>
-                                            <td><%= product.categoryName.name %></td>
-                                            <td><%= product.quantity %></td>
-                                            <td class="text-right align-middle">
-                                                <a href="/admin/editProduct?productId=<%= product._id %>" class="btn-status-toggle" data-productid="<%= product._id %>">
-                                                
-                                                    <span class="btn ml-3 edit-button">EDIT</span>                                                                                                         
-                                                </a>
-                                                <% if (product.is_listed) { %>
-                                                    <a>
-                                                        <button id="status-button-<%= product._id %>" onclick="confirmAction('<%= product._id %>','unlist')" class="btn ml-3 red-button">Unlist</button>
+                                    <% if(products.length>0) {%>
+                                        <% products.forEach((product,index) => { %>
+                                            <tr>
+                                                <td><%= product.name %></td>
+                                                <td>
+                                                   <% console.log( product)%>
+                                                    <img style="height: 50px; width: 50px; border: 2px solid #000; border-radius: 10px;" src="/productImages/<%= product.images[0] %>" alt="<%= product.name %> main image" class="img-fluid" data-toggle="modal" data-target="#modal-<%= index %>">
+                                                    
+                                                </td>
+                                                <td>₹<%= product.price %></td>
+                                                <td><%= product.categoryName.name %></td>
+                                                <td><%= product.quantity %></td>
+                                                <td class="text-right align-middle">
+                                                    <a href="/admin/editProduct?productId=<%= product._id %>" class="btn-status-toggle" data-productid="<%= product._id %>">
+                                                    
+                                                        <span class="btn ml-3 edit-button">EDIT</span>                                                                                                         
                                                     </a>
-                                                <% } else { %>
-                                                    <a >
-                                                        <button id="status-button-<%= product._id %>" onclick="confirmAction('<%= product._id %>','list')" class="btn ml-3 green-button">List</button>
-                                                    </a>
-                                                <% } %>
-                                            </td>
-                                        </tr>
-                                        <div class="modal fade" id="modal-<%= index %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                              <div class="modal-content p-4" style="border-radius: 20px;">
-
-                                                <img style="width: 100%;" src="/productImages/<%= product.images[0] %>" alt="<%= product.name %> main image" class="img-fluid" >
-
-                                                <div class="modal-footer mx-auto">
-                                                  <button type="button" class="btn btn-primary" data-dismiss="modal" style="border-radius: 10px;">
-                                                    <span>Close</span>
-                                                  </button>
+                                                    <% if (product.is_listed) { %>
+                                                        <a>
+                                                            <button id="status-button-<%= product._id %>" onclick="confirmAction('<%= product._id %>','unlist')" class="btn ml-3 red-button">Unlist</button>
+                                                        </a>
+                                                    <% } else { %>
+                                                        <a >
+                                                            <button id="status-button-<%= product._id %>" onclick="confirmAction('<%= product._id %>','list')" class="btn ml-3 green-button">List</button>
+                                                        </a>
+                                                    <% } %>
+                                                </td>
+                                            </tr>
+                                            <div class="modal fade" id="modal-<%= index %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                  <div class="modal-content p-4" style="border-radius: 20px;">
+    
+                                                    <img style="width: 100%;" src="/productImages/<%= product.images[0] %>" alt="<%= product.name %> main image" class="img-fluid" >
+    
+                                                    <div class="modal-footer mx-auto">
+                                                      <button type="button" class="btn btn-primary" data-dismiss="modal" style="border-radius: 10px;">
+                                                        <span>Close</span>
+                                                      </button>
+                                                    </div>
+                                                  </div>
                                                 </div>
                                               </div>
-                                            </div>
-                                          </div>
-                                    <% }); %>
+                                        <% }); %>
+                                    <% }else{ %>
+                                        <tr>
+                                            <td><p>No Products available</p></td>
+                                        </tr>
+                                    <% } %>
                                 </tbody>
                             </table>
                         </div>
@@ -168,10 +185,6 @@
             <%= success %>
         </div>
     <% } %>
-    
-    <div class="text-center">
-        <a href="/admin/addProducts" class="btn btn-primary mb-5">+ Add Products</a>
-    </div>
 </div>
 
 <script>

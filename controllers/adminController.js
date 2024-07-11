@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt')
 const User = require('../models/userModel')
 const Category = require('../models/categoryModel')
 const Product = require('../models/productModel')
+const Order = require('../models/orders')
 const path = require('path')
 const multer = require('multer');
 
@@ -38,7 +39,6 @@ const verifyLogin = async (req,res)=>{
 const loadLogin = async(req,res) => {
     try {
         res.render('adminLogin');
-
     } catch (error) {
         console.log(error.message);
     }
@@ -46,9 +46,21 @@ const loadLogin = async(req,res) => {
 
 const loadDashboard = async(req, res) => {
     try {
-        // console.log('dashboard')
-        res.render('adminDashboard');
-
+        const userCount = await User.find({is_admin:false}).count()
+        const productCount = await Product.find({}).count()
+        let totalEarning = 0;
+        const result = await Order.aggregate([{
+            $group:{
+                _id: null,
+                total: {$sum: '$subTotal'}
+            }
+        }]);
+        if(result.length>0){
+            totalEarning = result[0].total
+        }else{
+            totalEarning = 0
+        }
+        res.render('adminDashboard',{userCount,productCount,totalEarning});
     } catch (error) {
         console.log(error.message);
     }
@@ -67,9 +79,12 @@ const logout = async(req,res)=>{
 
 const userList = async(req,res)=>{
     try {
-        const userData = await User.findById({_id:req.session.admin});
-        const userData1 = await User.find({is_admin:0})
-        res.render('userList',{admin:userData,users:userData1})
+        let page = parseInt(req.query.page)  || 0;
+        let limit = 5
+        let skip = page * limit;
+        const userCount = await User.find({is_admin:false}).count()
+        const userData1 = await User.find({is_admin:false}).skip(skip).limit(limit)
+        res.render('userList',{users:userData1,page,userCount})
     } catch (error) {
         console.log(error.message);
     }

@@ -150,13 +150,13 @@ const transporter = nodemailer.createTransport({
       user: process.env.user,
       pass: process.env.pass
     }
-  });
+});
   
   // Generate OTP
-  function generateOTP() {
+function generateOTP() {
     const otp = Math.floor(1000 + Math.random() * 9000);
     return otp.toString();
-  }
+}
 
 
 //************** insert new user ****************
@@ -171,7 +171,7 @@ const insertUser = async (req, res) => {
             res.render('register', {message: "User alredy existing...!!!"});
         }
         else{
-                const spassword = await securePassword(password);
+            const spassword = await securePassword(password);
 
                 const user = User({
                     name: name,
@@ -190,7 +190,7 @@ const insertUser = async (req, res) => {
                     
                     // console.log(req.body.register_email);
 
-                    const otp = generateOTP();
+                    const otp =  generateOTP();
                     console.log(email,otp);
                     const mailOptions = {
                         from: process.env.user,
@@ -208,7 +208,7 @@ const insertUser = async (req, res) => {
                         </div>`
                     };
 
-                    await transporter.sendMail(mailOptions);
+                    await transporter.sendMail(mailOptions);    
                     const confirmation = Otp({
                         email: email,
                         otp: otp
@@ -298,14 +298,21 @@ const verifyOTP = async (req, res) => {
             const data = await User.findOne({email: email})
             req.session.user_id = data._id
             // res.status(200).send('OTP verification successful');
-            if(req.body.forgot){
+            if(forgot){
                 res.redirect('/forgotPassword')
             }else{
                 res.redirect('/home')
             }
         } else {
             // res.status(400).send('Invalid OTP');
-            res.render('otp',{message: 'Invalid otp',email: email})
+            // res.render('otp',{message: 'Invalid otp',email: email})
+            if(forgot){
+                req.flash('otpErr','Invalid OTP.!!!')
+                return res.redirect(`/loadOtp?email=${email}&forgot=${true}`)
+            }else{
+                req.flash('otpErr','Invalid OTP.!!!')
+                return res.redirect(`/loadOtp?email=${email}`)
+            }
         }
     } catch (error) {
         console.error('Error while verifying OTP:', error);
@@ -318,7 +325,8 @@ const loadOtp = async(req,res)=>{
     try {
         const email = req.query.email;
         const forgot = req.query.forgot;
-        res.render('otp',{message: '',email,forgot})
+        const message = req.flash('otpErr')
+        res.render('otp',{message,email,forgot})
     } catch (error) {
         console.log(error.message);
     }

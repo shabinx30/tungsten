@@ -2,9 +2,14 @@ const Order = require('../models/orders')
 
 const orderlist = async (req,res)=>{
     try {
-        const orders = await Order.find({}).sort({_id: -1}).populate('orderedProducts.productId').exec();
+        let page = parseInt(req.query.page) || 0;
+        let limit = 5;
+        let skip = (page * limit)
+
+        const orderCount = await Order.find({}).count()
+        const orders = await Order.find({}).sort({_id: -1}).populate('orderedProducts.productId').skip(skip).limit(limit)
         // console.log(orders.orderedProducts);
-        res.render('orderList',{orders})
+        res.render('orderList',{orders,page,orderCount})
     } catch (error) {
         console.log(error.message);
         res.status(400).send(error.message)
