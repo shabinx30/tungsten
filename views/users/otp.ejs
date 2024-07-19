@@ -150,12 +150,15 @@
                                     </div><!-- End .form-group -->
                                     <div class="text-right mb-3">
                                       <!-- <a href="" id="resend-button" disabled class="forgot-link">Resend OTP</a> -->
-                                      <button id="resend-button" style="border: none; background-color: #f0f8ff00; color: #eea287;" disabled>Resend OTP after <div id="timer" style="color: black; display: inline;">1:00</div></button>
+                                      <p style="border: none; background-color: #f0f8ff00; color: #ff9b76; display: inline;">Resend OTP after <div id="timer" style="color: black; display: inline;">1:00</div></p>
                                     </div>
                                     <div class="text-center">
                                       <button type="submit" class="btn btn-outline-primary-2" style="border-radius: 10px;">
                                         <span>Verify OTP</span>
                                         <i class="icon-long-arrow-right"></i>
+                                      </button>
+                                      <button id="resend-button" onclick="window.location.href=`/resendOtp?email=<%= email %>&forgot=${true}`" class="btn btn-outline-primary-2 disabled" style="border-radius: 10px; height: 2.8em;" disabled>
+                                        <span>Resend OTP</span>
                                       </button>
                                     </div>
                                 </form>
@@ -578,7 +581,8 @@
       if (totalSecondsRemaining <= 0) {
         clearInterval(countdownInterval);
         // Optionally, you can add code here to enable the link or perform any other action when the timer reaches zero.
-        resendButton.disabled=false
+        resendButton.className = 'btn btn-outline-primary-2'
+        resendButton.disabled = false
       }
     }, 1000); // Update every second
   

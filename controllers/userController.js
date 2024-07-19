@@ -246,22 +246,15 @@ const userDashboard = async(req,res)=>{
             req.flash('addressop','open')
             return res.redirect('/userDashboard')
         }
+        else if(req.query.orderOp){
+            req.flash('orderOP','open')
+            return res.redirect('/userDashboard')
+        }
         const addressop = req.flash('addressop')
         const addressmsg = req.flash('addressmsg')
+        const orderOp = req.flash('orderOP')
         // console.log(addresses.addresses);
-        if(addresses){
-            if(order){
-                console.log('add&ord');
-                res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg,orders: order,addressop,wallet, transactionHistory })
-            }
-            else{
-                console.log('add');
-                res.render('userDashboard',{user: userData,addresses: addresses.addresses,addressmsg,orders: [],addressop,wallet: [],transactionHistory:[] })
-            }
-        }else{
-            console.log('noadd');
-            res.render('userDashboard',{user: userData,addresses: [],addressmsg,orders: [],addressop, wallet: [],transactionHistory:[] })
-        }
+        res.render('userDashboard',{user: userData?userData:[],addresses: addresses?addresses.addresses:[],orders: order?order:[],wallet: wallet?wallet:[],transactionHistory,addressop,addressmsg,orderOp})
     } catch (error) {
         console.log(error.message);
         res.status(500).send('Internal Server Error');
@@ -327,6 +320,44 @@ const loadOtp = async(req,res)=>{
         const forgot = req.query.forgot;
         const message = req.flash('otpErr')
         res.render('otp',{message,email,forgot})
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+const resendOtp = async (req,res)=>{
+    try {
+        const email = req.query.email
+        const userData = await User.findOne({email: email})
+        const otp =  generateOTP();
+        console.log('resend :',email,otp);
+
+        const mailOptions = {
+            from: process.env.user,
+            to: email,
+            subject: 'OTP for Email Verification',
+            html: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+            <h2 style="color: black; text-align: center;">Email Verification</h2>
+            <p style="color: black"><strong>Hello ${userData.name},</strong> It seems you are registering at <strong style="color: coral">TUNGSTEN</strong> and trying to verify your email.</p>
+            <p style="color: black">Here is the verification code. Please copy it and verify your Email.</p>
+            <div style="background-color: #e6f0ff; padding: 10px; border-radius: 20px; text-align: center; margin: 20px 0; border: 1px solid #ccc;">
+                <strong style="font-size: 20px;">Code: <strong style="color: coral">${otp}</strong></strong>
+            </div>
+            <p style="color: gray;">If this email is not intended for you, please ignore and delete it. Thank you for understanding.</p>
+            </div>`
+        };
+
+        await transporter.sendMail(mailOptions);    
+        const confirmation = Otp({
+            email: email,
+            otp: otp
+        });
+        confirmation.save()//save data into data base
+
+        res.redirect(req.query.forgot? `/loadOtp?email=${email}&forgot=${true}`: `/loadOtp?email=${email}`)
+        
     } catch (error) {
         console.log(error.message);
     }
@@ -417,22 +448,31 @@ const forgotPassword = async (req,res)=>{
         const userData = await User.findOne({email: email})
         if(userData){
             const otp = generateOTP();
-                    console.log(email,otp);
-                    const mailOptions = {
-                        from: 'tungsten.industries007@gmail.com', // my email address
-                        to: email,
-                        subject: 'OTP for Email Verification',
-                        text: `Your OTP (One-Time Password) for email verification is: ${otp}`
+                console.log(email,otp);
+                const mailOptions = {
+                    from: 'tungsten.industries007@gmail.com', // my email address
+                    to: email,
+                    subject: 'OTP for Email Verification',
+                    html: `
+                        <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+                        <h2 style="color: black; text-align: center;">Email Verification</h2>
+                        <p style="color: black"><strong>Hello ${userData.name},</strong> It seems you are registering at <strong style="color: coral">TUNGSTEN</strong> and trying to verify your email.</p>
+                        <p style="color: black">Here is the verification code. Please copy it and verify your Email.</p>
+                        <div style="background-color: #e6f0ff; padding: 10px; border-radius: 20px; text-align: center; margin: 20px 0; border: 1px solid #ccc;">
+                            <strong style="font-size: 20px;">Code: <strong style="color: coral">${otp}</strong></strong>
+                        </div>
+                        <p style="color: gray;">If this email is not intended for you, please ignore and delete it. Thank you for understanding.</p>
+                        </div>`
                     };
 
-                    await transporter.sendMail(mailOptions);
-                    const confirmation = Otp({
-                        email: email,
-                        otp: otp
-                    });
-                    confirmation.save()//save data into data base
+                await transporter.sendMail(mailOptions);
+                const confirmation = Otp({
+                    email: email,
+                    otp: otp
+                });
+                confirmation.save()//save data into data base
 
-                    res.redirect(`/loadOtp?email=${email}&forgot=${true}`)
+                res.redirect(`/loadOtp?email=${email}&forgot=${true}`)
         }else{
             req.flash('errmsg', 'Email is not existing...!!!');
             return res.redirect('/signIn')
@@ -529,5 +569,6 @@ module.exports = {
     forgotPassword,
     googleLoginSuccess,
     googleLoginFailure,
-    savePassword
+    savePassword,
+    resendOtp
 }

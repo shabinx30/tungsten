@@ -180,9 +180,20 @@ const removeFromOrders = async (req, res) => {
                 const amount = orderedProduct.price;
                 console.log(amount);
 
+                const date = format(new Date(), 'dd/MM/yy, hh:mm a');
+
                 const wallet = await Wallet.findOneAndUpdate(
                     { userId: req.session.user_id },
-                    { $inc: { balance: amount } },
+                    {   $inc: { balance: amount },
+                        $addToSet: {
+                            transactionHistory: {
+                                amount,
+                                date,
+                                paymentMethod: 'cancell amount',
+                                status: 'credit'
+                            }
+                        }
+                    },
                     { new: true }
                 );
 

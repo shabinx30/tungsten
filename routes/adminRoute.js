@@ -71,8 +71,11 @@ admin_route.get('/orderHistory',adminAuth.isLogin,orderController.orderlist)
 admin_route.post('/productStatus',adminAuth.isLogin,orderController.changeStatus)
 
 //offer
-admin_route.get('/ProductOfferList',adminAuth.isLogin,offerController.loadOffers)
+admin_route.get('/ProductOfferList',adminAuth.isLogin,offerController.loadProductOffers)
 admin_route.post('/addOffer',adminAuth.isLogin,offerController.addOffer)
+
+admin_route.get('/CategoryOfferList',adminAuth.isLogin,offerController.loadCategoryOffers)
+admin_route.post('/addCategoryOffer',adminAuth.isLogin,offerController.addCategoryOffer)
 
 
 module.exports = admin_route

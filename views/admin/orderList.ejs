@@ -100,7 +100,7 @@
             <div class="" style="width: 100%">
               <!-- Added div with custom class -->
               <h2 class="card-title text-center mb-5">ORDER HISTORY</h2>
-              <p class="text-center">Showing <strong style="color: #000;"><%= (page+1)*5 %></strong> of <strong style="color: #000;"><%= orderCount %></strong></p>
+              <p class="text-center">Showing <strong style="color: #000;"><%= orders.length %></strong> of <strong style="color: #000;"><%= orderCount %></strong></p>
             </div>
             <% if (locals.success) { %>
             <div

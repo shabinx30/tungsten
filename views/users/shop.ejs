@@ -171,13 +171,15 @@
                             <div class="product" style="border-radius: 10px; border: 1px solid #d4d4d4;">
                                 <figure class="product-media">
                                     <% if(product.quantity==0){ %>
-                                        <span class="product-label label-sale" style="border-radius: 7px; ">Out of stock</span>
+                                        <span class="product-label label-sale" style="border-radius: 7px;">Out of stock</span>
+                                    <% }else if(product.offer>0){ %>
+                                        <span class="product-label label-new" style="border-radius: 7px;"><%= product.offer %>% off</span>
                                     <% } %>
                                     <a href="/product?productDetails=<%= product._id %>">
                                         <% if(product.quantity == 0) {%>
-                                            <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image" style="filter: saturate(0);">
+                                            <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image" style="filter: saturate(0); object-fit: cover;max-height:280px;">
                                         <% }else{ %>
-                                            <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image">
+                                            <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image" style="object-fit: cover;max-height:280px;">
                                         <% } %>
                                     </a>
 

@@ -1,33 +1,40 @@
 const mongoose = require('mongoose')
 
 const productSchema = mongoose.Schema({
-    name:{
+    name: {
         type:String,
         required:true
     },
-    price:{
+    price: {
         type:Number,
         required:true
     },
-    categoryName:{
+    categoryName: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
         required: true
     },
-    quantity:{
+    quantity: {
         type:Number,
         required:true
     },
-    description:{
+    description: {
         type:String,
         required:true
     },
-    images:{
+    images: {
         type:Array,
-        // validate:[arrayLimit,'{PATH} exceeds the limit of 4'],
         required:true
     },
-    is_listed:{
+    offer: {
+        type: Number,
+        default: 0
+    },
+    finalPrice: {
+        type: Number,
+        default: 0
+    },
+    is_listed: {
         type:Boolean,
         required:true
     }

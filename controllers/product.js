@@ -2,22 +2,24 @@ const Product = require('../models/productModel')
 const Category = require('../models/categoryModel')
 const multer = require('multer')
 const path = require('path')
-const flash = require('express-flash')
+const ProductOffer = require('../models/ProductOffers')
 
 
 //rendering the shop page
 const shop = async (req, res) => {
     try {
-        // Get the page number from query, default to 0 if not provided
+
         let page = parseInt(req.query.page) || 0;
         let type = req.query.type;
 
-        // Define limit for pagination
+
         const limit = 4;
         const skip = (page * limit);
 
         let productData;
         let productCount;
+
+        const offer = await ProductOffer.find({})
 
         if (type == 1) {
             productCount = await Product.find({ is_listed: true }).countDocuments();

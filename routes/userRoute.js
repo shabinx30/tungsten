@@ -119,6 +119,7 @@ user_route.get("/logout", userAuth.isLogin,userController.logout);
 //Otp
 user_route.get("/loadOtp", userController.loadOtp);
 user_route.post("/verifyotp", userController.verifyOTP);
+user_route.get('/resendOtp',userController.resendOtp)
 
 //cart
 user_route.get("/cart", userAuth.isLogin, cartController.loadCart);

@@ -161,6 +161,7 @@
                                 </div><!-- .End .tab-pane -->
 
                                 <div class="tab-pane fade " id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
+                                    <p id="orderOp" hidden><%= locals.orderOp %></p>
                                     <% if(orders.length>0){ %>  
                                         <% orders.forEach((order)=>{ %>
                                             <div class="mb-3 p-4 shadow-lg " style="border: 1px solid #eea287; border-radius: 10px;">
@@ -204,13 +205,13 @@
                                 </div><!-- .End .tab-pane -->
 
                                 <div class="tab-pane fade" id="tab-downloads" role="tabpanel" aria-labelledby="tab-downloads-link">
-                                    <% console.log(wallet.length) %>
-                                    <% if(wallet.length>0) { %>
+
+                                    <% if(wallet) { %>
                                         <div class="col-lg-6" >
                                             <div class="card card-dashboard shadow-lg" style="border-radius: 20px; border: 1px solid #eea287;">
                                                 <div class="card-body">
                                                     <div class="d-flex ">
-                                                        <strong style="color: #000000; font-size: medium;">Balance: ₹</strong><p style="color: #1b91ff; font-size: medium;" id="wallet_balance"><%= wallet.balance %></p>
+                                                        <strong style="color: #000000; font-size: medium;">Balance: ₹</strong><p style="color: #00b530; font-size: medium;" id="wallet_balance"><%= wallet.balance %></p>
                                                     </div>
                                                     <div class="d-flex">
                                                         <a href="/addWallet" class="btn btn-outline-primary-2 mx-auto" style="border-radius: 10px;" data-toggle="modal" data-target="#WalletWithDraw">
@@ -813,26 +814,36 @@
 </script>
 
 <script>
-    const addressmsg = document.getElementById('addressmsg')
-    if(addressmsg.textContent){
+    document.addEventListener('DOMContentLoaded', () => {
+    const addressmsg = document.getElementById('addressmsg');
+    if (addressmsg.textContent) {
         console.log('adderror');
-        setTimeout(()=>{
-            const address_link = document.getElementById('tab-address-link')
+        setTimeout(() => {
+            const address_link = document.getElementById('tab-address-link');
             const addAddress = document.getElementById('addAddress');
-            address_link.click()
-            addAddress.click()
-        },500)
+            address_link.click();
+            addAddress.click();
+        }, 500);
     }
+
     const addressop = document.getElementById('addressop');
-    if(addressop.textContent){
+    if (addressop.textContent) {
         console.log('adderror');
-        setTimeout(()=>{
-            const address_link = document.getElementById('tab-address-link')
-            // const addAddress = document.getElementById('addAddress');
-            address_link.click()
-            // addAddress.click()
-        },500)
+        setTimeout(() => {
+            const address_link = document.getElementById('tab-address-link');
+            address_link.click();
+        }, 500);
     }
+
+    const orderOp = document.getElementById('orderOp');
+    if (orderOp.textContent) {
+        console.log('orderOp');
+        setTimeout(() => {
+            const orderLink = document.getElementById('tab-orders-link');
+            orderLink.click();
+        }, 500);
+    }
+});
 </script>
 <!--  Ask for confirmation for deleting  using SweetAlert -->
 <script>

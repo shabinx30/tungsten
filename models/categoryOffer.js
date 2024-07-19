@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
-const offerSchema = new mongoose.Schema({
-    productName: {
+const CategoryModel = mongoose.Schema({
+    categoryId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
+        ref: 'Category',
         required: true
     },
     description: {
@@ -19,10 +19,10 @@ const offerSchema = new mongoose.Schema({
         required: true,
         index: { expires: 0 }
     },
-    is_activated: {
+    is_activated :{
         type: Boolean,
-        default: true,
+        default: true
     }
 });
 
-module.exports = mongoose.model('ProductOffer', offerSchema);
+module.exports = mongoose.model('CategoryOffer',CategoryModel)
