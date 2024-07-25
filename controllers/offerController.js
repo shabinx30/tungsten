@@ -10,7 +10,7 @@ const loadProductOffers = async (req,res)=>{
         const offers = await ProductOffers.find({}).populate('productName').exec()
         const products = await Product.find({is_listed: true})
         if(offers){
-            const newOffferMsg = req.flash('newOffferMsg')
+            const newOffferMsg = req.flash('newOfferMsg')
             res.render('ProductOfferList',{offers,newOffferMsg,products})
         }
     } catch (error) {
@@ -25,6 +25,12 @@ const addOffer = async (req,res)=>{
         const { productName,description,discount,expiryDate } = req.body
         // console.log(startingDate,expiryDate);
 
+        const exist = await ProductOffers.findOne({productName})
+        if(exist){
+            req.flash('newOfferMsg','This offer is already existing...!!!')
+            return res.redirect('/admin/ProductOfferList')
+        }
+        
         const result = new ProductOffers({
             productName,
             description,
@@ -34,12 +40,12 @@ const addOffer = async (req,res)=>{
         })
         await result.save()
 
-        const productData = await Product.findOne({_id: productName})
-        let productDiscount = productData.price*parseInt(discount)/100
-        if(productData.offer<discount){
-            await Product.findOneAndUpdate({_id: productName},{$set: {finalPrice: productDiscount}})
-            console.log('offer updated');
-        }
+        // const productData = await Product.findOne({_id: productName})
+        // let productDiscount = productData.price*parseInt(discount)/100
+        // if(productData.offer<discount){
+        //     await Product.findOneAndUpdate({_id: productName},{$set: {finalPrice: productDiscount,offer}})
+        //     console.log('offer updated');
+        // }
 
         if(!result){
             req.flash('newOffferMsg', 'Data not found or not updated');
@@ -70,23 +76,23 @@ const loadCategoryOffers = async (req,res)=>{
 const addCategoryOffer = async (req, res) => {
     try {
         const { categoryId, description, discount, expiryDate } = req.body;
-        const discountValue = parseInt(discount);
+        // const discountValue = parseInt(discount);
 
         
-        const products = await Product.find({ categoryName: categoryId });
+        // const products = await Product.find({ categoryName: categoryId });
 
         
-        const updatePromises = products.map(product => {
-            if (product.offer <= discountValue) {
-                product.offer = discountValue ;  
-                product.finalPrice = product.price * ( discountValue / 100);
-                return product.save();
-            }
-            return Promise.resolve();  
-        });
+        // const updatePromises = products.map(product => {
+        //     if (product.offer <= discountValue) {
+        //         product.offer = discountValue ;  
+        //         product.finalPrice = product.price * ( discountValue / 100);
+        //         return product.save();
+        //     }
+        //     return Promise.resolve();  
+        // });
 
         
-        await Promise.all(updatePromises);
+        // await Promise.all(updatePromises);
         
         const result = new CategoryOffer({
             categoryId,

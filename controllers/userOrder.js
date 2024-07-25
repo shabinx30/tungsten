@@ -7,6 +7,7 @@ const { format } = require('date-fns');
 const userHelper = require('../helpers/user-helper')
 const walletController = require('../controllers/walletController')
 const Wallet = require('../models/wallet')
+const Coupon = require('../models/couponModel')
 
 
 
@@ -17,15 +18,51 @@ const loadCheckOut = async (req,res)=>{
         const userData = await User.findOne({ _id: userId })
         const cart = await Cart.findOne({ userId: userId }).populate('products.productId').exec();
         const address = await Address.findOne({userId: userId})
+        
+        let total = 0
+
+        if(cart){
+            cart.products.forEach((val)=>{
+                total+=val.productId.price*val.quantity
+            })
+        }
+
+        // coupon
+        const coupon = await Coupon.aggregate([
+            {
+                $match: {
+                    is_activated: true,
+                    claimed: false
+                }
+            },
+            {
+                $addFields: {
+                    comparisonResult: { $gte: [total, "$cryteriaAmount"] }
+                }
+            },
+            {
+                $match: {
+                    comparisonResult: true
+                }
+            },
+            {
+                $project: {
+                    comparisonResult: 0
+                }
+            }
+        ]);
+
+        console.log(coupon);
+
         if(cart){
             if(address){
-                res.render('checkOut',{products: cart.products,name: userData.name,addresses: address.addresses})
+                res.render('checkOut',{products: cart.products,name: userData.name,addresses: address.addresses,coupon: coupon.length>0 ? coupon : []})
             }
             else{
-                res.render('checkOut',{products: cart.products,name: userData.name,addresses:[]})
+                res.render('checkOut',{products: cart.products,name: userData.name,addresses:[],coupon: coupon.length>0 ? coupon : []})
             }
         }else{
-            res.render('checkOut',{products: [],addresses: [],name:userData.name})
+            res.render('checkOut',{products: [],addresses: [],name:userData.name,coupon: coupon.length>0 ? coupon : []})
         }
  
     } catch (error) {
@@ -37,7 +74,7 @@ const loadCheckOut = async (req,res)=>{
 
 const placeOrder = async (req, res) => {
     try {
-        const { selected_address,paymentMethod } = req.body;
+        const { selected_address,paymentMethod,coupon } = req.body;
         const userId = req.session.user_id;
         // console.log(req.body);
         if (!paymentMethod) {
@@ -69,7 +106,7 @@ const placeOrder = async (req, res) => {
             if (!product) {
                 throw new Error(`Product with ID ${item.productId} not found`);
             }
-            const price = product.price;
+            const price = product.finalPrice;
             if (typeof price !== 'number') {
                 throw new Error(`Invalid price for product ID ${item.productId}`);
             }

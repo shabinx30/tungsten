@@ -107,10 +107,10 @@
               <!-- Added div with custom class -->
               
               <h2 class="card-title text-center mb-3">
-                CATEGORY OFFER LIST
+                COUPON LIST
               </h2>
               <div class="text-right mb-3">
-                <a class="purple-button" data-toggle="modal" data-target="#addOffer" style="color: white;">+ Add offer</a>
+                <a class="purple-button" data-toggle="modal" data-target="#addOffer" style="color: white;">+ Add Coupon</a>
               </div>
             <!-- </div>
             <% if (locals.success) { %>
@@ -127,27 +127,29 @@
                 <thead>
                   <tr style="width: 100%; background-color: #936dd1; color: #000">
                     <th scope="col">No.</th>
-                    <th scope="col">Category Name</th>
+                    <th scope="col">Coupon Code</th>
                     <th scope="col">Discount</th>
+                    <th scope="col">Cryteria Amount</th>
                     <th scope="col">Expiry</th>
                     <th scope="col" class="text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <% if (categoryOffers.length > 0) { %> <%
-                    categoryOffers.forEach((offer, index) => { %>
+                  <% if (coupons.length > 0) { %> <%
+                    coupons.forEach((coupon, index) => { %>
                   <tr style="font-size: 14px;">
                     <td><%= ++index %></td>
                     <!-- Index starts from 0, so adding 1 for display -->
-                    <td><%= offer.categoryId.name %></td>
-                    <td><%= offer.discount %>%</td>
-                    <td><%= offer.expiryDate.toLocaleDateString('en-US'); %></td>
+                    <td><%= coupon.couponCode %></td>
+                    <td><%= coupon.discount %>%</td>
+                    <td><%= coupon.cryteriaAmount %></td>
+                    <td><%= coupon.expiryDate.toLocaleDateString('en-US'); %></td>
 
                     <td class="text-right align-middle">
                       <a
-                        onclick="deleteCategory('<%= offer._id %>')"
+                        onclick="deleteCategory('<%= coupon._id %>')"
                         class="btn-status-toggle"
-                        data-categoryid="<%= offer._id %>"
+                        data-categoryid="<%= coupon._id %>"
                       >
                         <span
                           class="btn delete-button"
@@ -155,9 +157,9 @@
                         >
                       </a>
                       <a
-                        href="/admin/editProductOffer?offerId=<%= offer._id %>&offerName=<%= offer.productName %>"
+                        href="/admin/editProductOffer?offerId=<%= coupon._id %>&offerName=<%= coupon.productName %>"
                         class="btn-status-toggle"
-                        data-categoryid="<%= offer._id %>"
+                        data-categoryid="<%= coupon._id %>"
                       >
                         <span
                           class="btn ml-3 edit-button"
@@ -166,10 +168,10 @@
                       </a>
 
 
-                      <% if(offer.is_listed==true) { %>
-                        <button id="status-button-<%= offer._id %>" onclick="confirmAction('<%= offer._id %>')" class="btn ml-3 red-button">Deactivate</button>
+                      <% if(coupon.is_listed==true) { %>
+                        <button id="status-button-<%= coupon._id %>" onclick="confirmAction('<%= coupon._id %>')" class="btn ml-3 red-button">Deactivate</button>
                       <%} else { %>
-                        <button id="status-button-<%= offer._id %>" onclick="confirmAction('<%= offer._id %>')" class="btn ml-3 green-button">Activate</button>
+                        <button id="status-button-<%= coupon._id %>" onclick="confirmAction('<%= coupon._id %>')" class="btn ml-3 green-button">Activate</button>
                       <% } %>  
                     </td> 
                   </tr>
@@ -204,25 +206,12 @@
                           </button>
                       </div>
                       <div class="modal-body pl-3 pr-3">
-                          <form id="forgotForm" action="/admin/addCategoryOffer" method="post">
+                          <form id="CouponForm" action="/admin/addCoupon" method="post">
                               <p class="text-danger" aria-live="polite" id="forgot_error"><%= locals.forgot %></p>
                               <div class="form-group">
-                                  <label for="forgot_password" style="color: #000;">Category Name *</label>
-                                  <select name="categoryId" id="" style="border-radius: 5px; font-size: 14px; width: 100%; height: 2.5em; padding: .5em;">
-                                    <% if(categories.length>0) {%>
-                                      <% categories.forEach((val)=>{ %>
-                                        <option value="<%= val._id %>"><%= val.name %></option>
-                                      <% }) %>
-                                    <% }else{ %>
-                                      <p>No product</p>
-                                    <% } %>
-                                  </select>
+                                  <label for="forgot_password" style="color: #000;">Coupon Code *</label>
+                                  <input type="text" class="form-control" name="couponCode"style="border-radius: 10px;" placeholder="Code">
                                   <span id="forgot_password_error" class="error-message" style="color: red; font-size: smaller;"></span>
-                              </div> <!--End .form-group -->
-                              <div class="form-group">
-                                <label for="description" style="color: #000;">Description *</label><br>
-                                <textarea name="description" id="description" style="border-radius: 10px; font-size: 14px; width: 100%; padding: .5em;"></textarea>
-                                <span id="forgot_password_error" class="error-message" style="color: red; font-size: smaller;"></span>
                               </div> <!--End .form-group -->
                               <div class="form-group">
                                 <label for="forgot_password" style="color: #000;">Discount % *</label>
@@ -230,8 +219,13 @@
                                 <span id="forgot_password_error" class="error-message" style="color: red; font-size: smaller;"></span>
                               </div> <!--End .form-group -->
                               <div class="form-group">
+                                <label for="forgot_password" style="color: #000;">Cryteria Amount ₹ *</label>
+                                <input type="number" class="form-control" id="forgot_password" name="cryteriaAmount" style="border-radius: 10px;" placeholder="Amount"  autocomplete="off">
+                                <span id="forgot_password_error" class="error-message" style="color: red; font-size: smaller;"></span>
+                              </div> <!--End .form-group -->
+                              <div class="form-group">
                                 <label for="forgot_password" style="color: #000;">Expiry Date *</label>
-                                <input type="date" class="form-control" id="forgot_password" name="expiryDate" style="border-radius: 10px;" placeholder="Discount"  autocomplete="off">
+                                <input type="date" class="form-control" id="forgot_password" name="expiryDate" style="border-radius: 10px;" placeholder="expiryDate"  autocomplete="off">
                                 <span id="forgot_password_error" class="error-message" style="color: red; font-size: smaller;"></span>
                               </div> <!--End .form-group -->
                       </div>

@@ -98,7 +98,7 @@ const quantity = async(req,res)=>{
         // console.log(quantity);
         const cart = await Cart.findOneAndUpdate(
             { userId: userId, 'products.productId': productId }, 
-            { $set: { 'products.$.quantity': quantity } }, 
+            { $set: { 'products.$.quantity': quantity } },
             { new: true }
         );
         if(cart){

@@ -5,6 +5,7 @@ const Product = require('../models/productModel')
 const Order = require('../models/orders')
 const path = require('path')
 const multer = require('multer');
+const mongoose = require('mongoose')
 
 
 
@@ -212,6 +213,10 @@ const deleteCategory = async (req,res)=>{
 const loadEditCategory = async (req,res)=>{
     try {
         const categoryId = req.query.categoryId
+        if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+            return res.redirect('*');
+        }
+
         const categoryName = req.query.categoryName
         res.render('editCategory',{categoryId: categoryId,categoryOldName: categoryName,errmsg:'ok'})
     } catch (error) {

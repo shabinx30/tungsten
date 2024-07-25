@@ -5,6 +5,7 @@
 
 
 
+
         </header>
         
         <div class="page-wrapper" style="background-color: #E9E7FF;">
@@ -61,7 +62,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-lg-3">
+                    <!-- <div class="col-sm-6 col-lg-3">
                         <div class="card border-end " style="border-radius: 15px; border: 1px solid #777777">
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
@@ -80,7 +81,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-sm-6 col-lg-3">
                         <div class="card " style="border-radius: 15px; border: 1px solid #777777">
                             <div class="card-body">
@@ -103,7 +104,12 @@
                 <!-- *************************************************************** -->
                 <!-- Start Sales Charts Section -->
                 <!-- *************************************************************** -->
-                <div class="row">
+
+                <div>
+                    <canvas id="myChart" ></canvas>
+                </div>
+
+                <!-- <div class="row">
                     <div class="col-lg-4 col-md-12">
                         <div class="card" style="border-radius: 15px; border: 1px solid #777777">
                             <div class="card-body">
@@ -170,7 +176,7 @@
                         </div>
                     </div>
                     
-                </div>
+                </div> -->
                 <!-- *************************************************************** -->
                 <!-- End Sales Charts Section -->
                 <!-- *************************************************************** -->
@@ -198,7 +204,7 @@
             <!-- ============================================================== -->
             <!-- footer -->
             <!-- ============================================================== -->
-            <footer class="footer text-center text-muted">
+            <footer class="footer text-center text-muted" style="color: rgb(255, 124, 124);">
                 All Rights Reserved by Freedash. Designed and Developed by <a
                     href="https://adminmart.com/">Adminmart</a>.
             </footer>
@@ -210,6 +216,36 @@
         <!-- End Page wrapper  -->
         <!-- ============================================================== -->
     </div>
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        new Chart(ctx, {
+            type: 'line', // Set the default chart type
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Revenue',
+                    data: [2, 29, 13, 15, 12, 13, 16, 8, 13, 11, 13, 14],
+                    borderColor: 'rgb(144, 132, 255)',
+                    tension: .5
+                },
+                {
+                    label: 'Revenue',
+                    data: [12, 19, 3, 5, 2, 3, 6, 21, 3, 1, 3, 4],
+                    borderColor: 'rgb(255, 124, 124)',
+                    tension: .5
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
     <!-- ============================================================== -->
     <!-- End Wrapper -->
     <!-- ============================================================== -->

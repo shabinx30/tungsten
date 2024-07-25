@@ -28,6 +28,7 @@ const adminController = require('../controllers/adminController');
 const productController = require('../controllers/product')
 const orderController = require('../controllers/order')
 const offerController = require('../controllers/offerController')
+const couponController = require('../controllers/coupon')
 
 admin_route.use(bodyParser.json());
 admin_route.use(bodyParser.urlencoded({extended: true}))
@@ -77,5 +78,9 @@ admin_route.post('/addOffer',adminAuth.isLogin,offerController.addOffer)
 admin_route.get('/CategoryOfferList',adminAuth.isLogin,offerController.loadCategoryOffers)
 admin_route.post('/addCategoryOffer',adminAuth.isLogin,offerController.addCategoryOffer)
 
+
+//counon
+admin_route.get('/couponList',adminAuth.isLogin,couponController.ListConpon)
+admin_route.post('/addCoupon',adminAuth.isLogin,couponController.addCoupon)
 
 module.exports = admin_route

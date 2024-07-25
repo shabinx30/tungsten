@@ -135,13 +135,19 @@
             <div class="page-content">
             	<div class="checkout">
 	                <div class="container">
-            			<div class="checkout-discount">
+            			<!-- <div class="checkout-discount">
             				<form action="#">
         						<input type="text" class="form-control" required id="checkout-discount-input">
             					<label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>
             				</form>
-            			</div><!-- End .checkout-discount -->
+            			</div>End .checkout-discount -->
+                        <h4>Coupons</h4>
+                        <div>
+                            <button data-toggle="modal" data-target="#showCoupons" style="color: #000000; border-radius: 10px;" >View Coupons</button>
+                            
+                        </div>
             			<form id="form" action="/placeOrder" method="POST">
+                            <input type="text" id="couponId" hidden>
 		                	<div class="row">
 		                		<div class="col-lg-9">
 		                			<h2 class="checkout-title">Billing Details</h2><!-- End .checkout-title -->
@@ -235,15 +241,15 @@
 		                					<tbody>
 												<%let total=0 %>
 		                						<% products.forEach((product)=>{ %>
-													<% total += product.quantity*product.productId.price %>
+													<% total += product.quantity*product.productId.finalPrice%>
 													<tr>
 														<td><a href="#"><%=product.productId.name%></a></td>
-														<td>₹<%=product.productId.price%></td>
+														<td>₹<%=product.productId.finalPrice%></td>
 													</tr>
 												<%})%>
 		                						<tr class="summary-subtotal">
 		                							<td>Subtotal:</td>
-		                							<td>₹<%=total%></td>
+		                							<td >₹<%=total%></td>
 		                						</tr><!-- End .summary-subtotal -->
 		                						<tr>
 		                							<td>Shipping:</td>
@@ -251,7 +257,7 @@
 		                						</tr>
 		                						<tr class="summary-total">
 		                							<td>Total:</td>
-		                							<td>₹<%=total%></td>
+		                							<td id="totalAmount">₹<%=total%></td>
 		                						</tr><!-- End .summary-total -->
 		                					</tbody>
 		                				</table><!-- End .table table-summary -->
@@ -479,6 +485,61 @@
             </div><!-- End .modal-content -->
         </div><!-- End .modal-dialog -->
     </div><!-- End .modal -->
+
+    <!-- coupon -->
+    <div class="modal fade" id="showCoupons" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content p-4" style="border-radius: 20px;">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLongTitle">Coupons</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body pl-3 pr-3">
+                    
+                    <p class="text-danger" aria-live="polite" id="forgot_error"><%= locals.forgot %></p>
+                    <div class="form-group p-4">
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">No.</th>
+                                    <th scope="col">Coupon Code</th>
+                                    <th scope="col">Discount</th>
+                                    <th scope="col">Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    <% if( coupon.length > 0) { %>
+                                        <% coupon.forEach((val, index) => { %>
+                                            <tr>
+                                                <td><%= ++index %></td>
+                                                <td><%= val.couponCode %></td>
+                                                <td><%= val.discount %>%</td>
+                                                <td>
+                                                    <button onclick="applyCoupon('<%= val.discount %>','<%= val._id %>')" style="border-radius: 10px; background-color: #72ff72; border: none;" >apply</button>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    <% } else { %>  
+                                        <tr>
+                                            <td colspan="4"><p>No coupons</p></td>
+                                        </tr>
+                                    <% } %>  
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer mx-auto">
+                    <button type="button" class="btn btn-outline-primary-2" id="wallet_withdraw_close" data-dismiss="modal" style="border-radius: 10px; height: 2.9em;">
+                        <span>Close</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div> 
 	
 <%- include('../layouts/footer.ejs') %>
 
@@ -567,6 +628,7 @@
         const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
         const selectedAddress = document.querySelector('input[name="selected_address"]:checked');
         
+        const coupon = document.getElementById('couponId').text
         const selectedPaymentValue = selectedPaymentMethod ? selectedPaymentMethod.value : null;
         const selectedAddressValue = selectedAddress ? selectedAddress.value : null;
         
@@ -579,7 +641,8 @@
             
             axios.post('/placeOrder', {
                 selected_address: selectedAddressValue,
-                paymentMethod: selectedPaymentValue
+                paymentMethod: selectedPaymentValue,
+                coupon
             })
             .then(response => {
                 const result = response.data.result;
@@ -664,4 +727,23 @@
             });
         }
     });
+</script>
+
+<script>
+function applyCoupon(couponId,dis) {
+    
+    let totalElement = document.getElementById('totalAmount');
+    let totalText = totalElement.textContent;
+
+    
+    let totalValue = parseFloat(totalText.replace('₹', '').replace(',', '')); // Remove the currency symbol and commas, and convert to a number
+
+    
+    let discount = parseFloat(dis);
+
+    let discountedAmount = totalValue * (discount / 100);
+    document.getElementById('couponId').value = couponId
+
+    totalElement.textContent = `₹${discountedAmount.toFixed(2)}`;
+}
 </script>

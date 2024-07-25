@@ -89,8 +89,61 @@
   .custom-button{
     border-radius: 20px;
   }
-</style>
 
+  .error{
+    display: flex;
+    z-index: 1001;
+    width: 25%; 
+    height: 35px; 
+    border-radius: 10px;
+    margin-top: 100px;
+    background-color: #000000ad; 
+    margin-left: 40%; 
+    position: absolute;
+    padding: .3em;
+    animation: errorS .5s ease forwards;
+  }
+
+  .error p{
+    margin-left: 1em;
+    color: white;
+  }
+
+  .error div{
+    border-radius: 50%;
+    background-color: #ff5454;
+    height: 90%;
+    width: 24px;
+    padding-left: 5px;
+    margin-left: 1em;
+  }
+
+  @keyframes errorS{
+    0%{
+      margin-top: 0;
+    }
+    100%{
+      margin-top: 100px;
+    }
+  }
+
+  @keyframes errorF{
+    0%{
+      margin-top: 100px;
+    }
+    100%{
+      margin-top: 0;
+    }
+  }
+</style>
+<% if( newOffferMsg && newOffferMsg.length > 0 ){ %>
+  <div class="error" id="newError">
+    <div>
+      <i class="fa-solid fa-xmark" style="color: #ffffff; "></i>
+    </div>
+    <p ><%= newOffferMsg %></p>
+  </div>
+<% } %>
 <div class="page-wrapper">
   <!-- ============================================================== -->
   <!-- Container fluid  -->
@@ -104,10 +157,11 @@
         <div class="card">
           <div class="card-body">
             <div class="" style="width: 100%">
+              
               <!-- Added div with custom class -->
               
               <h2 class="card-title text-center mb-3">
-                OFFER LIST
+                PRODUCT OFFER LIST
               </h2>
               <div class="text-right mb-3">
                 <a class="purple-button" data-toggle="modal" data-target="#addOffer" style="color: white;">+ Add offer</a>
@@ -257,6 +311,17 @@
 </div>
 
 <script>
+  setTimeout(()=>{
+    document.getElementById('newError').style.animation = '.2s ease 0s 1 errorF'
+    // document.getElementById('newError').style.display = 'none'
+  },3000);
+
+  setTimeout(()=>{
+    document.getElementById('newError').style.display = 'none'
+  },3100)
+
+
+
     function confirmAction(categoryId) {
         let categoryBtn = document.getElementById(`status-button-${categoryId}`);
         console.log(categoryBtn);

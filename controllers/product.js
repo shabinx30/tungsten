@@ -3,6 +3,8 @@ const Category = require('../models/categoryModel')
 const multer = require('multer')
 const path = require('path')
 const ProductOffer = require('../models/ProductOffers')
+const mongoose = require('mongoose');
+const CategoryOffer = require('../models/categoryOffer')
 
 
 //rendering the shop page
@@ -12,14 +14,33 @@ const shop = async (req, res) => {
         let page = parseInt(req.query.page) || 0;
         let type = req.query.type;
 
+        let productData = await Product.find({is_listed: true});
+        let productCount;
+
+        for(let product of productData){
+            
+            let finalPrice = product.price
+            let offer = 0;
+
+            const product_offer = await ProductOffer.findOne({productName: product._id,is_activated: true})
+            const category_offer = await CategoryOffer.findOne({categoryId: product.categoryName, is_activated: true })
+            
+            if(product_offer){
+                finalPrice = (product.price*product_offer.discount)/100
+                offer = product_offer.discount
+            }
+            if(category_offer&&offer<category_offer.discount){
+                finalPrice = (product.price*category_offer.discount)/100
+                offer = category_offer.discount
+            }
+            
+            await Product.findOneAndUpdate({_id: product._id},{$set:{finalPrice,offer}})
+            
+        }
 
         const limit = 4;
         const skip = (page * limit);
 
-        let productData;
-        let productCount;
-
-        const offer = await ProductOffer.find({})
 
         if (type == 1) {
             productCount = await Product.find({ is_listed: true }).countDocuments();
@@ -38,6 +59,8 @@ const shop = async (req, res) => {
             productData = productData.filter(product => product.categoryName && product.categoryName.is_listed);
         }
 
+        
+
         // Render the shop view with the fetched product data and product count
         res.render('shop', { products: productData, productCount, page });
     } catch (error) {
@@ -47,15 +70,25 @@ const shop = async (req, res) => {
 };
 
 //loading product data in admin
-const loadProductDetails = async (req,res)=>{
+const loadProductDetails = async (req, res) => {
     try {
-        const productDetails = req.query.productDetails
-        const product = await Product.findById({_id: productDetails}).populate('categoryName').exec();
-        res.render('product',{product: product})
+        const productId = req.query.productDetails;
+
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            return res.redirect('*');
+        }
+
+        const product = await Product.findById({ _id: productId }).populate('categoryName').exec();
+        if (product) {
+            res.render('product', { product });
+        } else {
+            return res.redirect('*');
+        }
     } catch (error) {
-        console.log(error.message);
+        console.error(error.message,'product Details');
+        res.status(500).send('Product not found');
     }
-}
+};
 
 const loadProductList = async (req,res)=>{
     try {
@@ -90,6 +123,10 @@ const listProduct = async(req,res)=>{
 const loadEditProduct = async (req,res)=>{
     try {
         const productId = req.query.productId;
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            return res.redirect('*');
+        }
+
         const productDetails = await Product.findById({_id: productId})
         const categories = await Category.find({is_listed: true})
         const errmsg=req.flash('errmsg')
@@ -153,7 +190,7 @@ const editProduct = async (req, res) => {
 //************** search product ****************
 const searchProducts = async (req,res)=>{
     try {
-
+        let page = 0
         let searchString = req.query.search
         if (!searchString) {
             return res.status(400).json({ error: 'Search string is required' });
@@ -172,7 +209,7 @@ const searchProducts = async (req,res)=>{
         }
 
         let products = await Product.find(searchQuery).sort({ price: -1 })
-        res.render('shop', { products, searchString })
+        res.render('shop', { products, searchString,productCount: products.length,page })
     } catch (error) {
         console.log(error.message);
         res.status(400).send(error.message)
