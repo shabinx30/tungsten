@@ -189,8 +189,8 @@
 
                                     <div class="product-action action-icon-top">
                                         <a  onclick="addToCart('<%= product._id %>')" class="btn-product btn-cart" style="cursor: pointer;"><span>add to cart</span></a>
-                                        <a href="popup/quickView.html" class="btn-product btn-quickview" title="Quick view"><span>quick view</span></a>
-                                        <a href="#" class="btn-product btn-compare" title="Compare"><span>compare</span></a>
+                                        <!-- <a href="popup/quickView.html" class="btn-product btn-quickview" title="Quick view"><span>quick view</span></a> -->
+                                        <!-- <a href="#" class="btn-product btn-compare" title="Compare"><span>compare</span></a> -->
                                     </div><!-- End .product-action -->
                                 </figure><!-- End .product-media -->
 
@@ -199,15 +199,22 @@
                                         <a href="#"><%= product.categoryName.name %></a>
                                     </div><!-- End .product-cat -->
                                     <h3 class="product-title"><a href="/product"><%= product.name %></a></h3><!-- End .product-title -->
+
                                     <div class="product-price">
-                                        ₹<%= product.price %>
-                                    </div><!-- End .product-price -->
-                                    <div class="ratings-container">
-                                        <div class="ratings">
-                                            <div class="ratings-val" style="width: 0%;"></div><!-- End .ratings-val -->
-                                        </div><!-- End .ratings -->
-                                        <span class="ratings-text">( 0 Reviews )</span>
-                                    </div><!-- End .rating-container -->
+                                        <% if(product.offer>0) {%>
+                                            <span class="new-price">₹<%= product.finalPrice %></span>
+                                            <span class="old-price">₹<%= product.price %></span>
+                                        <%}else{%>
+                                            ₹<%= product.price %>
+                                        <%}%>
+                                    </div>
+
+                                    <!-- <div class="ratings-container"> -->
+                                        <!-- <div class="ratings"> -->
+                                            <!-- <div class="ratings-val" style="width: 0%;"></div>End .ratings-val -->
+                                        <!-- </div>End .ratings -->
+                                        <!-- <span class="ratings-text">( 0 Reviews )</span>
+                                    </div>End .rating-container -->
 
                                     <!-- <div class="product-nav product-nav-dots">
                                         <a href="#" style="background: #cc9966;"><span class="sr-only">Color name</span></a>

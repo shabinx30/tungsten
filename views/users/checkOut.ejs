@@ -242,6 +242,7 @@
 												<%let total=0 %>
 		                						<% products.forEach((product)=>{ %>
 													<% total += product.quantity*product.productId.finalPrice%>
+                                                    <p id="" hidden></p>
 													<tr>
 														<td><a href="#"><%=product.productId.name%></a></td>
 														<td>₹<%=product.productId.finalPrice%></td>
@@ -632,10 +633,23 @@
         const selectedPaymentValue = selectedPaymentMethod ? selectedPaymentMethod.value : null;
         const selectedAddressValue = selectedAddress ? selectedAddress.value : null;
         
+        const totalAmount = document.getElementById('totalAmount').textContent
+        const Amount = parseFloat(totalAmount.replace('₹',''))
+        console.log(Amount,selectedPaymentValue);
+
         if (!selectedPaymentValue) {
             document.getElementById('errorMessage').innerText = 'Please select a payment method.';
         } else if (!selectedAddressValue) {
             document.getElementById('errorMessage').innerText = 'Please select an address.';
+        } else if(selectedPaymentValue=='cash'&&Amount>=1000){
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: 'Payment Method Restriction',
+                text: 'Sorry, cash on delivery is not available for amounts exceeding ₹1000. Please choose online payment instead.',
+                showConfirmButton: true,
+                timer: 4000
+            });
         } else {
             document.getElementById('errorMessage').innerText = '';
             

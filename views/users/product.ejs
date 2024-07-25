@@ -169,21 +169,28 @@
 
                         <div class="col-md-6">
                             <div class="product-details">
-                                <h1 class="product-title"><%= product.name %></h1><!-- End .product-title -->
-
-                                <div class="ratings-container">
-                                    <div class="ratings">
-                                        <div class="ratings-val" style="width: 80%;"></div><!-- End .ratings-val -->
-                                    </div><!-- End .ratings -->
-                                    <a class="ratings-text" href="#product-review-link" id="review-link">( 2 Reviews )</a>
-                                </div><!-- End .rating-container -->
+                                
+                                <h1 class="product-title"><%= product.name %></h1>
+                                
+                                <!-- <div class="ratings-container">
+                                    <div class="ratings"> -->
+                                        <!-- <div class="ratings-val" style="width: 80%;"></div>End .ratings-val -->
+                                    <!-- </div>End .ratings -->
+                                    <!-- <a class="ratings-text" href="#product-review-link" id="review-link">( 2 Reviews )</a> -->
+                                <!-- </div>End .rating-container -->
 
                                 <div class="product-price">
-                                    ₹<%= product.price %>
+                                    <% if(product.offer>0) {%>
+                                        <span style="background-color: #67b12e; border-radius: 10px; color: white; padding: .25em; margin-right: .5em; font-size: medium;"><%= product.offer %>%</span>
+                                        <span class="old-price" style="margin-right: .5em;">₹<%= product.price %></span>
+                                        <span class="new-price">₹<%= product.finalPrice %></span>
+                                    <%}else{%>
+                                        ₹<%= product.price %>
+                                    <%}%>
                                 </div><!-- End .product-price -->
 
                                 <div class="product-content">
-                                    <p><%= product.description %>. </p>
+                                    
                                 </div><!-- End .product-content -->
 
                                 <!-- <div class="details-filter-row details-row-size">
@@ -220,7 +227,7 @@
                                         <input type="number" id="qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
                                     </div>End .product-details-quantity -->
                                 <!-- </div>End .details-filter-row -->
-
+                                <br><br>
                                 <div class="product-details-action">
                                     <% if(product.quantity == 0) {%>
                                         <button class="btn btn-block btn-outline-primary-2 disabled" style="border-radius: 10px; border: 1px solid #bcbcbc; background-color: #dfdfdf; color: #aaaaaa; width: 15em;" onclick="addToCart('<%= product._id %>')"><i class="icon-cart-plus"></i>Add to Cart</button>
@@ -268,14 +275,7 @@
                         <div class="tab-pane fade show active" id="product-desc-tab" role="tabpanel" aria-labelledby="product-desc-link">
                             <div class="product-desc-content">
                                 <h3>Product Information</h3>
-                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. Aenean dignissim pellentesque felis. Phasellus ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer ligula vulputate sem tristique cursus. </p>
-                                <ul>
-                                    <li>Nunc nec porttitor turpis. In eu risus enim. In vitae mollis elit. </li>
-                                    <li>Vivamus finibus vel mauris ut vehicula.</li>
-                                    <li>Nullam a magna porttitor, dictum risus nec, faucibus sapien.</li>
-                                </ul>
-
-                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. Aenean dignissim pellentesque felis. Phasellus ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer ligula vulputate sem tristique cursus. </p>
+                                <p><%= product.description %></p>
                             </div><!-- End .product-desc-content -->
                         </div><!-- .End .tab-pane -->
                         <div class="tab-pane fade" id="product-info-tab" role="tabpanel" aria-labelledby="product-info-link">
