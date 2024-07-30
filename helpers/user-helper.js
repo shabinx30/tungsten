@@ -26,6 +26,7 @@ const razorpayRes = async (subTotal,orderId)=>{
             currency: "INR",
             receipt : orderId
         }
+        console.log(subTotal,orderId);
         const order = await new Promise((resolve, reject) => {
             instance.orders.create(options, (err, order) => {
                 if (err) {
@@ -40,8 +41,8 @@ const razorpayRes = async (subTotal,orderId)=>{
 
         return order;
     } catch (error) {
-        console.log(error.message);
-        res.status(400).send(error.message);
+        console.log(error.message,'from order instance of razopay');
+        // res.status(400).send(error.message);
     }
 }
 

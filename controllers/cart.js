@@ -29,48 +29,51 @@ const loadCart = async (req, res) => {
 const addCart = async (req, res) => {
     try {
         const userId = req.session.user_id;
-        const { productId,quantity } = req.body
-        const userExist =  await Cart.findOne({userId: userId})
-        if(!userExist){
-            const userCart = new Cart({
-                userId: userId,
-                products: [
-                    {
-                        productId: productId,
-                        quantity: quantity
-                    }
-                ]
-            });
-            await userCart.save()
-            res.json({success: true})
-        }
-        else{
-            const result = await Cart.findOne({
-                userId: userId,
-                products: {
-                    $elemMatch: {
-                        productId: productId
-                    }
+        const { productId, quantity, size } = req.body;
+
+        const avalability = await Product.findOne({_id: productId})
+        if(avalability.quantity[size] >= quantity ){
+            const cart = await Cart.findOne({ userId: userId });
+            if (!cart) {
+            
+                const userCart = new Cart({
+                    userId,
+                    products: [
+                        {
+                            productId,
+                            quantity,
+                            size
+                        }
+                    ]
+                });
+                await userCart.save();
+                res.json({ success: true });
+            } else {
+
+                const productIndex = cart.products.findIndex(
+                    (p) => p.productId.toString() === productId && p.size === size
+                );
+
+                if (productIndex > -1) {
+
+                    cart.products[productIndex].quantity += quantity;
+                } else {
+
+                    cart.products.push({ productId, size, quantity });
                 }
-            })
-            if(!result){
-                const available = await Product.findOne({_id:productId})
-                if(available.quantity!=0){
-                    const cart = await Cart.findOneAndUpdate({userId: userId},{$addToSet:{products:{productId:productId,quantity:quantity}}})
-                    if(cart) res.json({success: true})
-                }else{
-                   res.json({success: false,error: "Out of stock"}) 
-                }
-                    
-            }else{
-                res.json({success: false})
+
+                await cart.save();
+                res.json({ success: true });
             }
+        }else{
+            return res.json({success: false,error: 'Out Of Stock'})
         }
     } catch (error) {
         console.error('Error:', error.message);
         return res.status(500).json({ success: false, error: error.message });
     }
 };
+
 
 //remove from the cart
 const removeProductFromCart = async (req,res)=> {

@@ -716,17 +716,18 @@
     </div><!-- End .modal-dialog -->
 </div><!-- End .modal -->
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- add to cart fucntionality -->
 <script>
     function addToCart(productId){
+        
         const quantity = 1
         fetch('/addCart', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ productId, quantity })
+            body: JSON.stringify({ productId, quantity,size : 'medium' })
         })
         .then(response => response.json())
         .then(data=>{

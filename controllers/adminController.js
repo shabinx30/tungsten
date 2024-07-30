@@ -284,51 +284,47 @@ const upload = multer({storage: storage }).fields([
 //add product
 const addProduct = async (req, res) => {
     try {
-        // console.log('req.body', req.body);
-        // const categoriesData = await Category.find({});
 
         if (req.body.name.trim().toUpperCase() === '') {
-            // res.render('addProduct', { errmsg: 'Name is required', categories: categoriesData });
             req.flash('errmsg', 'Name is required');
             return res.redirect('/admin/addProducts')
         }
 
-
-                const name = req.body.name.trim().toUpperCase();
-                const exist = await Product.findOne({ name: name });
-                if (exist) {
-                    // res.render('addProduct', { errmsg: 'This Product is already exist...!!!', categories: categoriesData });
-                    req.flash('errmsg', 'This Product is already exist...!!!');
-                    return res.redirect('/admin/addProducts')
-                } else {
-                    const images = req.files['images'].map(e=>e.filename);
-                    console.log(images)
-                // if(req.file.size > 4){
-                //     req.flash('errmsg', 'You need to insert 4 images');
-                //     return res.redirect('/admin/addProducts')
-                // }
-             
+        const name = req.body.name.trim().toUpperCase();
+        const exist = await Product.findOne({ name: name });
         
-  
-                const product = Product({
-                    name: name,
-                    price: req.body.price,
-                    quantity: req.body.quantity,
-                    categoryName: req.body.category,
-                    description: req.body.description,
-                    images,
-                    is_listed:true
-                })
+        if (exist) {
+            req.flash('errmsg', 'This Product is already exist...!!!');
+            return res.redirect('/admin/addProducts')
+        } else {
+            const images = req.files['images'].map(e=>e.filename);
+            // if(req.file.size > 4){
+            //     req.flash('errmsg', 'You need to insert 4 images');
+            //     return res.redirect('/admin/addProducts')
+            // }
+            
+            const product = new Product({
+                name: name,
+                price: req.body.price,
+                quantity: {
+                    small: req.body.small,
+                    medium: req.body.medium,
+                    large: req.body.large
+                },
+                categoryName: req.body.category,
+                description: req.body.description,
+                images,
+                is_listed:true
+            })
 
-                const data = await product.save();
-                if(data){
-                    res.redirect('/admin/productsList')
-                }else{
-                    res.render('productList',{products: productsData,success: 'Cannot add new Product'})
-                }
-                
+            await product.save();
+
+            if(product){
+                res.redirect('/admin/productsList')
+            }else{
+                res.render('productList',{products: productsData,success: 'Cannot add new Product'})
             }
-        
+        }  
     } catch (error) {
         console.log(error.message);
     }

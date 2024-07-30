@@ -180,7 +180,10 @@
                                 <!-- </div>End .rating-container -->
 
                                 <div class="product-price">
-                                    <% if(product.offer>0) {%>
+                                    <% if(product.quantity==0){ %>
+                                        <span style="background-color: #eb4c4c; border-radius: 10px; color: white; padding: .3em; margin-right: .5em; font-size: small;">OUT OF STOCK</span>
+                                        ₹<%= product.price %>
+                                    <%} else if(product.offer>0) {%>
                                         <span style="background-color: #67b12e; border-radius: 10px; color: white; padding: .25em; margin-right: .5em; font-size: medium;"><%= product.offer %>%</span>
                                         <span class="old-price" style="margin-right: .5em;">₹<%= product.price %></span>
                                         <span class="new-price">₹<%= product.finalPrice %></span>
@@ -190,36 +193,33 @@
                                 </div><!-- End .product-price -->
 
                                 <div class="product-content">
-                                    
+                                    <p><%= product.description %></p>
                                 </div><!-- End .product-content -->
 
                                 <!-- <div class="details-filter-row details-row-size">
                                     <label>Color:</label>
 
                                     <div class="product-nav product-nav-thumbs">
-                                        <a href="#" class="active">
-                                            <img src="assets/images/products/single/1-thumb.jpg" alt="product desc">
-                                        </a>
-                                        <a href="#">
-                                            <img src="assets/images/products/single/2-thumb.jpg" alt="product desc">
-                                        </a>
-                                    </div>End .product-nav
-                                </div>End .details-filter-row -->
-
-                                <!-- <div class="details-filter-row details-row-size">
-                                    <label for="size">Size:</label>
-                                    <div class="select-custom">
-                                        <select name="size" id="size" class="form-control">
-                                            <option value="#" selected="selected">Select a size</option>
-                                            <option value="s">Small</option>
-                                            <option value="m">Medium</option>
-                                            <option value="l">Large</option>
-                                            <option value="xl">Extra Large</option>
+                                        <select name="size" id="color">
+                                            <% product.color %>
                                         </select>
-                                    </div>End .select-custom
+                                    </div>
+                                </div> -->
 
-                                    <a href="#" class="size-guide"><i class="icon-th-list"></i>size guide</a>
-                                </div>End .details-filter-row -->
+                                <% if (typeof(product.quantity) == 'object') { %>
+                                    <div class="details-filter-row details-row-size">
+                                        <label for="size">Size:</label>
+                                        <div class="select-custom">
+                                            <select name="size" id="size" class="form-control" style="border-radius: 10px;">
+                                                <option value="#" selected>Select a size</option>
+                                                    <% Object.keys(product.quantity).forEach(function(q) { %>
+                                                        <option value="<%= q %>"><%= q %></option>
+                                                    <% }); %>
+                                            </select>
+                                        </div>
+                                            <!-- <a href="#" class="size-guide"><i class="icon-th-list"></i>size guide</a> -->
+                                    </div>
+                                <% } %>
 
                                 <!-- <div class="details-filter-row details-row-size">
                                     <label for="qty">Qty:</label> -->
@@ -832,36 +832,45 @@
 <!-- add to cart fucntionality -->
 <script>
     function addToCart(productId){
-        const quantity = 1
+        const size = document.getElementById('size').value
+        if(size == '#'){
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: 'Please select a size',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }else{
+            const quantity = 1
         fetch('/addCart', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ productId, quantity })
+            body: JSON.stringify({ productId, quantity,size })
         })
-            .then(response => response.json())
-            .then(data=>{
-                if(data.success){
-                    Swal.fire({
-                        icon : 'success',
-                        title : 'Success',
-                        text : 'Product added successfully',
-                        showConfirmButton  :false,
-                        timer : 1500
-                    })
-                }else{
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: data.error || 'Product is already existing.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            })
-
-        
+        .then(response => response.json())
+        .then(data=>{
+            if(data.success){
+                Swal.fire({
+                    icon : 'success',
+                    title : 'Success',
+                    text : 'Product added successfully',
+                    showConfirmButton :false,
+                    timer : 1500
+                })
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: data.error || 'Product is already existing.',
+                    showConfirmButton: true,
+                    timer: 3000
+                });
+            }
+        })
+        }
     }
 </script>
 <script>

@@ -143,7 +143,7 @@ const placeOrder = async (req, res) => {
                 email: address.email
             }],
             orderedProducts,
-            purchasedDate, // Use the formatted date here
+            purchasedDate, 
             paymentMethod,
             paymentStatus: false,
             subTotal
@@ -159,17 +159,17 @@ const placeOrder = async (req, res) => {
             await Cart.deleteOne({ userId });
 
         }else if(paymentMethod=='online'){
+            console.log('chosen online payment');
             let result = await userHelper.razorpayRes(subTotal,orderId)
-            // console.log('from user helper:',result);
+            console.log('from user helper:',result);
 
             await order.save();
 
             await Cart.deleteOne({ userId });
-
             res.json({result})
         }else{
             let result = await walletController.paymentWithWallet(subTotal,userId)
-            console.log(result);
+            console.log(result,'wallet Controller');
             if(result.success==true){
 
                 await order.save();

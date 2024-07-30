@@ -78,25 +78,36 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label for="name">PRODUCT NAME</label>
+                                            <label for="name" style="color: #000;">PRODUCT NAME</label>
                                             <input type="text" class="form-control" id="name" name="name" placeholder="Enter Product Price">
                                             <p id="nameError" style="color:red;"></p>
                                             <div id="nameContainer" class="text-danger"></div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="price">PRICE</label>
+                                            <label for="price" style="color: #000;">PRICE</label>
                                             <input type="number" class="form-control" id="price" name="price" placeholder="Enter Product Price">
                                             <p id="priceError" style="color:red;"></p>
                                             <div id="priceContainer" class="text-danger"></div>
                                          </div>
                                         <div class="form-group">
-                                            <label for="quantity">QUANTITY</label>
-                                            <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Enter Quantity">
+                                            <label for="quantity" style="color: #000;">QUANTITY</label>
+                                            <!-- <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Enter Quantity">
                                             <p id="quantityError" style="color:red;"></p>
-                                             <div id="quantityContainer" class="text-danger"></div>
+                                            <div id="quantityContainer" class="text-danger"></div> -->
+                                            <div class="d-flex">
+                                                <div class="d-block pr-2">
+                                                    <input type="number" placeholder="Small" class="form-control" name="small">
+                                                </div>
+                                                <div class="d-block pr-2">
+                                                    <input type="number" placeholder="Medium" class="form-control" name="medium">
+                                                </div>
+                                                <div class="d-block">
+                                                    <input type="number" placeholder="Large" class="form-control" name="large">
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="category">CATEGORY</label>
+                                            <label for="category" style="color: #000;">CATEGORY</label>
                                             <select class="custom-select mr-sm-2" id="category" name="category">
                                                 <% categories.forEach(category => { %>
                                                     <option value="<%=category._id %>"><%= category.name %></option>
@@ -109,7 +120,7 @@
                                         </div>
                                         
                                         <div class="form-group">
-                                            <label for="description">Description</label>
+                                            <label for="description" style="color: #000;">Description</label>
                                              <textarea class="form-control" rows="3" id="description" name="description" placeholder="Text Here..."></textarea>
                                             <div id="descriptionContainer" class="text-danger"></div>
                                         </div>
@@ -118,7 +129,7 @@
 
                                     <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label for="imageInput">PRODUCT IMAGE</label>
+                                            <label for="imageInput" style="color: #000;">PRODUCT IMAGE</label>
                                                 <div class="input-with-preview">
                                                     <input type="file"  class="form-control-file" id="imageInput" accept="image/*" name="images" multiple required>
                                                     <canvas id="croppedImage" style="display: none;"></canvas>

@@ -131,7 +131,13 @@
                                                 </td>
                                                 <td>₹<%= product.price %></td>
                                                 <td><%= product.categoryName.name %></td>
-                                                <td><%= product.quantity %></td>
+                                                <td>
+                                                    <% if(typeof(product.quantity)=='object'){ %>
+                                                        <p>S: <%= product.quantity.small %>, M: <%= product.quantity.medium %>, L: <%= product.quantity.large %></p>
+                                                    <% } else { %>
+                                                        <p><%= product.quantity %></p>
+                                                    <% } %>
+                                                </td>
                                                 <td class="text-right align-middle">
                                                     <a href="/admin/editProduct?productId=<%= product._id %>" class="btn-status-toggle" data-productid="<%= product._id %>">
                                                     
