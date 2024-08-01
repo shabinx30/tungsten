@@ -209,8 +209,8 @@
                                 <% if (typeof(product.quantity) == 'object') { %>
                                     <div class="details-filter-row details-row-size">
                                         <label for="size">Size:</label>
-                                        <div class="select-custom">
-                                            <select name="size" id="size" class="form-control" style="border-radius: 10px;">
+                                        <div class="select-custom" >
+                                            <select name="size" id="size" class="form-control" style="border-radius: 10px; cursor: pointer;">
                                                 <option value="#" selected>Select a size</option>
                                                     <% Object.keys(product.quantity).forEach(function(q) { %>
                                                         <option value="<%= q %>"><%= q %></option>

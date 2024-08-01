@@ -88,21 +88,21 @@
                                             <input type="number" class="form-control" id="price" name="price" placeholder="Enter Product Price">
                                             <p id="priceError" style="color:red;"></p>
                                             <div id="priceContainer" class="text-danger"></div>
-                                         </div>
+                                        </div>
                                         <div class="form-group">
                                             <label for="quantity" style="color: #000;">QUANTITY</label>
-                                            <!-- <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Enter Quantity">
+                                            <!-- <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Enter Quantity"> -->
                                             <p id="quantityError" style="color:red;"></p>
-                                            <div id="quantityContainer" class="text-danger"></div> -->
+                                            <!-- <div id="quantityContainer" class="text-danger"></div> -->
                                             <div class="d-flex">
                                                 <div class="d-block pr-2">
-                                                    <input type="number" placeholder="Small" class="form-control" name="small">
+                                                    <input type="number" placeholder="Small" class="form-control" name="small" id="small">
                                                 </div>
                                                 <div class="d-block pr-2">
-                                                    <input type="number" placeholder="Medium" class="form-control" name="medium">
+                                                    <input type="number" placeholder="Medium" class="form-control" name="medium" id="medium">
                                                 </div>
                                                 <div class="d-block">
-                                                    <input type="number" placeholder="Large" class="form-control" name="large">
+                                                    <input type="number" placeholder="Large" class="form-control" name="large" id="large">
                                                 </div>
                                             </div>
                                         </div>
@@ -159,11 +159,13 @@
 
 
 <script>
-    // ********** FOR ADD GAMES VALIDATION **********
+    // ********** FOR ADD PRODUCT VALIDATION **********
     function validation (){
         let name = document.getElementById('name').value.trim();
         let price = document.getElementById('price').value.trim();
-        let quantity = document.getElementById('quantity').value.trim();
+        let small = document.getElementById('small').value.trim();
+        let medium = document.getElementById('medium').value.trim();
+        let large = document.getElementById('large').value.trim();
 
         let nameRegex = /^[a-zA-Z0-9\s\/\-&]*$/;
         let priceRegex = /^\d+(\.\d{1,2})?$/;
@@ -199,13 +201,35 @@
             return false
         }
 
-        if(quantity ===''){
+        if(small ===''){
             quantityError.innerText = "quantity cannot be empty"
             return false
-        }else if(!quantityRegex.test(quantity)){
+        }else if(!quantityRegex.test(small)){
             quantityError.innerText = 'quantity can only contain Numbers';
             return false
-        }else if(Number(quantity)<0){
+        }else if(Number(small)<0){
+            quantityError.innerText = "You need to enter a Positive quantity"
+            return false
+        }
+
+        if(medium ===''){
+            quantityError.innerText = "quantity cannot be empty"
+            return false
+        }else if(!quantityRegex.test(medium)){
+            quantityError.innerText = 'quantity can only contain Numbers';
+            return false
+        }else if(Number(medium)<0){
+            quantityError.innerText = "You need to enter a Positive quantity"
+            return false
+        }
+
+        if(large ===''){
+            quantityError.innerText = "quantity cannot be empty"
+            return false
+        }else if(!quantityRegex.test(large)){
+            quantityError.innerText = 'quantity can only contain Numbers';
+            return false
+        }else if(Number(large)<0){
             quantityError.innerText = "You need to enter a Positive quantity"
             return false
         }

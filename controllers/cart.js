@@ -31,8 +31,19 @@ const addCart = async (req, res) => {
         const userId = req.session.user_id;
         const { productId, quantity, size } = req.body;
 
+        //checking product quantity from the user cart
+        const cartQuantity = await Cart.findOne({$and:[{userId:userId},{'products.productId':productId},{'products.size':size}]})
+
+        let cartQ =  1
+        if(cartQuantity){
+            const product = cartQuantity.products.find(p => p.productId.toString() === productId.toString() && p.size === size);
+            // console.log(product);
+            cartQ = (product.quantity)
+        }
+        // console.log('cart quantity',cartQuantity.products[0].quantity);
+
         const avalability = await Product.findOne({_id: productId})
-        if(avalability.quantity[size] >= quantity ){
+        if(avalability.quantity[size] > cartQ ){
             const cart = await Cart.findOne({ userId: userId });
             if (!cart) {
             
@@ -80,8 +91,8 @@ const removeProductFromCart = async (req,res)=> {
     try {
         console.log('kk');
         const userId = req.session.user_id;
-        const { productId } = req.body
-        const cart = await Cart.findOneAndUpdate({userId: userId},{ $pull: { products: { productId: productId } } })
+        const { productDId } = req.body
+        const cart = await Cart.findOneAndUpdate({userId: userId},{ $pull: { products: { _id: productDId } } })
         if(cart){
             res.json({success: true})
         }else{
@@ -97,13 +108,14 @@ const quantity = async(req,res)=>{
     try {
         // console.log('increase');
         const userId = req.session.user_id;
-        const { productId,quantity } = req.body;
+        const { productDId,quantity } = req.body;
         // console.log(quantity);
         const cart = await Cart.findOneAndUpdate(
-            { userId: userId, 'products.productId': productId }, 
+            { userId: userId, 'products._id': productDId }, 
             { $set: { 'products.$.quantity': quantity } },
             { new: true }
         );
+        console.log(cart);
         if(cart){
             const products = await Cart.findOne({ userId: userId }).populate('products.productId').exec();
             res.json({success:true,quantity:quantity,products: products.products})

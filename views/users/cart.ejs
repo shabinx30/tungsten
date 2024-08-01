@@ -143,7 +143,7 @@
                                 <tbody>
                                     <% let total = 0 %>
                                     <% if (products && products.length > 0) { %>
-                                        <% products.forEach(product => { %>
+                                        <% products.forEach((product,index) => { %>
                                             <% if (product.productId) { %>
                                                 <% total = total + product.productId.finalPrice * product.quantity %>
                                                 <tr>
@@ -159,18 +159,21 @@
                                                             </h3>
                                                         </div>
                                                     </td>
-                                                    <input hidden type="text" id="price<%= product.productId._id %>" value="<%= product.productId.finalPrice %>">
+                                                    <!-- size of product -->
+                                                    <td class="price-col" id="" ><%= product.size %></td>
+
+                                                    <input hidden type="text" id="price<%= product._id %>" value="<%= product.productId.finalPrice %>">
                                                     <td class="price-col">₹<%= product.productId.finalPrice %></td>
                                                     <td class="quantity-col">
                                                         <div class="cart-product-quantity d-flex" style="border: 1px solid #eea287; border-radius: 10px;">
                                                             <!-- <input  type="number" class="form-control" value="<%= product.quantity %>" min="1" max="10" step="1" data-decimals="0" required> -->
-                                                            <input hidden type="text" id="max_quantity<%= product.productId._id %>" value="<%=product.productId.quantity%>">
+                                                            <input hidden type="text" id="max_quantity<%= product._id %>" value="<%=product.productId.quantity[product.size]%>">
                                                             <% console.log(product.productId.quantity) %>
-                                                            <button style="border: none; border-radius: 10px 0 0 10px;" onclick="decrease('<%= product.productId._id %>', '<%= product.quantity %>')">-</button><div class="mx-auto"><p style="color: #000000;" id="quantity<%= product.productId._id %>"><%= product.quantity %></p></div><button style="border: none; border-radius: 0 10px 10px 0;" onclick="increase('<%= product.productId._id %>', '<%= product.quantity %>')">+</button>
+                                                            <button style="border: none; border-radius: 10px 0 0 10px;" onclick="decrease('<%= product._id %>', '<%= product.quantity %>')">-</button><div class="mx-auto"><p style="color: #000000;" id="quantity<%= product._id %>"><%= product.quantity %></p></div><button style="border: none; border-radius: 0 10px 10px 0;" onclick="increase('<%= product._id %>', '<%= product.quantity %>')">+</button>
                                                         </div>
                                                     </td>
-                                                    <td class="total-col" id="total_price<%= product.productId._id %>" >₹<%= product.productId.finalPrice * product.quantity %></td>
-                                                    <td class="remove-col"><button class="btn-remove" onclick="remove('<%= product.productId._id%>')" id="remove_button<%= product.productId._id%>"><i class="icon-close"></i></button></td>
+                                                    <td class="total-col" id="total_price<%= product._id %>" >₹<%= product.productId.finalPrice * product.quantity %></td>
+                                                    <td class="remove-col"><button class="btn-remove" onclick="remove('<%= product._id%>')" id="remove_button<%= product._id%>"><i class="icon-close"></i></button></td>
                                                 </tr>
                                                 <% } else { %>
                                                 <tr>
@@ -439,7 +442,7 @@
 <%- include('../layouts/footer.ejs') %>
 
 <script>
-    function remove(productId) {
+    function remove(productDId) {
     Swal.fire({
         title: 'Are you sure?',
         text: "Do you really want to remove this product from your cart?",
@@ -450,13 +453,13 @@
         confirmButtonText: 'Yes, remove it!'
     }).then((result) => {
         if (result.isConfirmed) {
-            console.log('function ' + productId);
+            console.log('function ' + productDId);
             fetch('/removeProductFromCart', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ productId })
+                body: JSON.stringify({ productDId })
             })
             .then((response) => {
                 if (!response.ok) {
@@ -517,17 +520,17 @@
         });
 </script>
 <script>
-    function increase(productId, initialQuantity) {
-        console.log('increase');
-        let quantityEle = document.getElementById(`quantity${productId}`);
-        let price = document.getElementById(`price${productId}`).value
-        let total_price = document.getElementById(`total_price${productId}`)
+    function increase(productDId, initialQuantity) {
+        console.log('increase',productDId);
+        let quantityEle = document.getElementById(`quantity${productDId}`);
+        let price = document.getElementById(`price${productDId}`).value
+        let total_price = document.getElementById(`total_price${productDId}`)
         let sub_total = document.getElementById('sub_total')
         let total_amount = document.getElementById('total_amount')
-        let max_quantity = parseInt(document.getElementById(`max_quantity${productId}`).value)
+        let max_quantity = parseInt(document.getElementById(`max_quantity${productDId}`).value)
         let sub_total_price = 0
         // let products = document.getElementById('products').value
-        let quantity = parseInt(quantityEle.textContent); // Ensure quantity is a number
+        let quantity = parseInt(quantityEle.textContent);
 
         // Increment the quantity
         if(quantity<max_quantity){
@@ -538,7 +541,7 @@
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ productId, quantity })
+            body: JSON.stringify({ productDId, quantity })
         })
         .then((response) => {
             if (!response.ok) {
@@ -574,15 +577,15 @@
     };
 
 
-    function decrease(productId, initialQuantity) {
-        console.log('decrease');
-        let quantityEle = document.getElementById(`quantity${productId}`);
-        let price = document.getElementById(`price${productId}`).value
-        let total_price = document.getElementById(`total_price${productId}`)
+    function decrease(productDId, initialQuantity) {
+        console.log('decrease',productDId);
+        let quantityEle = document.getElementById(`quantity${productDId}`);
+        let price = document.getElementById(`price${productDId}`).value
+        let total_price = document.getElementById(`total_price${productDId}`)
         let sub_total = document.getElementById('sub_total')
         let sub_total_price = 0
         let total_amount = document.getElementById('total_amount')
-        let quantity = parseInt(quantityEle.textContent); // Ensure quantity is a number
+        let quantity = parseInt(quantityEle.textContent);
 
         // Increment the quantity
         
@@ -594,7 +597,7 @@
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ productId, quantity })
+            body: JSON.stringify({ productDId, quantity })
         })
         .then((response) => {
             if (!response.ok) {

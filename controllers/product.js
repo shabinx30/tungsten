@@ -166,7 +166,11 @@ const editProduct = async (req, res) => {
                 $set: {
                     name: req.body.name,
                     price: req.body.price,
-                    quantity: req.body.quantity,
+                    quantity: {
+                        small: req.body.small,
+                        medium: req.body.medium,
+                        large: req.body.large
+                    },
                     description: req.body.description,
                     images: images.length ? images : req.body.existingImages, // Handle existing images
                     categoryName: req.body.category,
