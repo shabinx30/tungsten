@@ -99,8 +99,8 @@
           <div class="card-body">
             <div class="" style="width: 100%">
               <!-- Added div with custom class -->
-              <h2 class="card-title text-center mb-5">ORDER HISTORY</h2>
-              <p class="text-center">Showing <strong style="color: #000;"><%= orders.length %></strong> of <strong style="color: #000;"><%= orderCount %></strong></p>
+              <h2 class="card-title text-center mb-5">RETURN HISTORY</h2>
+              <p class="text-center">Showing <strong style="color: #000;"><%= returnData.length %></strong> of <strong style="color: #000;"><%= returnData.length %></strong></p>
             </div>
             <% if (locals.success) { %>
             <div
@@ -120,21 +120,21 @@
                     <th scope="col">Order Id</th>
                     <th scope="col">Customer</th>
                     <th scope="col">Order Date</th>
-                    <th scope="col">Total</th>
+                    <th scope="col">Return Date</th>
                     <th scope="col">Payment method</th>
                     <th scope="col">More Options</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <% if (orders.length > 0) { %>
+                  <% if (returnData.length > 0) { %>
                     <% let index = page*5 %>
-                    <% orders.forEach((value) => { %>
+                    <% returnData.forEach((value) => { %>
                       <tr>
                         <td><%= ++index %></td>
                         <td><%= value.orderId %></td>
                         <td><%= value.userName %></td>
                         <td><%= value.purchasedDate %></td>
-                        <td>₹<%= value.subTotal %></td>
+                        <td><%= value.returnedDate %></td>
                         <td><%= value.paymentMethod %></td>
                         <td>
                           <a style="cursor: pointer;" data-toggle="modal" data-target="#modal-<%= index %>">
@@ -146,43 +146,42 @@
                           <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content p-4" style="border-radius: 20px;">
                               <div class="modal-header">
-                                <h2 class="modal-title" id="exampleModalLongTitle" style="color: #000;">Order Details</h2>
+                                <h2 class="modal-title" id="exampleModalLongTitle" style="color: #000;">Return Details</h2>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                   <span aria-hidden="true">&times;</span>
                                 </button>
                               </div>
                               <div class="modal-body pl-3 pr-3">
                                 <p class="mb-3"><strong style="color: black;">Order Id: </strong><%= value.orderId %> </p>
-                                <% value.orderedProducts.forEach(product => { %>
                                   <div class="row">
-                                    <img class="mb-2" src="/productImages/<%= product.productId.images[0] %>" alt="no image" style="width: 50px; height: 50px; border-radius: 5px; border: 1px solid black;">
+                                    <img class="mb-2" src="/productImages/<%= value.orderedProducts.productId.images[0] %>" alt="no image" style="width: 50px; height: 50px; border-radius: 5px; border: 1px solid black;">
                                     <div class="d-block ml-3">
-                                      <p><strong style="color: black;">Name: </strong><%= product.productId.name %> <br>
-                                        <strong style="color: black;">Price: </strong><%= product.productId.price %> <br>
-                                        <strong style="color: black;">Quantity: </strong><%= product.quantity %> <strong class="ml-4" style="color: #000;">Status:</strong>
-                                        <select class="btn" id="<%= product.productId %>" style="background-color: #7b7bff; border-radius: 10px; color: #000;" onchange="ProductStatus(event,'<%= product._id %>')">
-                                          <% if (product.status == 'placed') { %>
+                                      <p><strong style="color: black;">Name: </strong><%= value.orderedProducts.productId.name %> <br>
+                                        <strong style="color: black;">Price: </strong><%= value.orderedProducts.productId.price %> <br>
+                                        <strong style="color: black;">Quantity: </strong><%= value.orderedProducts.quantity %> <strong class="ml-4" style="color: #000;">Status:</strong>
+                                        <select class="btn" id="<%= value.orderedProducts._id %>" style="background-color: #7b7bff; border-radius: 10px; color: #000;" onchange="ProductStatus(event,'<%= value.orderedProducts._id %>')">
+                                          <% if (value.orderedProducts.status == 'placed') { %>
                                             <option value="placed" hidden>Placed</option>
                                             <option value="shipped">Shipped</option>
                                             <option value="delivered">Delivered</option>
                                             <option value="cancelled">Cancelled</option>
-                                          <% } else if (product.status == 'shipped') { %>
+                                          <% } else if (value.orderedProducts.status == 'shipped') { %>
                                             <option value="shipped" hidden>Shipped</option>
                                             <option value="placed">Placed</option>
                                             <option value="delivered">Delivered</option>
                                             <option value="cancelled">Cancelled</option>
-                                          <% } else if (product.status == 'delivered') { %>
+                                          <% } else if (value.orderedProducts.status == 'delivered') { %>
                                             <option value="delivered" hidden>Delivered</option>
                                             <!-- <option value="placed">Placed</option>
                                             <option value="shipped">Shipped</option>
                                             <option value="cancelled">Cancelled</option> -->
-                                          <% } else if (product.status == 'cancelled') { %>
+                                          <% } else if (value.orderedProducts.status == 'cancelled') { %>
                                             <option value="cancelled" hidden>Cancelled</option>
                                             <option value="placed">Placed</option>
                                             <option value="shipped">Shipped</option>
                                             <option value="delivered">Delivered</option>
-                                          <% }else if(product.status == 'pending') {%>
-                                            <option value="cancelled" hidden>Pending</option>
+                                          <% }else if(value.orderedProducts.status == 'pending') {%>
+                                            <option value="pending" hidden>Pending</option>
                                             <option value="placed">Placed</option>
                                             <option value="shipped">Shipped</option>
                                             <option value="delivered">Delivered</option>
@@ -191,15 +190,15 @@
                                       </p>
                                     </div>
                                   </div>
-                                <% }) %>
                                 <h3 class="mt-3" style="color: #000;">Address</h3>
-                                <p><strong style="color: #000;">First name: </strong><%= value.shipAddress[0].first_name %> <strong style="color: #000;">Last name: </strong><%= value.shipAddress[0].last_name %> <br>
-                                  <strong style="color: #000;">Country: </strong><%= value.shipAddress[0].contry %> <strong style="color: #000;">Street name: </strong><%= value.shipAddress[0].street_name %> <br>
-                                  <strong style="color: #000;">Town: </strong><%= value.shipAddress[0].town %> <strong style="color: #000;">State: </strong><%= value.shipAddress[0].state %> <br>
-                                  <strong style="color: #000;">Postcode: </strong><%= value.shipAddress[0].postcode %> <strong style="color: #000;">Phone number: </strong><%= value.shipAddress[0].phone_number %> <br>
-                                  <strong style="color: #000;">Email: </strong><%= value.shipAddress[0].email %> 
+                                <p><strong style="color: #000;">First name: </strong><%= value.shipAddress.first_name %> <strong style="color: #000;">Last name: </strong><%= value.shipAddress.last_name %> <br>
+                                  <strong style="color: #000;">Country: </strong><%= value.shipAddress.contry %> <strong style="color: #000;">Street name: </strong><%= value.shipAddress.street_name %> <br>
+                                  <strong style="color: #000;">Town: </strong><%= value.shipAddress.town %> <strong style="color: #000;">State: </strong><%= value.shipAddress.state %> <br>
+                                  <strong style="color: #000;">Postcode: </strong><%= value.shipAddress.postcode %> <strong style="color: #000;">Phone number: </strong><%= value.shipAddress.phone_number %> <br>
+                                  <strong style="color: #000;">Email: </strong><%= value.shipAddress.email %> 
                                 </p>
                                 <p class="mt-4"><strong style="color: #000;">Order Date: </strong><%= value.purchasedDate %></p>
+                                <p ><strong style="color: #000;">Return Date: </strong><%= value.returnedDate %></p>
                               </div>
                               <div class="modal-footer mx-auto">
                                 <button type="button" class="btn btn-primary" data-dismiss="modal" style="border-radius: 10px;">
@@ -222,23 +221,23 @@
               <div class="d-flex mt-3" style="justify-content: center; align-items: center;">
                 <!-- back button in pagination -->
                 <% if(page>0){ %>
-                    <div class="mr-3" onclick="window.location.href='/admin/orderHistory?page=<%= page-1 %>'" style="border: 1px solid #d4d4d4; width: 80px; height: 30px; background-color: #ffffff; border-radius: 7.5px; cursor: pointer;">
+                    <!-- <div class="mr-3" onclick="window.location.href='/admin/orderHistory?page=<%= page-1 %>'" style="border: 1px solid #d4d4d4; width: 80px; height: 30px; background-color: #ffffff; border-radius: 7.5px; cursor: pointer;">
                         <p style="padding-left: 7px;">Previous</p>
                     </div>
-                    <p class="mr-3" style="cursor: default;">...</p>
+                    <p class="mr-3" style="cursor: default;">...</p> -->
                 <% } %>
 
                 <!-- number in pagination -->
-                <div  onclick="window.location.href='/admin/orderHistory?page=<%= page %>'" style="border: 1px solid #b0b0b0; width: 25px; height: 30px; background-color: #c7c7c7; border-radius: 7.5px; cursor: default;">
+                <!-- <div  onclick="window.location.href='/admin/orderHistory?page=<%= page %>'" style="border: 1px solid #b0b0b0; width: 25px; height: 30px; background-color: #c7c7c7; border-radius: 7.5px; cursor: default;">
                     <p style="padding-left: 7px;"><%= page+1 %></p>
-                </div>
+                </div> -->
                 
                 <!-- next button in pagination -->
-                <% if(page>=0&&page<(orderCount/5)-1){ %>
-                    <p class="ml-3" style="cursor: default;">...</p>
+                <% if(page>=0&&page<(returnData.length/5)-1){ %>
+                    <!-- <p class="ml-3" style="cursor: default;">...</p>
                     <div class="ml-3" onclick="window.location.href='/admin/orderHistory?page=<%= page+1 %>'" style="border: 1px solid #d4d4d4; width: 50px; height: 30px; background-color: #ffffff; border-radius: 7.5px; cursor: pointer;">
                         <p style="padding-left: 8px;">Next</p>
-                    </div>
+                    </div> -->
                 <% } %>
 
             </div>
@@ -304,7 +303,8 @@
     console.log(event.target.value);
     axios.post('/admin/productStatus', {
       status: event.target.value,
-      productId
+      productId,
+      returned: true
     })
     .then(response => {
       window.location.reload()

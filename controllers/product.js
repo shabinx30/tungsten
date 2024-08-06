@@ -59,10 +59,10 @@ const shop = async (req, res) => {
             productData = productData.filter(product => product.categoryName && product.categoryName.is_listed);
         }
 
-        
+        const categoryData = await Category.find({is_listed: true})
 
         // Render the shop view with the fetched product data and product count
-        res.render('shop', { products: productData, productCount, page });
+        res.render('shop', { products: productData, productCount, page,categoryData,categorySelected: false,sortSelected: false, });
     } catch (error) {
         console.log(error.message);
         res.status(500).send("Internal Server Error");
@@ -78,9 +78,20 @@ const loadProductDetails = async (req, res) => {
             return res.redirect('*');
         }
 
-        const product = await Product.findById({ _id: productId }).populate('categoryName').exec();
+        const product = await Product.findById(productId).populate('categoryName').exec();
+
+        const allProducts = await Product.find({}).populate('categoryName').exec();
+
+        const related = allProducts.filter(value => 
+            value.categoryName._id.equals(product.categoryName._id) && 
+            !value._id.equals(product._id)
+        );
+
+        console.log(related);
+        
+
         if (product) {
-            res.render('product', { product });
+            res.render('product', { product,related });
         } else {
             return res.redirect('*');
         }
@@ -220,6 +231,36 @@ const searchProducts = async (req,res)=>{
     }
 }
 
+
+const filterProducts = async (req,res)=>{
+    try {
+        const { categorySelected,sortSelected } = req.body
+        let query = {}
+        let sortQuery = {}
+
+        if(categorySelected&&categorySelected != 'All'){
+            const category = Category.find({name: categorySelected })
+
+            query.category = category.name
+        }
+
+        if(sortSelected&&sortSelected != 'All'){
+            if(sortSelected == 'low-to-high'){
+                sortQuery.price = 1
+            }else if(sortSelected == 'high-to-low'){
+                sortQuery.price = -11
+            }
+        }
+
+
+
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
+
+
 module.exports = {
     loadProductDetails,
     loadProductList,
@@ -228,5 +269,6 @@ module.exports = {
     editProduct,
     upload,
     searchProducts,
-    shop
+    shop,
+    filterProducts
 }

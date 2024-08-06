@@ -38,6 +38,8 @@ const userOrderController = require("../controllers/userOrder");
 const userAddress = require("../controllers/address");
 const wishlistController = require('../controllers/wishlist')
 const walletController = require('../controllers/walletController')
+const returnController = require('../controllers/return')
+const salesAndReport = require('../controllers/salesAndreport')
 
 //auth
 user_route.get(
@@ -138,4 +140,14 @@ user_route.post('/verifyPayment',userAuth.isLogin,userOrderController.verifyPaym
 //wallet
 user_route.post('/addToWallet',userAuth.isLogin,walletController.addToWallet)
 user_route.post('/withdrawFromWallet',userAuth.isLogin,walletController.withdrawFromWallet)
+
+// return product 
+user_route.post('/returnProduct',userAuth.isLogin,returnController.returnProduct)
+
+// Invoice 
+user_route.get('/Invoice',userAuth.isLogin,salesAndReport.loadInvoice)
+
+//filter Prodduct and sort
+user_route.get('/filterProducts',userAuth.isLogin,productController.filterProducts)
+
 module.exports = user_route;

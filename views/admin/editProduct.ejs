@@ -204,7 +204,7 @@
         if(small ===''){
             quantityError.innerText = "quantity cannot be empty"
             return false
-        }else if(!quantityRegex.test(small)){
+        }else if(!quantityRegex.test(small)&&small!=0){
             quantityError.innerText = 'quantity can only contain Numbers';
             return false
         }else if(Number(small)<0){
@@ -215,7 +215,7 @@
         if(medium ===''){
             quantityError.innerText = "quantity cannot be empty"
             return false
-        }else if(!quantityRegex.test(medium)){
+        }else if(!quantityRegex.test(medium)&&medium!=0){
             quantityError.innerText = 'quantity can only contain Numbers';
             return false
         }else if(Number(medium)<0){
@@ -226,7 +226,7 @@
         if(large ===''){
             quantityError.innerText = "quantity cannot be empty"
             return false
-        }else if(!quantityRegex.test(large)){
+        }else if(!quantityRegex.test(large)&&large!=0){
             quantityError.innerText = 'quantity can only contain Numbers';
             return false
         }else if(Number(large)<0){

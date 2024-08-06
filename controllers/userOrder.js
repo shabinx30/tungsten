@@ -74,9 +74,9 @@ const loadCheckOut = async (req,res)=>{
 
 const placeOrder = async (req, res) => {
     try {
-        const { selected_address,paymentMethod,coupon } = req.body;
+        const { selected_address, paymentMethod, coupon } = req.body;
         const userId = req.session.user_id;
-        // console.log(req.body);
+
         if (!paymentMethod) {
             throw new Error('Payment method is required');
         }
@@ -123,8 +123,9 @@ const placeOrder = async (req, res) => {
         const subTotal = orderedProducts.reduce((sum, item) => sum + item.totalPrice, 0);
 
         // Store the current date in the format 
-        const purchasedDate = format(new Date(), 'dd/MM/yy, hh:mm a');
-        const orderId = userHelper.orderIdgenerator()
+        const purchasedDate = new Date().toDateString();
+        const orderId = userHelper.orderIdgenerator();
+
         // Create order object
         const order = new Order({
             userId,
@@ -140,51 +141,54 @@ const placeOrder = async (req, res) => {
                 state: address.state,
                 postcode: address.postcode,
                 phone_number: address.phone_number,
-                email: address.email
+                email: address.email,
             }],
             orderedProducts,
             purchasedDate, 
             paymentMethod,
             paymentStatus: false,
+            orderTime: Date(),
             subTotal
         });
 
-        
+        // Decrease the stock of the products
+        for (const cartProduct of cart.products) {
+            await Product.findOneAndUpdate(
+                { _id: cartProduct.productId },
+                { $inc: { [`quantity.${cartProduct.size}`]: -cartProduct.quantity } }
+            );
+        }
 
-        if(paymentMethod=='cash'){
-            res.json({result:'redirect',location:'/orderSuccess'})
+        if (paymentMethod == 'cash') {
+            res.json({ result: 'redirect', location: '/orderSuccess' });
 
             await order.save();
-
             await Cart.deleteOne({ userId });
 
-        }else if(paymentMethod=='online'){
+        } else if (paymentMethod == 'online') {
             console.log('chosen online payment');
-            let result = await userHelper.razorpayRes(subTotal,orderId)
-            console.log('from user helper:',result);
+            let result = await userHelper.razorpayRes(subTotal, orderId);
+            console.log('from user helper:', result);
 
             await order.save();
-
             await Cart.deleteOne({ userId });
-            res.json({result})
-        }else{
-            let result = await walletController.paymentWithWallet(subTotal,userId)
-            console.log(result,'wallet Controller');
-            if(result.success==true){
+            res.json({ result });
 
+        } else {
+            let result = await walletController.paymentWithWallet(subTotal, userId);
+            console.log(result, 'wallet Controller');
+            if (result.success == true) {
                 await order.save();
-
                 await Cart.deleteOne({ userId });
-                
-                res.json({success: true,location: '/orderSuccess'})
+                res.json({ success: true, location: '/orderSuccess' });
                 console.log(true);
-            }else if(result.success==false){
+            } else if (result.success == false) {
                 console.log(false);
-                res.json({success: false,error: result.error})
+                res.json({ success: false, error: result.error });
             }
         }
     } catch (error) {
-        console.log(error.message,'from place order');
+        console.log(error.message, 'from place order');
         res.status(400).send(error.message);
     }
 };

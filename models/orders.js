@@ -96,6 +96,10 @@ const OrderSchema = mongoose.Schema({
         type: Boolean,
         required: true
     },
+    orderTime: {
+        type: Date,
+        required: true
+    },
     subTotal: {
         type: Number,
         required: true

@@ -49,19 +49,99 @@ const loadDashboard = async(req, res) => {
     try {
         const userCount = await User.find({is_admin:false}).count()
         const productCount = await Product.find({}).count()
+        const categoryCount = await Category.find({}).count()
         let totalEarning = 0;
+
         const result = await Order.aggregate([{
             $group:{
                 _id: null,
                 total: {$sum: '$subTotal'}
             }
         }]);
+
         if(result.length>0){
             totalEarning = result[0].total
         }else{
             totalEarning = 0
         }
-        res.render('adminDashboard',{userCount,productCount,totalEarning});
+
+        const bestProduct = await Order.aggregate([
+            { $unwind: '$orderedProducts' },
+            {
+                $group: {
+                    _id: '$orderedProducts.productId',
+                    totalCount: { $sum: '$orderedProducts.quantity' } // Sum the quantities ordered
+                }
+            },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'product'
+                }
+            },
+            { $unwind: '$product' },
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'product.categoryName',
+                    foreignField: '_id',
+                    as: 'category'
+                }
+            },
+            { $unwind: '$category' },
+            {
+                $project: {
+                    _id: 1,
+                    totalCount: 1,
+                    'product.name': 1,
+                    'category.name': 1,
+                    'product.images': 1,
+                    'product.quantity': 1
+                }
+            },
+            { $sort: { totalCount: -1 } },
+            { $limit: 5 }
+        ]);
+
+        console.log('best Product',bestProduct);
+        
+        let bestCategory = await Order.aggregate([
+            { $unwind: '$orderedProducts' },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'orderedProducts.productId', // Correct field
+                    foreignField: '_id',
+                    as: 'product'
+                }
+            },
+            { $unwind: '$product' },
+            {
+                $group: {
+                    _id: '$product.categoryName', // Correctly reference the product category
+                    totalCategoryCount: { $sum: 1 } // Summing the quantities
+                }
+            },
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: '_id', // Correct field
+                    foreignField: '_id',
+                    as: 'category'
+                }
+            },
+            { $unwind: '$category' },
+            {$project:{_id:1,'category.name':1,totalCategoryCount:1}},
+            { $sort: { totalCategoryCount: -1 } }, // Correct field
+            { $limit: 5 }
+        ])
+
+        console.log(bestCategory);
+        
+
+        res.render('adminDashboard',{userCount,productCount,categoryCount,totalEarning,bestProduct,bestCategory});
     } catch (error) {
         console.log(error.message);
     }

@@ -109,18 +109,24 @@ const loadEditAddress = async (req, res) => {
 const editAddress = async (req, res) => {
     try {
         const addressId = req.body.addressId;
-        const address_type = req.body.address_type.toUpperCase()
+        const address_type = req.body.address_type.toUpperCase();
         const { first_name, last_name, contry, street_name, town, state, postcode, phone_number, email } = req.body;
-        console.log(addressId);
+        
+        console.log("Address ID:", addressId);
+
         const result = await Address.findOne({
             userId: req.session.user_id,
-            addresses: {
-                $elemMatch: {
-                    address_type: address_type
-                }
-            }
-        })
-        if(!result){
+            'addresses._id': addressId
+        });
+
+        if (!result) {
+            req.flash('addressmsg', 'Address not found');
+            return res.redirect('/editAddress');
+        }
+
+        const addressIndex = result.addresses.findIndex(address => address._id.toString() === addressId);
+        
+        if (addressIndex !== -1) {
             const address = await Address.findOneAndUpdate(
                 { 'addresses._id': addressId },
                 {
@@ -139,17 +145,16 @@ const editAddress = async (req, res) => {
                 },
                 { new: true } // Return the updated document
             );
-    
+
             if (!address) {
                 req.flash('addressmsg', 'Address not found or not updated');
                 return res.redirect('/editAddress');
             }
-    
+
             req.flash('addressop', 'open');
             return res.redirect('/userDashboard');
-        }else{
-            // console.log('else');
-            req.flash('addressmsg');
+        } else {
+            req.flash('addressmsg', 'Address not found or not updated');
             return res.redirect('/editAddress');
         }
     } catch (error) {

@@ -29,6 +29,9 @@ const productController = require('../controllers/product')
 const orderController = require('../controllers/order')
 const offerController = require('../controllers/offerController')
 const couponController = require('../controllers/coupon')
+const returnController = require('../controllers/return')
+const saleAndReportController = require('../controllers/salesAndreport')
+
 
 admin_route.use(bodyParser.json());
 admin_route.use(bodyParser.urlencoded({extended: true}))
@@ -82,5 +85,19 @@ admin_route.post('/addCategoryOffer',adminAuth.isLogin,offerController.addCatego
 //counon
 admin_route.get('/couponList',adminAuth.isLogin,couponController.ListConpon)
 admin_route.post('/addCoupon',adminAuth.isLogin,couponController.addCoupon)
+
+
+//returns
+admin_route.get('/returns',adminAuth.isLogin,returnController.loadReturn)
+
+
+//sale and reports in admin
+admin_route.get('/monthlySales',adminAuth.isLogin,saleAndReportController.monthlySales)
+admin_route.get('/yearlySales',adminAuth.isLogin,saleAndReportController.yearlySales)
+
+//sales and report page
+admin_route.get('/salesReport',adminAuth.isLogin,saleAndReportController.loadSales)
+admin_route.get('/sortSalesReport',adminAuth.isLogin,saleAndReportController.sortSalesReport)
+admin_route.post('/searchWithDate',adminAuth.isLogin,saleAndReportController.searchWithDate)
 
 module.exports = admin_route

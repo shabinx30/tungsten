@@ -158,9 +158,9 @@
 												<% addresses.forEach((address, index) => { %>
 												<div class="col-lg-6">
 													<% if(index==0){ %>
-														<div class="card card-dashboard address-card" style="border-radius: 20px; border: 3px solid #000000;" data-index="<%= index %>">
+														<div class="card card-dashboard address-card" style="border-radius: 20px; border: 1px solid #9f9f9f; cursor: pointer; background-color: #ffd0be;" data-index="<%= index %>">
 													<%}else{%>
-														<div class="card card-dashboard address-card" style="border-radius: 20px; border: 1px solid #9f9f9f;" data-index="<%= index %>">
+														<div class="card card-dashboard address-card" style="border-radius: 20px; border: 1px solid #9f9f9f; cursor: pointer;" data-index="<%= index %>">
 													<%}%>
 														<div class="card-body">
 															<% if(index == 0) { %>
@@ -180,7 +180,7 @@
 																<%= address.postcode %> <%= address.phone_number %> <br>
 																<%= address.email %>
 															</p>
-															<a href="#">Edit <i class="icon-edit"></i></a>
+															<!-- <a href="#">Edit <i class="icon-edit"></i></a> -->
 														</div><!-- End .card-body -->
 													</div><!-- End .card-dashboard -->
 												</div><!-- End .col-lg-6 -->
@@ -207,10 +207,14 @@
 													addressCards.forEach(card => {
 														card.addEventListener('click', function() {
 															// Remove border from all cards
-															addressCards.forEach(c => c.style.border = '1px solid #9f9f9f');
+															addressCards.forEach(c => {
+                                                                c.style.border = '1px solid #9f9f9f'
+                                                                c.style.backgroundColor = '#f9f9f9'
+                                                            });
 															
 															// Add border to the clicked card
-															this.style.border = '3px solid black';
+															this.style.border = '1px solid #9f9f9f';
+                                                            this.style.backgroundColor = '#ffd0be'
 											
 															// Check the corresponding radio button
 															const index = this.getAttribute('data-index');
@@ -245,7 +249,7 @@
                                                     <p id="" hidden></p>
 													<tr>
 														<td><a href="#"><%=product.productId.name%></a></td>
-														<td>₹<%=product.productId.finalPrice%></td>
+														<td>₹<%=product.productId.finalPrice*product.quantity%></td>
 													</tr>
 												<%})%>
 		                						<tr class="summary-subtotal">
@@ -267,15 +271,15 @@
 										<div class="mb-3">
 											<div class="d-flex align-items-center">
 												<input type="radio" name="paymentMethod" id="cod" value="cash">
-												<label for="cod" class="ml-3" style="margin-top: 1px;">Cash On Delivery</label>
+												<label for="cod" class="ml-3" style="margin-top: 1px; cursor: pointer;">Cash On Delivery</label>
 											</div>
 											<div class="d-flex align-items-center">
 												<input type="radio" name="paymentMethod" id="op" value="online">
-												<label for="op" class="ml-3" style="margin-top: 1px;">Online Payment</label>
+												<label for="op" class="ml-3" style="margin-top: 1px; cursor: pointer;">Online Payment</label>
 											</div>
                                             <div class="d-flex align-items-center">
-												<input type="radio" name="paymentMethod" id="op" value="wallet">
-												<label for="op" class="ml-3" style="margin-top: 1px;">Wallet</label>
+												<input type="radio" name="paymentMethod" id="wlt" value="wallet">
+												<label for="wlt" class="ml-3" style="margin-top: 1px; cursor: pointer;">Wallet</label>
 											</div>
 										</div>
 		                				<button type="submit" class="btn btn-outline-primary-2 btn-order btn-block" style="border-radius: 10px;">
