@@ -729,6 +729,8 @@
                     rzp1.on('payment.failed', function (response){
                         console.error('Payment failed:', response.error);
                         alert('Payment failed. Please try again.');
+                        // window.location.href='/userDashboard?orderOp=1'
+                        window.location.href=`/paymentFailed?orderId=${result.receipt}`
                     });
                     rzp1.open();
                 }

@@ -5,14 +5,14 @@ const path = require('path')
 const ProductOffer = require('../models/ProductOffers')
 const mongoose = require('mongoose');
 const CategoryOffer = require('../models/categoryOffer')
+const Cart = require('../models/cartModel')
+const Wishlist = require('../models/wishlistModel')
 
 
 //rendering the shop page
 const shop = async (req, res) => {
     try {
 
-        let page = parseInt(req.query.page) || 0;
-        let type = req.query.type;
 
         let productData = await Product.find({is_listed: true});
         let productCount;
@@ -38,31 +38,30 @@ const shop = async (req, res) => {
             
         }
 
+
+        //pagination
+
+        let page = parseInt(req.query.page) || 0;
         const limit = 4;
         const skip = (page * limit);
 
 
-        if (type == 1) {
-            productCount = await Product.find({ is_listed: true }).countDocuments();
-            productData = await Product.find({ is_listed: true }).sort({ price: 1 }).populate('categoryName').skip(skip).limit(limit);
-        } else if (type == -1) {
-            productData = await Product.find({ is_listed: true }).sort({ price: -1 }).populate('categoryName').skip(skip).limit(limit);
-        } else if (type == 'a') {
-            productData = await Product.find({ is_listed: true }).sort({ name: 1 }).populate('categoryName').skip(skip).limit(limit);
-        } else if (type == 'z') {
-            productData = await Product.find({ is_listed: true }).sort({ name: -1 }).populate('categoryName').skip(skip).limit(limit);
-        } else {
-            productCount = await Product.find({ is_listed: true }).countDocuments();
-            productData = await Product.find({ is_listed: true }).populate('categoryName').skip(skip).limit(limit);
-            
-            // Filter products where the category is listed
-            productData = productData.filter(product => product.categoryName && product.categoryName.is_listed);
-        }
+        productCount = await Product.find({ is_listed: true }).countDocuments();
+        productData = await Product.find({ is_listed: true }).populate('categoryName').skip(skip).limit(limit);
+        
+        // Filter products where the category is listed
+        productData = productData.filter(product => product.categoryName && product.categoryName.is_listed);
 
         const categoryData = await Category.find({is_listed: true})
 
+        //********** NAV ***********
+        const cart = await Cart.findOne({userId: req.session.user_id})
+        const wishlist = await Wishlist.findOne({userId: req.session.user_id})
+        const cartCount = cart? cart.products.length : 0
+        const wishlistCount = wishlist? wishlist.products.length : 0
+
         // Render the shop view with the fetched product data and product count
-        res.render('shop', { products: productData, productCount, page,categoryData,categorySelected: false,sortSelected: false, });
+        res.render('shop', { products: productData, productCount, page,categoryData,categorySelected: 'All',sortSelected: 'All',searchString: undefined,cartCount,wishlistCount });
     } catch (error) {
         console.log(error.message);
         res.status(500).send("Internal Server Error");
@@ -87,11 +86,14 @@ const loadProductDetails = async (req, res) => {
             !value._id.equals(product._id)
         );
 
-        console.log(related);
-        
+        //********** NAV ***********
+        const cart = await Cart.findOne({userId: req.session.user_id})
+        const wishlist = await Wishlist.findOne({userId: req.session.user_id})
+        const cartCount = cart? cart.products.length : 0
+        const wishlistCount = wishlist? wishlist.products.length : 0       
 
         if (product) {
-            res.render('product', { product,related });
+            res.render('product', { product,related,cartCount,wishlistCount });
         } else {
             return res.redirect('*');
         }
@@ -205,8 +207,12 @@ const editProduct = async (req, res) => {
 //************** search product ****************
 const searchProducts = async (req,res)=>{
     try {
-        let page = 0
-        let searchString = req.query.search
+        // let page = 0
+        let { searchString,categorySelected,sortSelected } = req.query
+
+        console.log(searchString,categorySelected,sortSelected);
+        
+
         if (!searchString) {
             return res.status(400).json({ error: 'Search string is required' });
         }
@@ -223,8 +229,35 @@ const searchProducts = async (req,res)=>{
             searchQuery.$or.push({ price: { $lte: searchNumber } });
         }
 
-        let products = await Product.find(searchQuery).sort({ price: -1 })
-        res.render('shop', { products, searchString,productCount: products.length,page })
+        let sortQuery = {}
+
+        if(categorySelected&&categorySelected != 'All'){
+            const category = await Category.findOne({_id: categorySelected })
+
+            searchQuery.categoryName = category._id
+        }
+
+        if(sortSelected&&sortSelected != 'All'){
+            if(sortSelected == 'low-to-high'){
+                sortQuery.price = 1
+            }else if(sortSelected == 'high-to-low'){
+                sortQuery.price = -1
+            }
+        }
+
+        // pagination
+        let page = parseInt(req.query.page) || 0;
+
+        const limit = 4;
+        const skip = (page * limit);
+
+        const products = await Product.find(searchQuery).sort(sortQuery).skip(skip).limit(limit).populate('categoryName')
+
+        //ctegory data
+        const categoryData = await Category.find({is_listed: true})
+
+        // let products = await Product.find(searchQuery).sort({ price: -1 })
+        res.render('shop', { products,searchString,productCount: products.length,page,categoryData,categorySelected,sortSelected })
     } catch (error) {
         console.log(error.message);
         res.status(400).send(error.message)
@@ -234,25 +267,58 @@ const searchProducts = async (req,res)=>{
 
 const filterProducts = async (req,res)=>{
     try {
-        const { categorySelected,sortSelected } = req.body
+        const { searchString,categorySelected,sortSelected } = req.query
+
+        console.log(searchString);
+        
+
         let query = {}
         let sortQuery = {}
 
         if(categorySelected&&categorySelected != 'All'){
-            const category = Category.find({name: categorySelected })
+            const category = await Category.findOne({_id: categorySelected })
 
-            query.category = category.name
+            query.categoryName = category._id
         }
 
         if(sortSelected&&sortSelected != 'All'){
             if(sortSelected == 'low-to-high'){
-                sortQuery.price = 1
+                sortQuery.finalPrice = 1
             }else if(sortSelected == 'high-to-low'){
-                sortQuery.price = -11
+                sortQuery.finalPrice = -1
             }
         }
 
+        if(searchString){
+            let searchNumber = parseInt(searchString, 10);
 
+            query = {
+                $or: [
+                    { name: { $regex: new RegExp(searchString, 'i') } }
+                ]
+            };
+
+            if (!isNaN(searchNumber)) {
+                query.$or.push({ finalPrice: { $lte: searchNumber } });
+            }
+        }
+
+        console.log(query);
+        
+
+        // pagination
+        let page = parseInt(req.query.page) || 0;
+
+        const limit = 4;
+        const skip = (page * limit);
+
+        const productCount = await Product.find(query).count()
+        const productData = await Product.find(query).sort(sortQuery).skip(skip).limit(limit).populate('categoryName')
+
+        //ctegory data
+        const categoryData = await Category.find({is_listed: true})
+
+        res.render('shop', { products: productData, productCount: productCount, page,categoryData,categorySelected,sortSelected,searchString });
 
     } catch (error) {
         console.log(error);

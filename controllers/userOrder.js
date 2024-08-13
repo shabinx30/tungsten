@@ -265,10 +265,35 @@ const verifyPayment = async (req,res)=>{
     }
 }
 
+const paymentFailed = async( req,res)=>{
+    try {
+        console.log(req.query.orderId);
+
+        const order = await Order.findOneAndUpdate(
+            { orderId: req.query.orderId },
+            { $set: { 'orderedProducts.$[].status': 'Failed' } },
+            { new: true }
+        );
+
+        if(order){
+           return res.redirect('/userDashboard?orderOp=1') 
+        }
+        else{
+            return res.send('An error got.')
+        }
+        
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
+
+
 module.exports={
     loadCheckOut,
     placeOrder,
     removeFromOrders,
     orderSuccess,
-    verifyPayment
+    verifyPayment,
+    paymentFailed
 }

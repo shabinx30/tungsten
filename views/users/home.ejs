@@ -168,7 +168,7 @@
         </header><!-- End .header -->
 <main class="main">
     <div class="intro-slider-container">
-        <div class="intro-slider owl-carousel owl-theme owl-nav-inside owl-light mb-0" data-toggle="owl" data-owl-options='{
+        <div class="intro-slider owl-carousel owl-theme owl-nav-inside owl-light mb-0" data-toggle="owl" id="test-1" data-owl-options='{
                 "dots": true,
                 "nav": false, 
                 "responsive": {
@@ -396,18 +396,28 @@
                             <div class="col-6 col-md-4 col-lg-3">
                                 <div class="product product-2 text-center">
                                     <figure class="product-media">
-                                        <% if(product.quantity==0){ %>
-                                            <span class="product-label label-sale" style="border-radius: 7px;">Out of stock</span>
-                                        <% } %>
-                                        <a href="/product?productDetails=<%= product._id %>">
-                                            <% if(product.quantity == 0) {%>
-                                                <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image" style="filter: saturate(0); object-fit: cover;max-height:280px;">
-                                                <img src="/productImages/<%= product.images[1]?product.images[1]:product.images[0] %>" alt="Product image" class="product-image-hover" style="filter: saturate(0); object-fit: cover;max-height:280px;">
-                                            <% }else{ %>
-                                                <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image" style="object-fit: cover;max-height:280px;">
-                                                <img src="/productImages/<%= product.images[1]?product.images[1]:product.images[0] %>" alt="Product image" class="product-image-hover" style="object-fit: cover;max-height:280px;">
+                                        <% let quantity = 0 %>
+                                            <% Object.values(product.quantity).forEach(function(q) { %>
+                                                <% if(q!=0) {%>
+                                                    <% quantity++ %>
+                                                <% } %>
+                                            <% }); %>
+
+                                            <% if(quantity==0){ %>
+                                                <span class="product-label label-sale" style="border-radius: 7px;">Out of stock</span>
+                                            <% }else if(product.offer>0){ %>
+                                                <span class="product-label label-new" style="border-radius: 7px;"><%= product.offer %>% off</span>
                                             <% } %>
-                                        </a>
+        
+                                            <a href="/product?productDetails=<%= product._id %>">
+                                                <% if(quantity == 0) {%>
+                                                    <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image" style="filter: saturate(0); object-fit: cover;max-height:280px;">
+                                                    <img src="/productImages/<%= product.images[1]?product.images[1]:product.images[0] %>" alt="Product image" class="product-image-hover" style="filter: saturate(0); object-fit: cover;max-height:280px;">
+                                                <% }else{ %>
+                                                    <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image" style="object-fit: cover;max-height:280px;">
+                                                    <img src="/productImages/<%= product.images[1]?product.images[1]:product.images[0] %>" alt="Product image" class="product-image-hover" style="object-fit: cover;max-height:280px;">
+                                                <% } %>
+                                            </a>
     
                                         <div class="product-action-vertical" onclick="addToWishlist('<%= product._id %>')">
                                             <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
@@ -424,8 +434,12 @@
                                         </div><!-- End .product-cat -->
                                         <h3 class="product-title"><a href="product.html"><%= product.name %></a></h3><!-- End .product-title -->
                                         <div class="product-price">
-                                            <span class="new-price">Now $<%= product.price %></span>
-                                            <span class="old-price">Was $<%= product.price+10 %></span>
+                                            <% if(product.offer>0) {%>
+                                                <span class="new-price">₹<%= product.finalPrice %></span>
+                                                <span class="old-price">₹<%= product.price %></span>
+                                            <%}else{%>
+                                                ₹<%= product.price %>
+                                            <%}%>
                                         </div><!-- End .product-price -->
                                     </div><!-- End .product-body -->
                                 </div><!-- End .product -->
@@ -443,13 +457,28 @@
                             <div class="col-6 col-md-4 col-lg-3">
                                 <div class="product product-2 text-center">
                                     <figure class="product-media">
-                                        <% if(product.quantity==0){ %>
-                                            <span class="product-label label-sale" style="border-radius: 7px;">Out of stock</span>
-                                        <% } %>
-                                        <a href="/product?productDetails=<%= product._id %>">
-                                            <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image">
-                                            <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image-hover">
-                                        </a>
+                                        <% let quantity = 0 %>
+                                            <% Object.values(product.quantity).forEach(function(q) { %>
+                                                <% if(q!=0) {%>
+                                                    <% quantity++ %>
+                                                <% } %>
+                                            <% }); %>
+
+                                            <% if(quantity==0){ %>
+                                                <span class="product-label label-sale" style="border-radius: 7px;">Out of stock</span>
+                                            <% }else if(product.offer>0){ %>
+                                                <span class="product-label label-new" style="border-radius: 7px;"><%= product.offer %>% off</span>
+                                            <% } %>
+        
+                                            <a href="/product?productDetails=<%= product._id %>">
+                                                <% if(quantity == 0) {%>
+                                                    <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image" style="filter: saturate(0); object-fit: cover;max-height:280px;">
+                                                    <img src="/productImages/<%= product.images[1]?product.images[1]:product.images[0] %>" alt="Product image" class="product-image-hover" style="filter: saturate(0); object-fit: cover;max-height:280px;">
+                                                <% }else{ %>
+                                                    <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image" style="object-fit: cover;max-height:280px;">
+                                                    <img src="/productImages/<%= product.images[1]?product.images[1]:product.images[0] %>" alt="Product image" class="product-image-hover" style="object-fit: cover;max-height:280px;">
+                                                <% } %>
+                                            </a>
     
                                         <div class="product-action-vertical">
                                             <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
@@ -485,12 +514,27 @@
                                 <div class="col-6 col-md-4 col-lg-3">
                                     <div class="product product-2 text-center">
                                         <figure class="product-media">
-                                            <% if(product.quantity==0){ %>
+                                            <% let quantity = 0 %>
+                                            <% Object.values(product.quantity).forEach(function(q) { %>
+                                                <% if(q!=0) {%>
+                                                    <% quantity++ %>
+                                                <% } %>
+                                            <% }); %>
+
+                                            <% if(quantity==0){ %>
                                                 <span class="product-label label-sale" style="border-radius: 7px;">Out of stock</span>
+                                            <% }else if(product.offer>0){ %>
+                                                <span class="product-label label-new" style="border-radius: 7px;"><%= product.offer %>% off</span>
                                             <% } %>
+        
                                             <a href="/product?productDetails=<%= product._id %>">
-                                                <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image">
-                                                <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image-hover">
+                                                <% if(quantity == 0) {%>
+                                                    <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image" style="filter: saturate(0); object-fit: cover;max-height:280px;">
+                                                    <img src="/productImages/<%= product.images[1]?product.images[1]:product.images[0] %>" alt="Product image" class="product-image-hover" style="filter: saturate(0); object-fit: cover;max-height:280px;">
+                                                <% }else{ %>
+                                                    <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image" style="object-fit: cover;max-height:280px;">
+                                                    <img src="/productImages/<%= product.images[1]?product.images[1]:product.images[0] %>" alt="Product image" class="product-image-hover" style="object-fit: cover;max-height:280px;">
+                                                <% } %>
                                             </a>
         
                                             <div class="product-action-vertical">
@@ -527,12 +571,26 @@
                                 <div class="col-6 col-md-4 col-lg-3">
                                     <div class="product product-2 text-center">
                                         <figure class="product-media">
-                                            <% if(product.quantity==0){ %>
+
+                                            <% let quantity = 0 %>
+                                            <% Object.values(product.quantity).forEach(function(q) { %>
+                                                <% if(q!=0) {%>
+                                                    <% quantity++ %>
+                                                <% } %>
+                                            <% }); %>
+
+                                            <% if(quantity==0){ %>
                                                 <span class="product-label label-sale" style="border-radius: 7px;">Out of stock</span>
+                                            <% }else if(product.offer>0){ %>
+                                                <span class="product-label label-new" style="border-radius: 7px;"><%= product.offer %>% off</span>
                                             <% } %>
+        
                                             <a href="/product?productDetails=<%= product._id %>">
-                                                <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image">
-                                                <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image-hover">
+                                                <% if(quantity == 0) {%>
+                                                    <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image" style="filter: saturate(0); object-fit: cover;max-height:280px;">
+                                                <% }else{ %>
+                                                    <img src="/productImages/<%= product.images[0] %>" alt="Product image" class="product-image" style="object-fit: cover;max-height:280px;">
+                                                <% } %>
                                             </a>
         
                                             <div class="product-action-vertical">
@@ -550,8 +608,12 @@
                                             </div><!-- End .product-cat -->
                                             <h3 class="product-title"><a href="product.html"><%= product.name %></a></h3><!-- End .product-title -->
                                             <div class="product-price">
-                                                <span class="new-price">Now $<%= product.price %></span>
-                                                <span class="old-price">Was $<%= product.price+10 %></span>
+                                                <% if(product.offer>0) {%>
+                                                    <span class="new-price">₹<%= product.finalPrice %></span>
+                                                    <span class="old-price">₹<%= product.price %></span>
+                                                <%}else{%>
+                                                    ₹<%= product.price %>
+                                                <%}%>
                                             </div><!-- End .product-price -->
                                         </div><!-- End .product-body -->
                                     </div><!-- End .product -->
@@ -827,6 +889,19 @@
 </div><!-- End .modal-dialog -->
 </div><!-- End .modal -->
 <%- include('../layouts/footer.ejs') %>
+
+<script>
+    window.onload = function (){
+        setInterval(()=>{
+            document.getElementById('test-1').click()
+        },3000)
+    }
+
+    setInterval(()=>{
+            document.getElementById('test-1').click()
+        },3000)
+</script>
+
 <script>
     function addToCart(productId){
         const quantity = 1

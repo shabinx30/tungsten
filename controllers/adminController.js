@@ -47,7 +47,7 @@ const loadLogin = async(req,res) => {
 
 const loadDashboard = async(req, res) => {
     try {
-        const userCount = await User.find({is_admin:false}).count()
+        const userCount = await User.find({is_admin:false}).countDocuments();
         const productCount = await Product.find({}).count()
         const categoryCount = await Category.find({}).count()
         let totalEarning = 0;

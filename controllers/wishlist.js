@@ -5,7 +5,7 @@ const loadWishlist = async(req,res)=>{
     try {
         const userId = req.session.user_id
         const wishlistProducts = await Wishlist.findOne({userId: userId}).populate('products.productId').exec()
-        console.log(wishlistProducts)
+        console.log('while loading the wishlist ',wishlistProducts)
         res.render('wishlist',{wishlistProducts})
     } catch (error) {
         console.error('Error loading wishlist:', error.message);

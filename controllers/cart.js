@@ -1,5 +1,6 @@
 const Cart = require('../models/cartModel');
 const Product = require('../models/productModel')
+const Wishlist = require('../models/wishlistModel')
 
 //loadCart
 const loadCart = async (req, res) => {
@@ -17,8 +18,11 @@ const loadCart = async (req, res) => {
         }
         // console.log(userId)
         
+        //********** NAV ***********
+        const wishlist = await Wishlist.findOne({userId: req.session.user_id})
+        const wishlistCount = wishlist? wishlist.products.length : 0   
 
-        res.render('cart', {products: cart.products });
+        res.render('cart', {products: cart.products,wishlistCount });
     } catch (error) {
         console.error('Error loading cart:', error.message);
         res.status(500).send('Internal Server Error');
@@ -37,8 +41,12 @@ const addCart = async (req, res) => {
         let cartQ =  1
         if(cartQuantity){
             const product = cartQuantity.products.find(p => p.productId.toString() === productId.toString() && p.size === size);
-            // console.log(product);
-            cartQ = (product.quantity)
+            // console.log(product,'existing the cart, products.');
+            if(product){
+                cartQ = (product.quantity)
+            }
+            // console.log('no ,more');
+            
         }
         // console.log('cart quantity',cartQuantity.products[0].quantity);
 

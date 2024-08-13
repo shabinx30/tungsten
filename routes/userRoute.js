@@ -135,6 +135,7 @@ user_route.post("/placeOrder", userAuth.isLogin, userOrderController.placeOrder)
 user_route.put('/removeFromOrders',userAuth.isLogin,userOrderController.removeFromOrders)
 user_route.get('/orderSuccess',userAuth.isLogin,userOrderController.orderSuccess)
 user_route.post('/verifyPayment',userAuth.isLogin,userOrderController.verifyPayment)
+user_route.get('/paymentFailed',userAuth.isLogin,userOrderController.paymentFailed)
 
 
 //wallet

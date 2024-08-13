@@ -92,7 +92,7 @@
 
                     <a href="/wishlist" class="wishlist-link">
                         <i class="icon-heart-o"></i>
-                        <span class="wishlist-count">3</span>
+                        <span class="wishlist-count"><%= wishlistCount %></span>
                     </a>
 
                     
@@ -218,7 +218,7 @@
                                     </tbody>
                                 </table><!-- End .table table-summary -->
 
-                                <button id="PROCEED" onclick="proceed('<%=total%>')" class="btn btn-outline-primary-2 btn-order btn-block" style="border-radius: 10px;">PROCEED TO CHECKOUT</button>
+                                <button id="PROCEED" onclick="proceed('<%=total%>')" class="btn btn-outline-primary-2 btn-order btn-block disabled" style="border-radius: 10px;">PROCEED TO CHECKOUT</button>
                                 <script>
                                     function proceed(total){
                                         const verify_quantity = document.getElementById('verify_quantity');

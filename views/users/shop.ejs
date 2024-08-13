@@ -86,20 +86,22 @@
                         <form action="/searchProducts" method="get">
                             <div class="header-search-wrapper">
                                 <label for="q" class="sr-only">Search</label>
-                                <input type="search" class="form-control" name="search" id="q" placeholder="Search in..." required>
+                                <input type="search" class="form-control" name="searchString" id="q" placeholder="Search in..." required>
                             </div><!-- End .header-search-wrapper -->
+                            <input type="hidden" value="<%= categorySelected %>" name="categorySelected">
+                            <input type="hidden" value="<%= sortSelected %>" name="sortSelected">
                         </form>
-                    </div><!-- End .header-search -->
+                    </div><!-- End .header-search -->                    
 
                     <a href="/wishlist" class="wishlist-link">
                         <i class="icon-heart-o"></i>
-                        <span class="wishlist-count">3</span>
+                        <span class="wishlist-count" id="wishCount"><%= wishlistCount %></span>
                     </a>
 
                     <div class="dropdown cart-dropdown">
                         <a href="/cart" class="dropdown-toggle" >
                             <i class="icon-shopping-cart"></i>
-                            <span class="cart-count">2</span>
+                            <span class="cart-count" id="cartCount"><%= cartCount %></span>
                         </a>
 
                         <!-- dropdown -->
@@ -145,7 +147,7 @@
                     <div class="toolbox-right" >
                         <div class="toolbox-sort" >
                             <!-- <label for="sortby">Sort by:</label> -->
-                            <div class="dropdown">
+                            <!-- <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" style="border-radius: 10px;" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                   sort:
                                 </button>
@@ -156,7 +158,7 @@
                                   <a class="dropdown-item" href="/shop?type=a"><p>Name: aA-zZ</p></a>
                                   <a class="dropdown-item" href="/shop?type=z"><p>Name: zZ-aA</p></a>
                                 </div>
-                              </div>
+                            </div> -->
                         </div><!-- End .toolbox-sort -->
                     </div><!-- End .toolbox-right -->
                 </div><!-- End .toolbox -->
@@ -245,21 +247,21 @@
                     <div class="d-flex mt-3" style="justify-content: center; align-items: center;">
                         <!-- back button in pagination -->
                         <% if(page>0){ %>
-                            <div class="mr-3" onclick="window.location.href='/shop?page=<%= page-1 %>'" style="border: 1px solid #d4d4d4; width: 70px; height: 30px; background-color: #ffffff; border-radius: 7.5px; cursor: pointer;">
+                            <div class="mr-3" onclick="pagination('<%= page-1 %>')" style="border: 1px solid #d4d4d4; width: 70px; height: 30px; background-color: #ffffff; border-radius: 7.5px; cursor: pointer;">
                                 <p style="padding-left: 7px;">Previous</p>
                             </div>
                             <p class="mr-3" style="cursor: default;">...</p>
                         <% } %>
 
                         <!-- number in pagination -->
-                        <div  onclick="window.location.href='/shop?page=<%= page %>'" style="border: 1px solid #b0b0b0; width: 25px; height: 30px; background-color: #c7c7c7; border-radius: 7.5px; cursor: default;">
+                        <div  onclick="pagination('<%= page %>')" style="border: 1px solid #b0b0b0; width: 25px; height: 30px; background-color: #c7c7c7; border-radius: 7.5px; cursor: default;">
                             <p style="padding-left: 7px;"><%= page+1 %></p>
                         </div>
                         
                         <!-- next button in pagination -->
                         <% if(page>=0&&page<(productCount/4)-1){ %>
                             <p class="ml-3" style="cursor: default;">...</p>
-                            <div class="ml-3" onclick="window.location.href='/shop?page=<%= page+1 %>'" style="border: 1px solid #d4d4d4; width: 50px; height: 30px; background-color: #ffffff; border-radius: 7.5px; cursor: pointer;">
+                            <div class="ml-3" onclick="pagination('<%= page+1 %>')" style="border: 1px solid #d4d4d4; width: 50px; height: 30px; background-color: #ffffff; border-radius: 7.5px; cursor: pointer;">
                                 <p style="padding-left: 7px;">Next</p>
                             </div>
                         <% } %>
@@ -273,7 +275,8 @@
                 <div class="sidebar-filter-overlay" id="FilterOverlay"></div><!-- End .sidebar-filter-overlay -->
 <aside class="sidebar-shop sidebar-filter">
     <div class="sidebar-filter-wrapper">
-        <form id="filterForm" action="/filterProducts" method="post">
+        <form id="filterForm" action="/filterProducts" method="get">
+            <input type="hidden" value="<%= searchString %>" name="searchString" id="searchString">
             <div class="widget widget-clean">
                 <label><i class="icon-close" onclick="closeFilter()" style="cursor: pointer;"></i>Filters</label>
                 <script>
@@ -296,7 +299,7 @@
                         <div class="filter-items filter-items-count">
                             <div class="filter-item">
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" id="cat-1" name="category" value="All" <%= categorySelected ? '' : 'checked' %> >
+                                    <input type="radio" class="custom-control-input" id="cat-1" name="categorySelected" value="All" <%= categorySelected=='All' ? 'checked' : '' %> >
                                     <label class="custom-control-label" for="cat-1">All</label>
                                 </div><!-- End .custom-radio -->
                                 <!-- <span class="item-count">3</span> -->
@@ -306,7 +309,7 @@
                                 <% categoryData.forEach((val)=>{ %>
                                     <div class="filter-item">
                                         <div class="custom-control custom-radio">
-                                            <input type="radio" class="custom-control-input" id="cat-<%= val._id %>" name="category" value="<%= val.name %>" <%= categorySelected === val.name ? 'checked' : '' %> >
+                                            <input type="radio" class="custom-control-input" id="cat-<%= val._id %>" name="categorySelected" value="<%= val._id %>" <%= categorySelected == val._id ? 'checked' : '' %> >
                                             <label class="custom-control-label" for="cat-<%= val._id %>"><%= val.name %></label>
                                         </div><!-- End .custom-radio -->
                                         <!-- <span class="item-count">0</span> -->
@@ -332,7 +335,7 @@
                         <div class="filter-items filter-items-count">
                             <div class="filter-item">
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" id="sort-1" name="sort" value="All" <%= sortSelected ? '' : 'checked' %> >
+                                    <input type="radio" class="custom-control-input" id="sort-1" name="sortSelected" value="All" <%= sortSelected=='All' ? 'checked' : '' %> >
                                     <label class="custom-control-label" for="sort-1">None</label>
                                 </div><!-- End .custom-radio -->
                                 <!-- <span class="item-count">3</span> -->
@@ -340,7 +343,7 @@
                                                         
                             <div class="filter-item">
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" id="sort-2" name="sort" value="low-to-high" <%= sortSelected === 'low-to-high' ? 'checked' : '' %> >
+                                    <input type="radio" class="custom-control-input" id="sort-2" name="sortSelected" value="low-to-high" <%= sortSelected === 'low-to-high' ? 'checked' : '' %> >
                                     <label class="custom-control-label" for="sort-2">Low to High</label>
                                 </div><!-- End .custom-radio -->
                                 <!-- <span class="item-count">3</span> -->
@@ -348,7 +351,7 @@
                             
                             <div class="filter-item">
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" id="sort-3" name="sort" value="high-to-low" <%= sortSelected === 'high-to-low' ? 'checked' : '' %> >
+                                    <input type="radio" class="custom-control-input" id="sort-3" name="sortSelected" value="high-to-low" <%= sortSelected === 'high-to-low' ? 'checked' : '' %> >
                                     <label class="custom-control-label" for="sort-3">High to Low</label>
                                 </div><!-- End .custom-radio -->
                                 <!-- <span class="item-count">3</span> -->
@@ -568,6 +571,20 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- add to cart fucntionality -->
+
+
+<script>
+    function pagination(page){
+        const categorySelected = document.querySelector('input[name="categorySelected"]:checked').value
+        const sortSelected = document.querySelector('input[name="sortSelected"]:checked').value
+        const searchString = document.getElementById('searchString').value
+
+        window.location.href = `filterProducts?searchString=${searchString}&categorySelected=${categorySelected}&sortSelected=${sortSelected}&page=${page}`
+        
+    }
+</script>
+
+
 <script>
     function addToCart(productId){
         
@@ -582,6 +599,9 @@
         .then(response => response.json())
         .then(data=>{
             if(data.success){
+                let cartCount = document.getElementById('cartCount')
+                cartCount.textContent = parseInt(cartCount.textContent)+1
+                
                 Swal.fire({
                     icon : 'success',
                     title : 'Success',
@@ -609,7 +629,9 @@
         })
         .then(response => {
             if (response.data.success) {
-                console.log('success');
+                let wishCount = document.getElementById('wishCount')
+                wishCount.textContent = parseInt(wishCount.textContent)+1
+
                 Swal.fire({
                     position: 'top-end',
                     icon: 'success',
