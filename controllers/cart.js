@@ -12,15 +12,18 @@ const loadCart = async (req, res) => {
         }
 
         const cart = await Cart.findOne({ userId: userId }).populate('products.productId').exec();
+        const wishlist = await Wishlist.findOne({userId: userId})
 
         if (!cart) {
-            return res.render('cart', { cart: [], products: [] });
+            return res.render('cart', { cart: [], products: [], wishlistCount: wishlist? wishlist.products.length : 0 });
         }
         // console.log(userId)
         
         //********** NAV ***********
-        const wishlist = await Wishlist.findOne({userId: req.session.user_id})
-        const wishlistCount = wishlist? wishlist.products.length : 0   
+        const wishlistCount = wishlist? wishlist.products.length : 0;
+
+        console.log('form wish lst constj',wishlistCount);
+        
 
         res.render('cart', {products: cart.products,wishlistCount });
     } catch (error) {
