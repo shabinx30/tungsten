@@ -256,8 +256,14 @@ const searchProducts = async (req,res)=>{
         //ctegory data
         const categoryData = await Category.find({is_listed: true})
 
+
+        const cart = await Cart.findOne({userId: req.session.user_id})
+        const wishlist = await Wishlist.findOne({userId: req.session.user_id})
+        const cartCount = cart? cart.products.length : 0
+        const wishlistCount = wishlist? wishlist.products.length : 0 
+
         // let products = await Product.find(searchQuery).sort({ price: -1 })
-        res.render('shop', { products,searchString,productCount: products.length,page,categoryData,categorySelected,sortSelected })
+        res.render('shop', { products,searchString,productCount: products.length,page,categoryData,categorySelected,sortSelected,cartCount,wishlistCount })
     } catch (error) {
         console.log(error.message);
         res.status(400).send(error.message)
@@ -318,7 +324,13 @@ const filterProducts = async (req,res)=>{
         //ctegory data
         const categoryData = await Category.find({is_listed: true})
 
-        res.render('shop', { products: productData, productCount: productCount, page,categoryData,categorySelected,sortSelected,searchString });
+
+        const cart = await Cart.findOne({userId: req.session.user_id})
+        const wishlist = await Wishlist.findOne({userId: req.session.user_id})
+        const cartCount = cart? cart.products.length : 0
+        const wishlistCount = wishlist? wishlist.products.length : 0 
+
+        res.render('shop', { products: productData, productCount: productCount, page,categoryData,categorySelected,sortSelected,searchString,wishlistCount,cartCount });
 
     } catch (error) {
         console.log(error);

@@ -248,7 +248,7 @@
                                     </div><!-- End .product-cat -->
 
                                     <div class="social-icons social-icons-sm">
-                                        <button class="btn btn-block btn-outline-primary-2" style="border-radius: 10px; width: 15em;" onclick="share('tungsten.online/product?productDetails=<%= product._id %>')">Share</button>
+                                        <button class="btn btn-block btn-outline-primary-2" style="border-radius: 10px; width: 15em;" onclick="share('tungstenz.online/product?productDetails=<%= product._id %>')">Share</button>
                                     </div>
                                 </div><!-- End .product-details-footer -->
                             </div><!-- End .product-details -->
@@ -302,7 +302,7 @@
                 
                 <% if(related.length>0){ %>
                     <h2 class="title text-center mb-4">You May Also Like</h2><!-- End .title text-center -->
-                    <% related.forEach((value)=>{ %>
+                    
 
                 <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow" data-toggle="owl" 
                     data-owl-options='{
@@ -330,41 +330,60 @@
                             }
                         }
                     }'>
+                    <% related.forEach((value)=>{ %>
+                        <div class="product product-2 text-center">
+                            <figure class="product-media">
+                                <% let quantity = 0 %>
+                                    <% Object.values(value.quantity).forEach(function(q) { %>
+                                        <% if(q!=0) {%>
+                                            <% quantity++ %>
+                                        <% } %>
+                                    <% }); %>
 
-                    <div class="product product-7 text-center">
-                        <figure class="product-media">
-                            <a href="/product?productDetails=<%= value._id %>">
-                                <img src="/productImages/<%= value.images[0] %>" alt="Product image" class="product-image">
-                            </a>
+                                    <% if(quantity==0){ %>
+                                        <span class="product-label label-sale" style="border-radius: 7px;">Out of stock</span>
+                                    <% }else if(value.offer>0){ %>
+                                        <span class="product-label label-new" style="border-radius: 7px;"><%= value.offer %>% off</span>
+                                    <% } %>
 
-                            <div class="product-action-vertical" onclick="addToWishlist('<%= value._id %>')">
-                                <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-                            </div><!-- End .product-action-vertical -->
+                                    <a href="/product?productDetails=<%= value._id %>">
+                                        <% if(quantity == 0) {%>
+                                            <img src="/productImages/<%= value.images[0] %>" alt="Product image" class="product-image" style="filter: saturate(0); object-fit: cover;max-height:280px;">
+                                            <img src="/productImages/<%= value.images[1]?value.images[1]:value.images[0] %>" alt="Product image" class="product-image-hover" style="filter: saturate(0); object-fit: cover;max-height:280px;">
+                                        <% }else{ %>
+                                            <img src="/productImages/<%= value.images[0] %>" alt="Product image" class="product-image" style="object-fit: cover;max-height:280px;">
+                                            <img src="/productImages/<%= value.images[1]?value.images[1]:value.images[0] %>" alt="Product image" class="product-image-hover" style="object-fit: cover;max-height:280px;">
+                                        <% } %>
+                                    </a>
 
-                            <div class="product-action" onclick="addToCart('<%= value._id %>')">
-                                <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                            </div><!-- End .product-action -->
-                        </figure><!-- End .product-media -->
+                                <div class="product-action-vertical" onclick="addToWishlist('<%= product._id %>')">
+                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                </div><!-- End .product-action-vertical -->
 
-                        <div class="product-body">
-                            <div class="product-cat">
-                                <a href="#"><%= value.categoryName.name %></a>
-                            </div><!-- End .product-cat -->
-                            <h3 class="product-title"><a href="/product?productDetails=<%= value._id %>"><%= value.name %></a></h3><!-- End .product-title -->
-                            <div class="product-price">
-                                ₹<%= value.finalPrice %>
-                            </div><!-- End .product-price -->
-                            <div class="ratings-container">
-                                <!-- <div class="ratings"> -->
-                                    <!-- <div class="ratings-val" style="width: 20%;"></div>End .ratings-val -->
-                                <!-- </div>End .ratings -->
-                                <!-- <span class="ratings-text">( 2 Reviews )</span> -->
-                            </div><!-- End .rating-container -->
-                        </div><!-- End .product-body -->
-                    </div><!-- End .product -->
-                </div><!-- End .owl-carousel -->
+                                <div class="product-action" onclick="addToCart('<%= value._id %>')">
+                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                </div><!-- End .product-action -->
+                            </figure><!-- End .product-media -->
+
+                            <div class="product-body">
+                                <div class="product-cat">
+                                    <a href="#"><%= value.categoryName.name %></a>
+                                </div><!-- End .product-cat -->
+                                <h3 class="product-title"><a href="/product?productDetails=<%= value._id %>"><%= value.name %></a></h3><!-- End .product-title -->
+                                <div class="product-price">
+                                    <% if(value.offer>0) {%>
+                                        <span class="new-price">₹<%= value.finalPrice %></span>
+                                        <span class="old-price">₹<%= value.price %></span>
+                                    <%}else{%>
+                                        ₹<%= value.price %>
+                                    <%}%>
+                                </div><!-- End .product-price -->
+                            </div><!-- End .product-body -->
+                        </div><!-- End .product -->
                     <% }) %>
                 <% } %>
+                </div><!-- End .owl-carousel -->
+                    
 
             </div><!-- End .container -->
         </div><!-- End .page-content -->
@@ -462,7 +481,16 @@
 
             <div class="col-6 justify-content-end">
                 <div class="product-price">
-                    $84.00
+                    <% if(product.quantity==0){ %>
+                        <span style="background-color: #eb4c4c; border-radius: 10px; color: white; padding: .3em; margin-right: .5em; font-size: small;">OUT OF STOCK</span>
+                        ₹<%= product.price %>
+                    <%} else if(product.offer>0) {%>
+                        <span style="background-color: #67b12e; border-radius: 10px; color: white; padding: .25em; margin-right: .5em; font-size: medium;"><%= product.offer %>%</span>
+                        <span class="old-price" style="margin-right: .5em;">₹<%= product.price %></span>
+                        <span class="new-price">₹<%= product.finalPrice %></span>
+                    <%}else{%>
+                        ₹<%= product.price %>
+                    <%}%>
                 </div><!-- End .product-price -->
                 <!-- <div class="product-details-quantity">
                    < <input type="number" id="sticky-cart-qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
