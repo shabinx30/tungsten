@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-mongoose.connect(process.env.mongoose);
+
+mongoose.connect(process.env.MONGODB_URL).then(() => {
+  console.log("database connected");
+})
 const express = require("express");
 const app = express();
 const nocache = require("nocache");
