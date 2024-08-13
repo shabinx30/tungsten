@@ -318,7 +318,7 @@ const filterProducts = async (req,res)=>{
         const limit = 4;
         const skip = (page * limit);
 
-        const productCount = await Product.find(query).count()
+        const productCount = await Product.find(query).countDocuments();
         const productData = await Product.find(query).sort(sortQuery).skip(skip).limit(limit).populate('categoryName')
 
         //ctegory data
