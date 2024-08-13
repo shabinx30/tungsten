@@ -7,7 +7,7 @@ const orderlist = async (req,res)=>{
         let limit = 5;
         let skip = (page * limit)
 
-        const orderCount = await Order.find({}).count()
+        const orderCount = await Order.find({}).countDocuments();
         const orders = await Order.find({}).sort({_id: -1}).populate('orderedProducts.productId').skip(skip).limit(limit)
         // console.log(orders.orderedProducts);
         res.render('orderList',{orders,page,orderCount})
