@@ -339,10 +339,8 @@
                     label: 'Revenue',
                     data: Response.data.orderMonth.map(row=> row.totalIncome),
                     borderColor: 'rgb(255, 124, 124)',
-                    backgroundColor: [
-                        'rgba(107, 66, 255, 0.5)'
-                    ],
-                    // tension: .5
+                    backgroundColor: 'rgba(107, 66, 255, 0.5)',
+                    tension: .5
                 }]
             },
             options: {
@@ -371,10 +369,8 @@
                 datasets: [{
                     label: 'Revenue',
                     data: Response.data.orderYear.map(row=> row.totalIncome),
-                    borderColor: ['rgb(255, 124, 124)'],
-                    backgroundColor: [
-                        'rgba(107, 66, 255, 0.5)'
-                    ],
+                    borderColor: 'rgb(255, 124, 124)',
+                    backgroundColor: 'rgba(107, 66, 255, 0.5)',
                     // tension: .5
                 }]
             },

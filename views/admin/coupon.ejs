@@ -200,7 +200,7 @@
               <div class="modal-dialog modal-dialog-centered" role="document">
                   <div class="modal-content p-3" style="border-radius: 20px;">
                       <div class="modal-header">
-                          <h3 class="modal-title" id="exampleModalLongTitle" style="color: #000;">Add new Offer</h3>
+                          <h3 class="modal-title" id="exampleModalLongTitle" style="color: #000;">Add new Coupon</h3>
                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                           </button>
@@ -210,7 +210,15 @@
                               <p class="text-danger" aria-live="polite" id="forgot_error"><%= locals.forgot %></p>
                               <div class="form-group">
                                   <label for="forgot_password" style="color: #000;">Coupon Code *</label>
-                                  <input type="text" class="form-control" name="couponCode"style="border-radius: 10px;" placeholder="Code">
+                                  <div class="d-flex" style="justify-content: center; align-items: center;">
+                                    <div style="width: 50%; height: 2.3em; border-radius: 10px; border: 1px solid #000; display: flex; justify-content: center; align-items: center; padding-top: 1em;">
+                                      <p id="couponCode"></p>
+                                      <input type="hidden" id="couponCode_field" name="couponCode">
+                                    </div>
+                                    <div class="pl-3">
+                                      <button style="border-radius: 10px;" class="btn btn-primary" onclick="generateCode()" type="button">Generate Code</button>
+                                    </div>
+                                  </div>
                                   <span id="forgot_password_error" class="error-message" style="color: red; font-size: smaller;"></span>
                               </div> <!--End .form-group -->
                               <div class="form-group">
@@ -320,7 +328,20 @@
           }
       });
     }
-</script>    
+</script>   
+
+<script>
+  function generateCode(){
+    let abc = 'QWERTYUIOPASDFGHJKLZXCVBNM1234567890'
+    let string = ''
+    for(let i=0;i<=8;i++){
+      let index = Math.floor(Math.random()*abc.length)
+      string += abc[index]
+    }
+    document.getElementById('couponCode').textContent = string
+    document.getElementById('couponCode_field').value = string
+  }
+</script>
   
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>

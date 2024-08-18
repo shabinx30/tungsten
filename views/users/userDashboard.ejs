@@ -143,7 +143,7 @@
                                     <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address" role="tab" aria-controls="tab-address" aria-selected="false"><strong>Addresses</strong></a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" onclick="signOut()" ><strong style="color: #ff7979;">Sign Out</strong></a>
+                                    <a class="nav-link" onclick="signOut()" style="cursor: pointer;"><strong style="color: #ff7979;">Sign Out</strong></a>
                                     <script>
                                         function signOut(){
                                             Swal.fire({
@@ -174,15 +174,17 @@
                                     <% if(user.phone_number){ %>
                                         <p><b>Phone no : </b><%= user.phone_number %></p>
                                     <% } %>
-                                    <a href="/changePassword" style="display: block;" class="forgot-link">Change Your Password?</a>
-                                    <a href="/editProfile" class="btn btn-outline-primary-2 mt-3" style="border-radius: 10px;"><span>Edit Profile</span><i class="icon-long-arrow-right"></i></a>
+                                    <% if(!user.picture){ %>
+                                        <a href="/changePassword" style="display: block;" class="forgot-link">Change Your Password?</a>
+                                        <a href="/editProfile" class="btn btn-outline-primary-2 mt-3" style="border-radius: 10px;"><span>Edit Profile</span><i class="icon-long-arrow-right"></i></a>
+                                    <% } %>
                                 </div><!-- .End .tab-pane -->
 
                                 <div class="tab-pane fade " id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
                                     <p id="orderOp" hidden><%= locals.orderOp %></p>
                                     <% if(orders.length>0){ %>  
                                         <% orders.forEach((order,index)=>{ %>
-                                            <div class="mb-3 p-4 shadow-lg " style="border: 1px solid #eea287; border-radius: 10px;">
+                                            <div class="mb-3 p-4 shadow-lg " style="border: 1px solid #ff8f67; border-radius: 10px;">
                                             <% order.orderedProducts.forEach((product,index)=>{ %>
                                                 <div class="d-flex w-100 <%=product.status=='cancelled'?'product-media':''%>" style="margin-bottom: 10px; border: 1px solid #c2c2c2; padding: 1em; border-radius: 10px;">
                                                     <% if(product.status!='cancelled'){ %>
@@ -192,7 +194,7 @@
                                                     <%}%>
                                                     <p class="pl-3 mx-auto" id="order_name_<%= product.productId._id %>" style="margin-top: auto; margin-bottom: auto;"><%=product.productId.name%></p>
                                                     <% if(product.status!='cancelled'){ %>
-                                                        <p class="text-right mr-3" style="color: #eea287; margin-top: auto; margin-bottom: auto;"><strong style="color: #000000;">Status:</strong> <%= product.status %></p>
+                                                        <p class="text-right mr-3" style="color: #ff8f67; margin-top: auto; margin-bottom: auto;"><strong style="color: #000000;">Status:</strong> <%= product.status %></p>
                                                     <%}else{%>
                                                         <p class="text-right mr-3" style="color: red; margin-top: auto; margin-bottom: auto;"><strong style="color: #000000;">Status:</strong> <%= product.status %></p>
                                                     <%}%>

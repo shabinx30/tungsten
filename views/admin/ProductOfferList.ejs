@@ -199,7 +199,7 @@
 
                     <td class="text-right align-middle">
                       <a
-                        onclick="deleteCategory('<%= offer._id %>')"
+                        onclick="deleteOffer('<%= offer._id %>')"
                         class="btn-status-toggle"
                         data-categoryid="<%= offer._id %>"
                       >
@@ -220,7 +220,7 @@
                       </a>
 
 
-                      <% if(offer.is_listed==true) { %>
+                      <% if(offer.is_activated==true) { %>
                         <button id="status-button-<%= offer._id %>" onclick="confirmAction('<%= offer._id %>')" class="btn ml-3 red-button">Deactivate</button>
                       <%} else { %>
                         <button id="status-button-<%= offer._id %>" onclick="confirmAction('<%= offer._id %>')" class="btn ml-3 green-button">Activate</button>
@@ -322,9 +322,9 @@
 
 
 
-    function confirmAction(categoryId) {
-        let categoryBtn = document.getElementById(`status-button-${categoryId}`);
-        console.log(categoryBtn);
+    function confirmAction(offerId) {
+        let categoryBtn = document.getElementById(`status-button-${offerId}`);
+        console.log(offerId);
     
         Swal.fire({
                 title: 'Are you sure?',
@@ -336,7 +336,7 @@
                 confirmButtonText: 'Yes, change status!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                  fetch(`/admin/categoryStatus?categoryId=${categoryId}`, {
+                  fetch(`/admin/offerStatus?offerId=${offerId}`, {
                     method: "GET"
                   })
                   .then((response) => {
@@ -346,9 +346,9 @@
                     return response.json();
                   })
                   .then((data) => {
-                    console.log("Response is working:", data.is_listed);
+                    console.log("Response is working:", data.is_activated);
             
-                    if(data.is_listed==false){
+                    if(data.is_activated==false){
                       console.log("heyyyyy");
                       categoryBtn.innerText = "Deactivate";
                       categoryBtn.className = "btn ml-3 red-button";
@@ -371,7 +371,7 @@
     }
 
 
-    function deleteCategory(categoryId){
+    function deleteOffer(offerId){
       Swal.fire({
           title: 'Are you sure?',
           text: "You won't be able to revert this!",
@@ -387,7 +387,7 @@
           }
       }).then((result) => {
           if (result.isConfirmed) {
-              window.location.href = `/admin/deleteCategory?categoryId=${categoryId}`  
+              window.location.href = `/admin/deleteOffer?offerId=${offerId}`
           }
       });
     }

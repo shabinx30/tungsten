@@ -283,8 +283,16 @@
                     function closeFilter() {
                         document.getElementById('FilterOverlay').click();
                     }
+                    function clearAll(){
+                        setTimeout(()=>{
+                            document.getElementById('cat-1').click()
+                        },100)
+                        setTimeout(()=>{
+                            document.getElementById('sort-1').click()
+                        },200)
+                    }
                 </script>
-                <!-- <a href="#" class="sidebar-filter-clear">Clean All</a> -->
+                <a onclick="clearAll()" class="sidebar-filter-clear" style="cursor: pointer;color: #ff8f67;">Clean All</a>
             </div><!-- End .widget -->
             <div class="widget widget-collapsible">
                 <h3 class="widget-title">

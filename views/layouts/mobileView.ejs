@@ -4,8 +4,10 @@
     
         <form action="/searchProducts" method="get" class="mobile-search">
             <label for="mobile-search" class="sr-only">Search</label>
-            <input type="search" class="form-control" style="border-radius: 20px 0 0 20px;" name="search" id="mobile-search" placeholder="Search in..." required>
+            <input type="search" class="form-control" style="border-radius: 20px 0 0 20px;" name="searchString" id="mobile-search" placeholder="Search in..." required>
             <button class="btn btn-primary" style="border-radius: 0 20px 20px 0;" type="submit"><i class="icon-search"></i></button>
+            <input type="hidden" value="All" name="categorySelected">
+            <input type="hidden" value="All" name="sortSelected">
         </form>
         
         <nav class="mobile-nav">

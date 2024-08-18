@@ -220,10 +220,11 @@ const searchProducts = async (req,res)=>{
         let searchNumber = parseInt(searchString, 10);
 
         let searchQuery = {
-            $or: [
-                { name: { $regex: new RegExp(searchString, 'i') } }
+            $and: [
+                { name: { $regex: new RegExp(searchString, 'i') } },
+                { is_listed: true }
             ]
-        };
+        };        
 
         if (!isNaN(searchNumber)) {
             searchQuery.$or.push({ price: { $lte: searchNumber } });
@@ -232,7 +233,7 @@ const searchProducts = async (req,res)=>{
         let sortQuery = {}
 
         if(categorySelected&&categorySelected != 'All'){
-            const category = await Category.findOne({_id: categorySelected })
+            const category = await Category.findOne({_id: categorySelected})
 
             searchQuery.categoryName = category._id
         }
@@ -251,7 +252,9 @@ const searchProducts = async (req,res)=>{
         const limit = 4;
         const skip = (page * limit);
 
+        const productCount = await Product.find(searchQuery).countDocuments()
         const products = await Product.find(searchQuery).sort(sortQuery).skip(skip).limit(limit).populate('categoryName')
+        console.log('from the search',products)
 
         //ctegory data
         const categoryData = await Category.find({is_listed: true})
@@ -263,7 +266,7 @@ const searchProducts = async (req,res)=>{
         const wishlistCount = wishlist? wishlist.products.length : 0 
 
         // let products = await Product.find(searchQuery).sort({ price: -1 })
-        res.render('shop', { products,searchString,productCount: products.length,page,categoryData,categorySelected,sortSelected,cartCount,wishlistCount })
+        res.render('shop', { products,searchString,productCount,page,categoryData,categorySelected,sortSelected,cartCount,wishlistCount })
     } catch (error) {
         console.log(error.message);
         res.status(400).send(error.message)
@@ -300,7 +303,7 @@ const filterProducts = async (req,res)=>{
 
             query = {
                 $or: [
-                    { name: { $regex: new RegExp(searchString, 'i') } }
+                    { name: { $regex: new RegExp(searchString, 'i') },is_listed: true }
                 ]
             };
 
@@ -330,7 +333,7 @@ const filterProducts = async (req,res)=>{
         const cartCount = cart? cart.products.length : 0
         const wishlistCount = wishlist? wishlist.products.length : 0 
 
-        res.render('shop', { products: productData, productCount: productCount, page,categoryData,categorySelected,sortSelected,searchString,wishlistCount,cartCount });
+        res.render('shop', { products: productData, productCount, page,categoryData,categorySelected,sortSelected,searchString,wishlistCount,cartCount });
 
     } catch (error) {
         console.log(error);

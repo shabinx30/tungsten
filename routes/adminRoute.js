@@ -77,6 +77,8 @@ admin_route.post('/productStatus',adminAuth.isLogin,orderController.changeStatus
 //offer
 admin_route.get('/ProductOfferList',adminAuth.isLogin,offerController.loadProductOffers)
 admin_route.post('/addOffer',adminAuth.isLogin,offerController.addOffer)
+admin_route.get('/offerStatus',adminAuth.isLogin,offerController.productOfferStatus)
+admin_route.get('/deleteOffer',adminAuth.isLogin,offerController.deleteProductOffer)
 
 admin_route.get('/CategoryOfferList',adminAuth.isLogin,offerController.loadCategoryOffers)
 admin_route.post('/addCategoryOffer',adminAuth.isLogin,offerController.addCategoryOffer)

@@ -110,10 +110,48 @@ const addCategoryOffer = async (req, res) => {
     }
 };
 
+const productOfferStatus = async (req,res)=>{
+    try {
+        const offerId = req.query.offerId
+        const productOffer = await ProductOffers.findOne({_id: offerId})
+        // console.log(offerId,'offerId')
+        if(productOffer.is_activated==true){
+            await ProductOffers.findOneAndUpdate({_id: offerId},{$set: {is_activated: false}})
+            res.json({is_activated: true})
+        }else{
+            await ProductOffers.findOneAndUpdate({_id: offerId},{$set: {is_activated: true}})
+            res.json({is_activated: false})
+        }
+    } catch (error) {
+        console.log(error,'from changing the offer of product');
+        
+    }
+}
+
+
+const deleteProductOffer = async (req,res)=>{
+    try {
+        const offerId = req.query.offerId
+        const deletion = await ProductOffers.findOneAndDelete({_id: offerId})
+        if(deletion){
+            return res.redirect('/admin/ProductOfferList')
+        }else{
+            req.flash('newOfferMsg','There is a problem in the deletion...!!!')
+            return res.redirect('/admin/ProductOfferList')
+        }
+    } catch (error) {
+        console.log(error,'from deleting the product offer');
+        req.flash('newOfferMsg','There is a problem in the deletion...!!!')
+        return res.redirect('/admin/ProductOfferList')
+    }
+}
+
 
 module.exports = {
     loadProductOffers,
     addOffer,
     loadCategoryOffers,
-    addCategoryOffer
+    addCategoryOffer,
+    productOfferStatus,
+    deleteProductOffer
 }

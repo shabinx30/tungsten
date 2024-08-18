@@ -141,10 +141,13 @@
             					<label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>
             				</form>
             			</div>End .checkout-discount -->
-                        <h4>Coupons</h4>
+                        <h5>Coupons</h5>
                         <div>
-                            <button data-toggle="modal" data-target="#showCoupons" style="color: #000000; border-radius: 10px;" >View Coupons</button>
-                            
+                            <% if(Object.keys(coupon).length === 0){ %>
+                                <p>No Coupon is available.</p>
+                            <% }else{ %>
+                                <button data-toggle="modal" data-target="#showCoupons" style="color: #000000; border-radius: 10px;" >View Coupons</button>
+                            <% } %>
                         </div>
             			<form id="form" action="/placeOrder" method="POST">
                             <input type="text" id="couponId" hidden>
@@ -509,29 +512,25 @@
                             <table class="table">
                                 <thead>
                                   <tr>
-                                    <th scope="col">No.</th>
                                     <th scope="col">Coupon Code</th>
                                     <th scope="col">Discount</th>
                                     <th scope="col">Action</th>
                                   </tr>
                                 </thead>
                                 <tbody>
-                                    <% if( coupon.length > 0) { %>
-                                        <% coupon.forEach((val, index) => { %>
-                                            <tr>
-                                                <td><%= ++index %></td>
-                                                <td><%= val.couponCode %></td>
-                                                <td><%= val.discount %>%</td>
-                                                <td>
-                                                    <button onclick="applyCoupon('<%= val.discount %>','<%= val._id %>')" style="border-radius: 10px; background-color: #72ff72; border: none;" >apply</button>
-                                                </td>
-                                            </tr>
-                                        <% }) %>
+                                    <% if( coupon ) { %>
+                                        <tr>
+                                            <td><%= coupon.couponCode %></td>
+                                            <td><%= coupon.discount %>%</td>
+                                            <td>
+                                                <button onclick="applyCoupon('<%= coupon.discount %>','<%= coupon._id %>')" style="border-radius: 10px; background-color: #72ff72; border: none;" >apply</button>
+                                            </td>
+                                        </tr>
                                     <% } else { %>  
                                         <tr>
                                             <td colspan="4"><p>No coupons</p></td>
                                         </tr>
-                                    <% } %>  
+                                    <% } %>
                                 </tbody>
                             </table>
                         </div>

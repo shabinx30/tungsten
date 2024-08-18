@@ -56,13 +56,13 @@ const loadCheckOut = async (req,res)=>{
 
         if(cart){
             if(address){
-                res.render('checkOut',{products: cart.products,name: userData.name,addresses: address.addresses,coupon: coupon.length>0 ? coupon : []})
+                res.render('checkOut',{products: cart.products,name: userData.name,addresses: address.addresses,coupon: coupon.length>0 ? coupon[0] : {}})
             }
             else{
-                res.render('checkOut',{products: cart.products,name: userData.name,addresses:[],coupon: coupon.length>0 ? coupon : []})
+                res.render('checkOut',{products: cart.products,name: userData.name,addresses:[],coupon: coupon.length>0 ? coupon[0] : {}})
             }
         }else{
-            res.render('checkOut',{products: [],addresses: [],name:userData.name,coupon: coupon.length>0 ? coupon : []})
+            res.render('checkOut',{products: [],addresses: [],name:userData.name,coupon: {}})
         }
  
     } catch (error) {

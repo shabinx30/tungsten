@@ -143,8 +143,8 @@
                             <!-- dropdown -->
     
                         </div><!-- End .cart-dropdown -->
-                        <div class="dropdown cart-dropdown">
-                            <a href="/userDashboard" class="dropdown-toggle" >
+                        <div class="dropdown cart-dropdown" onclick="window.location.href='/userDashboard'" style="cursor: pointer;">
+                            <a class="dropdown-toggle" >
                                 <% if(picture){ %>
                                     <img class="profile" src="<%=picture%>" alt="not get">
                                 <%}else{%>
@@ -768,7 +768,7 @@
     </div><!-- End .footer-bottom -->
 </footer><!-- End .footer -->
 </div><!-- End .page-wrapper -->
-<button id="scroll-top" title="Back to Top" style="border-radius: 40%; background: #eea287;"><i class="icon-arrow-up" style="color: #000000;"></i></button>
+<button id="scroll-top" title="Back to Top" style="border-radius: 40%; background: #ff8f67;"><i class="icon-arrow-up" style="color: #000000;"></i></button>
 
 <!-- Mobile Menu -->
 <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
@@ -893,13 +893,9 @@
 <script>
     window.onload = function (){
         setInterval(()=>{
-            document.getElementById('test-1').click()
+            document.querySelector('.owl-theme.owl-nav-inside .owl-nav .owl-next').click()
         },3000)
     }
-
-    setInterval(()=>{
-            document.getElementById('test-1').click()
-        },3000)
 </script>
 
 <script>

@@ -105,7 +105,7 @@ const loadDashboard = async(req, res) => {
             { $limit: 5 }
         ]);
 
-        console.log('best Product',bestProduct);
+        // console.log('best Product',bestProduct);
         
         let bestCategory = await Order.aggregate([
             { $unwind: '$orderedProducts' },
@@ -138,7 +138,7 @@ const loadDashboard = async(req, res) => {
             { $limit: 5 }
         ])
 
-        console.log(bestCategory);
+        // console.log(bestCategory);
         
 
         res.render('adminDashboard',{userCount,productCount,categoryCount,totalEarning,bestProduct,bestCategory});
@@ -297,8 +297,9 @@ const loadEditCategory = async (req,res)=>{
             return res.redirect('*');
         }
 
+        const errmsg = req.flash('errMsg')
         const categoryName = req.query.categoryName
-        res.render('editCategory',{categoryId: categoryId,categoryOldName: categoryName,errmsg:'ok'})
+        res.render('editCategory',{categoryId: categoryId,categoryOldName: categoryName,errmsg})
     } catch (error) {
         console.log(error.message);
     }
@@ -319,7 +320,8 @@ const editCategory = async (req,res)=>{
 
         //checking the category name is existing or not
         if(exist){
-            res.render('editCategory',{errmsg: 'This category is already existing...!!!',categoryId: categoryId})
+            req.flash('errMsg','This category is already existing...!!!')
+            return res.redirect(`/admin/editCategory?categoryId=${categoryId}`)
         }else{
             const confirmation = await Category.findOneAndUpdate({_id: categoryId},{$set:{name: categoryName, is_listed: changes}})
             if(confirmation){
