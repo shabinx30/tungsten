@@ -62,7 +62,7 @@ const weeklySales = async (req, res) => {
             }
         ]);
 
-        console.log(orderWeek);
+        // console.log(orderWeek);
 
         res.json({ orderWeek })
     } catch (error) {
@@ -96,7 +96,7 @@ const monthlySales = async (req, res) => {
         ]);
 
 
-        console.log(orderMonth)
+        // console.log(orderMonth)
         // console.log(JSON.stringify(orderWeek, null, 2));
 
         return res.json({ orderMonth })
@@ -193,7 +193,7 @@ const loadInvoice = async (req, res) => {
         if (!order) {
             return res.send('Cannot find the order.')
         }
-        console.log(order);
+        // console.log(order);
 
 
         return res.render('Invoice', { order })

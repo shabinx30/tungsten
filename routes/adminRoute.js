@@ -95,6 +95,10 @@ admin_route.post('/editCategoryOffer',adminAuth.isLogin,offerController.editCate
 //counon
 admin_route.get('/couponList',adminAuth.isLogin,couponController.ListConpon)
 admin_route.post('/addCoupon',adminAuth.isLogin,couponController.addCoupon)
+admin_route.get('/couponStatus',adminAuth.isLogin,couponController.couponStatus)
+admin_route.get('/deleteCoupon',adminAuth.isLogin,couponController.deleteCoupon)
+admin_route.get('/editCoupon',adminAuth.isLogin,couponController.loadEditCoupon)
+admin_route.post('/editCoupon',adminAuth.isLogin,couponController.editCoupon)
 
 
 //returns

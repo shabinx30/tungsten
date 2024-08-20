@@ -256,6 +256,13 @@ const verifyPayment = async (req,res)=>{
         const { orderId } = req.body
         console.log('coming',orderId);
         const status = await Order.findOneAndUpdate({orderId: orderId},{paymentStatus: true})
+
+        await Order.findOneAndUpdate(
+            { orderId: orderId },
+            { $set: { 'orderedProducts.$[].status': 'placed' } },
+            { new: true }
+        );
+
         console.log('status changing',status);
         res.json({status: status? true:false,redirect: '/orderSuccess'})
 
@@ -267,7 +274,7 @@ const verifyPayment = async (req,res)=>{
 
 const paymentFailed = async( req,res)=>{
     try {
-        console.log(req.query.orderId);
+        // console.log(req.query.orderId);
 
         const order = await Order.findOneAndUpdate(
             { orderId: req.query.orderId },
