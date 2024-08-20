@@ -278,7 +278,7 @@ const verifyOTP = async (req, res) => {
     const receivedOTP = req.body.otp;
     const forgot = req.body.forgot
     try {
-        const generatedOTP = await Otp.findOne({ email: email});
+        const generatedOTP = await Otp.findOne({ email });
         
         if (!generatedOTP) {
             // No OTP found for the email
@@ -288,13 +288,14 @@ const verifyOTP = async (req, res) => {
         console.log(generatedOTP.otp);
         
         if (receivedOTP == generatedOTP.otp) {
-            const data = await User.findOne({email: email})
+            const data = await User.findOne({ email })
             req.session.user_id = data._id
             // res.status(200).send('OTP verification successful');
             if(forgot){
-                res.redirect('/forgotPassword')
+                return res.redirect('/forgotPassword')
             }else{
-                res.redirect('/home')
+                await Otp.findOneAndDelete({ email })
+                return res.redirect('/home')
             }
         } else {
             // res.status(400).send('Invalid OTP');
@@ -329,7 +330,11 @@ const loadOtp = async(req,res)=>{
 const resendOtp = async (req,res)=>{
     try {
         const email = req.query.email
-        const userData = await User.findOne({email: email})
+        const userData = await User.findOne({ email })
+
+        // deleting the existing otp for optimizatoin
+        await Otp.findOneAndDelete({ email })
+
         const otp =  generateOTP();
         console.log('resend :',email,otp);
 

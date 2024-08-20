@@ -74,14 +74,22 @@ admin_route.post('/editCategory',adminAuth.isLogin,adminController.editCategory)
 admin_route.get('/orderHistory',adminAuth.isLogin,orderController.orderlist)
 admin_route.post('/productStatus',adminAuth.isLogin,orderController.changeStatus)
 
+
 //offer
-admin_route.get('/ProductOfferList',adminAuth.isLogin,offerController.loadProductOffers)
 admin_route.post('/addOffer',adminAuth.isLogin,offerController.addOffer)
-admin_route.get('/offerStatus',adminAuth.isLogin,offerController.productOfferStatus)
+
+admin_route.get('/ProductOfferList',adminAuth.isLogin,offerController.loadProductOffers)
+admin_route.get('/productofferStatus',adminAuth.isLogin,offerController.productOfferStatus)
 admin_route.get('/deleteOffer',adminAuth.isLogin,offerController.deleteProductOffer)
+admin_route.get('/editProductOffer',adminAuth.isLogin,offerController.loadEditProductOffer)
+admin_route.post('/editProductOffer',adminAuth.isLogin,offerController.editProductOffer)
 
 admin_route.get('/CategoryOfferList',adminAuth.isLogin,offerController.loadCategoryOffers)
 admin_route.post('/addCategoryOffer',adminAuth.isLogin,offerController.addCategoryOffer)
+admin_route.get('/categoryOfferStatus',adminAuth.isLogin,offerController.categoryOfferStatus)
+admin_route.get('/deleteCategoryOffer',adminAuth.isLogin,offerController.deleteCategoryOffer)
+admin_route.get('/editCategoryOffer',adminAuth.isLogin,offerController.loadEditCategoryOffer)
+admin_route.post('/editCategoryOffer',adminAuth.isLogin,offerController.editCategoryOffer)
 
 
 //counon
@@ -94,6 +102,7 @@ admin_route.get('/returns',adminAuth.isLogin,returnController.loadReturn)
 
 
 //sale and reports in admin
+admin_route.get('/weeklySales',adminAuth.isLogin,saleAndReportController.weeklySales)
 admin_route.get('/monthlySales',adminAuth.isLogin,saleAndReportController.monthlySales)
 admin_route.get('/yearlySales',adminAuth.isLogin,saleAndReportController.yearlySales)
 

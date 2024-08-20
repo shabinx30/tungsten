@@ -157,9 +157,15 @@
                                         <span>Verify OTP</span>
                                         <i class="icon-long-arrow-right"></i>
                                       </button>
-                                      <button id="resend-button" onclick="window.location.href=`/resendOtp?email=<%= email %>&forgot=${true}`" class="btn btn-outline-primary-2 disabled" style="border-radius: 10px; height: 2.8em;" disabled>
-                                        <span>Resend OTP</span>
-                                      </button>
+                                    <% if(forgot){ %>
+                                        <button id="resend-button" onclick="window.location.href=`/resendOtp?email=<%= email %>&forgot=${true}`" class="btn btn-outline-primary-2 disabled" style="border-radius: 10px; height: 2.8em;" disabled>
+                                            <span>Resend OTP</span>
+                                        </button>
+                                    <% }else{ %>
+                                        <button id="resend-button" onclick="window.location.href=`/resendOtp?email=<%= email %>`" class="btn btn-outline-primary-2 disabled" style="border-radius: 10px; height: 2.8em;" disabled>
+                                            <span>Resend OTP</span>
+                                        </button>
+                                    <% } %>
                                     </div>
                                 </form>
                                 

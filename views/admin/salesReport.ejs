@@ -57,7 +57,9 @@
     background-color: #ff6969;
   }
   .green-button{
-    color: #009f18; 
+    border: 1px solid #009f18;
+    color: #009f18;
+    padding: .3em; 
     background-color: #a2ff97; 
     border-radius: 10px;
   }
@@ -67,6 +69,7 @@
   }
   .delete-button{
     color:#ff0000;
+    border: none;
     background-color: #525252;
     border-radius: 10px;
   }
@@ -76,6 +79,8 @@
   }
   .edit-button{
     color: blue;
+    border: 1px solid blue;
+    padding: .3em;
     background-color: #a1a1ff;
     border-radius: 10px;
   }
@@ -112,8 +117,8 @@
                   Sales Report
                 </h2>
                 <div>
-                  <button id="pdf" class="green-button">Download as PDF</button>
-                  <button id="excel" class="green-button">Download as Excel</button>
+                  <button id="pdf" class="edit-button">Download as PDF<i data-feather="file-plus" style="color: blue; width: 20px; margin-left: .5em; margin-right: .3em;" class="feather-icon" ></i></button>
+                  <button id="excel" class="green-button">Download as Excel<i data-feather="file-plus" style="color: #009f18; width: 20px; margin-left: .5em; margin-right: .3em;" class="feather-icon" ></i></button>
                 </div>
               </div>              
 
@@ -156,13 +161,14 @@
             </div>
             <% } %> -->
             <div id="salesReoport">
-                <div class="table-responsive w-75 mx-auto" style="border-radius: 20px">
+                <div class="table-responsive" style="border-radius: 20px">
                     <table class="table" id="tableData">
                       <thead>
-                        <tr style="width: 100%; background-color: #936dd1; color: #000">
+                        <tr style="background-color: #936dd1; color: #000">
                           <th scope="col">NO.</th>
                           <th scope="col">Order ID</th>
                           <th scope="col">User Name</th>
+                          <th scope="col">Products</th>
                           <th scope="col">Order Date</th>
                           <th scope="col">Revenue</th>
                         </tr>
@@ -174,6 +180,7 @@
                           <td><%= ++index %></td>
                           <td><%= order.orderId %></td>
                           <td><%= order.userName %></td>
+                          <td><%= order.orderedProducts[0].productId.name+' ...' %></td>
                           <td><%= order.purchasedDate %></td>
                           <td>₹<%= order.subTotal %></td>
                         </tr>
@@ -215,7 +222,7 @@
             const invoiceElement = document.getElementById('salesReoport');
             html2pdf(invoiceElement, {
                 margin: 1,
-                filename: 'Sails report.pdf',
+                filename: 'Sales Report.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2 },
                 jsPDF: { unit: 'in', format: 'letter' }
