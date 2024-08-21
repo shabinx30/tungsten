@@ -569,11 +569,18 @@
         .catch((error) => {
             console.error("There was a problem with the fetch operation:", error);
         });
-        }else if(!limit){
+        }else if(limit){
             Swal.fire({
-                icon : 'error',
+                icon : 'warning',
                 title : "Can't increase quantity",
-                text : 'Stock is not available',
+                text : 'Stock limit exeeded.',
+                showConfirmButton  :true
+            })
+        }else{
+            Swal.fire({
+                icon : 'warning',
+                title : "Can't increase quantity",
+                text : 'Stock is not available.',
                 showConfirmButton  :true
             })
         }
