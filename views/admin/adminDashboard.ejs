@@ -65,7 +65,7 @@
                                     <div>
                                         <h2 class="text-dark mb-1 w-100 text-truncate font-weight-medium"><sup
                                                 class="set-doller">₹</sup>
-                                            <%= totalEarning?totalEarning:'No Earning' %>
+                                            <%= totalEarning?totalEarning.toFixed(2):'No Earning' %>
                                         </h2>
                                         <h6 class="text-muted font-weight-normal mb-0 w-100 text-truncate">Earnings of
                                             Month
@@ -364,33 +364,39 @@
             function monthlySales() {
 
                 axios.get('/admin/monthlySales')
-                    .then((Response) => {
-                        console.log(Response.data)
+    .then((Response) => {
+        // Assuming month names are in the format "January", "February", etc.
+        const monthsOrder = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-                        new Chart(ctx, {
-                            type: 'bar', // Set the default chart type
-                            data: {
-                                labels: Response.data.orderMonth.map(row => row.monthName),
-                                datasets: [{
-                                    label: 'Revenue',
-                                    data: Response.data.orderMonth.map(row => row.totalIncome),
-                                    borderColor: 'rgb(255, 124, 124)',
-                                    backgroundColor: 'rgba(107, 66, 255, 0.5)',
-                                    // tension: .5
-                                }]
-                            },
-                            options: {
-                                scales: {
-                                    y: {
-                                        beginAtZero: true
-                                    }
-                                }
-                            }
-                        });
-                    })
-                    .catch((error) => {
-                        console.log(error)
-                    })
+        // Sort the data based on the month order
+        const sortedData = Response.data.orderMonth.sort((a, b) => {
+            return monthsOrder.indexOf(a.monthName) - monthsOrder.indexOf(b.monthName);
+        });
+
+        new Chart(ctx, {
+            type: 'bar', // Set the default chart type
+            data: {
+                labels: sortedData.map(row => row.monthName),
+                datasets: [{
+                    label: 'Revenue',
+                    data: sortedData.map(row => row.totalIncome),
+                    borderColor: 'rgb(255, 124, 124)',
+                    backgroundColor: 'rgba(107, 66, 255, 0.5)',
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    })
+    .catch((error) => {
+        console.log(error)
+    });
+
             }
 
             function yearlySales() {
@@ -428,37 +434,48 @@
             function weeklySales() {
 
                 axios.get('/admin/weeklySales')
-                    .then((Response) => {
-                        console.log(Response.data)
+    .then((Response) => {
+        console.log(Response.data);
 
-                        var gradient = ctx.createLinearGradient(0, 0, 0, 400);
-                        gradient.addColorStop(0, 'rgb(255, 124, 124)');   // Start color
-                        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');   // End color
+        // Define the correct order for days of the week
+        const daysOrder = [ "Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-                        new Chart(ctx, {
-                            type: 'line', // Set the default chart type
-                            data: {
-                                labels: Response.data.orderWeek.map(row => row.weekDayName),
-                                datasets: [{
-                                    label: 'Revenue',
-                                    data: Response.data.orderWeek.map(row => row.totalIncome),
-                                    borderColor: 'rgb(255, 124, 124)',
-                                    backgroundColor: gradient,
-                                    tension: .5
-                                }]
-                            },
-                            options: {
-                                scales: {
-                                    y: {
-                                        beginAtZero: true
-                                    }
-                                }
-                            }
-                        });
-                    })
-                    .catch((error) => {
-                        console.log(error)
-                    })
+        // Sort the data based on the correct order of the week
+        const sortedData = Response.data.orderWeek.sort((a, b) => {
+            return daysOrder.indexOf(a.weekDayName) - daysOrder.indexOf(b.weekDayName);
+        });
+
+        // Create the gradient for the background color
+        var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgb(255, 124, 124)');   // Start color
+        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');   // End color
+
+        // Create the chart
+        new Chart(ctx, {
+            type: 'line', // Set the default chart type
+            data: {
+                labels: sortedData.map(row => row.weekDayName),  // Use sorted data
+                datasets: [{
+                    label: 'Revenue',
+                    data: sortedData.map(row => row.totalIncome),  // Use sorted data
+                    borderColor: 'rgb(255, 124, 124)',
+                    backgroundColor: gradient,
+                    tension: .5
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+
 
             }
 
