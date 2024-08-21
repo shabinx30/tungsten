@@ -555,15 +555,19 @@
         .then((data) => {
             console.log("Response is working:");
             quantityEle.textContent = data.quantity;
-            total_price.textContent = `₹${quantity*price}`;
+            let eachpri = (quantity*price).toFixed(2)
+            total_price.textContent = `₹${eachpri}`;
             // products.forEach(product => {
             //     sub_total.textContent=product.productId.price*product.quantity
             // });
             data.products.forEach(product => {
                 sub_total_price+=Number(product.productId.finalPrice*product.quantity)
             });
-            sub_total.textContent = `₹${sub_total_price.toFixed(2)}`
-            total_amount.textContent = `₹${sub_total_price.toFixed(2)}`
+
+            sub_total_price = sub_total_price.toFixed(2)
+
+            sub_total.textContent = `₹${sub_total_price}`
+            total_amount.textContent = `₹${sub_total_price}`
             
         })
         .catch((error) => {
@@ -618,7 +622,10 @@
         .then((data) => {
             console.log("Response is working:");
             quantityEle.textContent = data.quantity;
-            total_price.textContent = `₹${quantity*price}`;
+
+            let eachpri = (quantity*price).toFixed(2)
+
+            total_price.textContent = `₹${eachpri}`;
             data.products.forEach(product => {
                 sub_total_price+=Number(product.productId.finalPrice*product.quantity)
             });
