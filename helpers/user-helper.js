@@ -21,6 +21,7 @@ const orderIdgenerator = ()=>{
 const razorpayRes = async (subTotal,orderId)=>{
     try {
         // console.log(subTotal,orderId);
+        subTotal = subTotal.toFixed(2)
         const options = {
             amount: subTotal*100,
             currency: "INR",

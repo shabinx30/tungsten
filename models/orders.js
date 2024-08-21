@@ -73,6 +73,14 @@ const OrderSchema = mongoose.Schema({
                 required: true,
 
             },
+            offerPrice: {
+                type: Number,
+                requried: true
+            },
+            offerTotalPrice: {
+                type: Number,
+                required: true
+            },
             totalPrice: {
                 type: Number,
                 required: true
@@ -98,6 +106,10 @@ const OrderSchema = mongoose.Schema({
     },
     orderTime: {
         type: Date,
+        required: true
+    },
+    total: {
+        type: Number,
         required: true
     },
     subTotal: {

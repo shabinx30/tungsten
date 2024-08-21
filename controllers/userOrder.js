@@ -52,7 +52,7 @@ const loadCheckOut = async (req,res)=>{
             }
         ]);
 
-        console.log(coupon);
+        // console.log(coupon);
 
         if(cart){
             if(address){
@@ -74,7 +74,7 @@ const loadCheckOut = async (req,res)=>{
 
 const placeOrder = async (req, res) => {
     try {
-        const { selected_address, paymentMethod, coupon } = req.body;
+        const { selected_address, paymentMethod, couponId } = req.body;
         const userId = req.session.user_id;
 
         if (!paymentMethod) {
@@ -106,7 +106,8 @@ const placeOrder = async (req, res) => {
             if (!product) {
                 throw new Error(`Product with ID ${item.productId} not found`);
             }
-            const price = product.finalPrice;
+            const price = product.price;
+            const offerPrice = product.finalPrice
             if (typeof price !== 'number') {
                 throw new Error(`Invalid price for product ID ${item.productId}`);
             }
@@ -114,13 +115,29 @@ const placeOrder = async (req, res) => {
                 productId: item.productId,
                 quantity: item.quantity,
                 price: price,
+                offerPrice: offerPrice,
+                offerTotalPrice: offerPrice * item.quantity,
                 totalPrice: price * item.quantity,
                 status: 'placed'
             };
         }));
 
+        //find the coupon
+        console.log(couponId);
+        let coupon
+        if(couponId){
+            coupon = await Coupon.findOne({_id: couponId})
+            await Coupon.findOneAndUpdate({_id: couponId},{$set: {claimed: true}})
+        }
+
         // Calculate subtotal
-        const subTotal = orderedProducts.reduce((sum, item) => sum + item.totalPrice, 0);
+        let subTotal = orderedProducts.reduce((sum, item) => sum + item.offerTotalPrice, 0);
+        if(couponId){
+            subTotal = subTotal * ((100-coupon.discount)/100)
+        }
+        console.log(typeof subTotal,'subtotal');
+        
+        const total = orderedProducts.reduce((sum, item) => sum + item.totalPrice, 0);
 
         // Store the current date in the format 
         const purchasedDate = new Date().toDateString();
@@ -148,6 +165,7 @@ const placeOrder = async (req, res) => {
             paymentMethod,
             paymentStatus: false,
             orderTime: Date(),
+            total,
             subTotal
         });
 
@@ -175,10 +193,14 @@ const placeOrder = async (req, res) => {
             res.json({ result });
 
         } else {
-            let result = await walletController.paymentWithWallet(subTotal, userId);
+            let result = await walletController.paymentWithWallet(subTotal, userId, orderId);
             console.log(result, 'wallet Controller');
             if (result.success == true) {
                 await order.save();
+
+                // changing the status of payment method
+                await Order.findOneAndUpdate({orderId: orderId},{$set: {paymentStatus: true}})
+
                 await Cart.deleteOne({ userId });
                 res.json({ success: true, location: '/orderSuccess' });
                 console.log(true);
@@ -255,7 +277,7 @@ const verifyPayment = async (req,res)=>{
     try {
         const { orderId } = req.body
         console.log('coming',orderId);
-        const status = await Order.findOneAndUpdate({orderId: orderId},{paymentStatus: true})
+        const status = await Order.findOneAndUpdate({orderId: orderId},{$set: {paymentStatus: true}})
 
         await Order.findOneAndUpdate(
             { orderId: orderId },

@@ -531,9 +531,12 @@
         let sub_total_price = 0
         // let products = document.getElementById('products').value
         let quantity = parseInt(quantityEle.textContent);
-
+        let limit = false
+        if(quantity==10){
+            limit = true
+        }
         // Increment the quantity
-        if(quantity<max_quantity){
+        if(quantity<max_quantity&&quantity<10){
             quantity++
 
         fetch('/increase', {
@@ -559,14 +562,14 @@
             data.products.forEach(product => {
                 sub_total_price+=Number(product.productId.finalPrice*product.quantity)
             });
-            sub_total.textContent = `₹${sub_total_price}`
-            total_amount.textContent = `₹${sub_total_price}`
+            sub_total.textContent = `₹${sub_total_price.toFixed(2)}`
+            total_amount.textContent = `₹${sub_total_price.toFixed(2)}`
             
         })
         .catch((error) => {
             console.error("There was a problem with the fetch operation:", error);
         });
-        }else{
+        }else if(!limit){
             Swal.fire({
                 icon : 'error',
                 title : "Can't increase quantity",
@@ -612,8 +615,8 @@
             data.products.forEach(product => {
                 sub_total_price+=Number(product.productId.finalPrice*product.quantity)
             });
-            sub_total.textContent = `₹${sub_total_price}`
-            total_amount.textContent = `₹${sub_total_price}`
+            sub_total.textContent = `₹${sub_total_price.toFixed(2)}`
+            total_amount.textContent = `₹${sub_total_price.toFixed(2)}`
         })
         .catch((error) => {
             console.error("There was a problem with the fetch operation:", error);

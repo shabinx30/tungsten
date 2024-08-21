@@ -93,7 +93,7 @@
 
                     <a href="/wishlist" class="wishlist-link">
                         <i class="icon-heart-o"></i>
-                        <span class="wishlist-count"><%= wishlistCount %></span>
+                        <span class="wishlist-count" id="wishCount"><%= wishlistCount %></span>
                     </a>
 
                     <div class="dropdown cart-dropdown">
@@ -686,6 +686,10 @@
         })
         .then(response => {
             if (response.data.success) {
+
+                let wishCount = document.getElementById('wishCount')
+                wishCount.textContent = parseInt(wishCount.textContent)+1
+
                 console.log('success');
                 Swal.fire({
                     position: 'top-end',

@@ -26,11 +26,11 @@ const shop = async (req, res) => {
             const category_offer = await CategoryOffer.findOne({categoryId: product.categoryName, is_activated: true })
             
             if(product_offer){
-                finalPrice = (product.price*product_offer.discount)/100
+                finalPrice = product.price*((100-product_offer.discount)/100)
                 offer = product_offer.discount
             }
             if(category_offer&&offer<category_offer.discount){
-                finalPrice = (product.price*category_offer.discount)/100
+                finalPrice = product.price*((100-category_offer.discount)/100)
                 offer = category_offer.discount
             }
             
@@ -105,9 +105,15 @@ const loadProductDetails = async (req, res) => {
 
 const loadProductList = async (req,res)=>{
     try {
-        const productsData = await Product.find({}).populate('categoryName').exec()
+
+        let page = parseInt(req.query.page) || 0;
+        let limit = 8;
+        let skip = (page * limit)
+
+        const productCount = await Product.find({}).countDocuments()
+        const productsData = await Product.find({}).populate('categoryName').skip(skip).limit(limit)
         console.log('darf'+productsData);
-        res.render('productList',{products: productsData,success: ''});
+        res.render('productList',{products: productsData,success: '',productCount,page});
     } catch (error) {
         console.log(error.message);
     }

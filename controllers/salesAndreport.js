@@ -131,9 +131,21 @@ const yearlySales = async (req, res) => {
 // load sales report page
 const loadSales = async (req, res) => {
     try {
-        const Sales = await Order.find({}).sort({ purchasedDate: -1 }).populate('orderedProducts.productId')
+        
+        let page = parseInt(req.query.page) || 0;
+        let limit = 10;
+        let skip = (page * limit)
+        
+        const orderCount = await Order.find({}).countDocuments()
+        const Sales = await Order.find({}).sort({ _id: -1 }).populate('orderedProducts.productId').skip(skip).limit(limit)
 
-        res.render('salesReport', { Sales })
+        let totalEarning = 0
+        Sales.forEach((val)=>{
+            totalEarning += val.subTotal
+        })
+        totalEarning = totalEarning.toFixed(2)
+
+        res.render('salesReport', { Sales,totalEarning,page,orderCount })
     } catch (error) {
         console.log(error);
     }
@@ -144,23 +156,64 @@ const sortSalesReport = async (req, res) => {
         const { sort } = req.query
 
         if (sort == 'day') {
+
+            let page = parseInt(req.query.page) || 0;
+            let limit = 10;
+            let skip = (page * limit)
+        
+            
             let today = new Date().toDateString()
+            const orderCount = await Order.find({ purchasedDate: { $eq: today } }).countDocuments()
 
-            let report = await Order.find({ purchasedDate: { $eq: today } })
+            let report = await Order.find({ purchasedDate: { $eq: today } }).populate('orderedProducts.productId')
 
-            res.render('salesReport', { Sales: report })
+            let totalEarning = 0
+            report.forEach((val)=>{
+                totalEarning += val.subTotal
+            })
+            totalEarning = totalEarning.toFixed(2)
+
+            res.render('salesReport', { Sales: report,page,totalEarning,orderCount:0})
         } else if (sort == 'month') {
+
+            let page = parseInt(req.query.page) || 0;
+            let limit = 10;
+            let skip = (page * limit)
+        
             let today = new Date();
             let startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            
+            const orderCount = await Order.find({ orderTime: { $gte: startOfMonth } }).countDocuments()
 
-            let report = await Order.find({ orderTime: { $gte: startOfMonth } }).sort({ orderTime: -1 })
-            res.render('salesReport', { Sales: report })
+            let report = await Order.find({ orderTime: { $gte: startOfMonth } }).sort({ orderTime: -1 }).populate('orderedProducts.productId')
+
+            let totalEarning = 0
+            report.forEach((val)=>{
+                totalEarning += val.subTotal
+            })
+            totalEarning = totalEarning.toFixed(2)
+
+            res.render('salesReport', { Sales: report,page,orderCount:0,totalEarning })
         } else if (sort == 'year') {
+
+            let page = parseInt(req.query.page) || 0;
+            let limit = 10;
+            let skip = (page * limit)
+        
             let today = new Date();
             let startOfYear = new Date(today.getFullYear(), 0, 1);
+            
+            const orderCount = await Order.find({ orderTime: { $gt: startOfYear } }).countDocuments()
 
-            let report = await Order.find({ orderTime: { $gt: startOfYear } }).sort({ orderTime: -1 })
-            res.render('salesReport', { Sales: report })
+            let report = await Order.find({ orderTime: { $gt: startOfYear } }).sort({ orderTime: -1 }).populate('orderedProducts.productId')
+
+            let totalEarning = 0
+            report.forEach((val)=>{
+                totalEarning += val.subTotal
+            })
+            totalEarning = totalEarning.toFixed(2)
+
+            res.render('salesReport', { Sales: report,orderCount:0,page,totalEarning })
         }
     } catch (error) {
         console.log(error, 'sort the sales.');

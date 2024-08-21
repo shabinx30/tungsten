@@ -238,6 +238,9 @@ const userDashboard = async(req,res)=>{
         const order = await Order.find({userId: req.session.user_id}).sort({_id: -1}).populate('orderedProducts.productId').exec()
         const wallet = await Wallet.findOne({userId: req.session.user_id})
         const transactionHistory = wallet && wallet.transactionHistory ? wallet.transactionHistory : []
+        const cart = await Cart.findOne({userId: req.session.user_id})
+        const wishlist = await Wishlist.findOne({userId: req.session.user_id})
+
         // console.log(wallet);
         if(req.query.re){
             req.flash('addressmsg', "Please add Address...!!!");
@@ -254,7 +257,7 @@ const userDashboard = async(req,res)=>{
         const addressmsg = req.flash('addressmsg')
         const orderOp = req.flash('orderOP')
         // console.log(addresses.addresses);
-        res.render('userDashboard',{user: userData?userData:[],addresses: addresses?addresses.addresses:[],orders: order?order:[],wallet: wallet?wallet:[],transactionHistory,addressop,addressmsg,orderOp})
+        res.render('userDashboard',{user: userData?userData:[],addresses: addresses?addresses.addresses:[],orders: order?order:[],wallet: wallet?wallet:[],transactionHistory,addressop,addressmsg,orderOp,cartCount: cart? cart.products.length:0,wishlistCount: wishlist?wishlist.products.length:0})
     } catch (error) {
         console.log(error.message);
         res.status(500).send('Internal Server Error');

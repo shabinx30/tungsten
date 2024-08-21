@@ -1,5 +1,6 @@
 const Wallet = require('../models/wallet');
 const { format } = require('date-fns');
+const Order = require('../models/orders')
 
 
 // ********** adding money to the wallet *******
@@ -94,7 +95,7 @@ const withdrawFromWallet = async (req, res) => {
 };
 
 
-const paymentWithWallet = async (amount,userId)=>{
+const paymentWithWallet = async (amount,userId,orderId)=>{
     try {
         const date = format(new Date(), 'dd/MM/yy, hh:mm a');
 
@@ -129,7 +130,6 @@ const paymentWithWallet = async (amount,userId)=>{
         return {success: updatedWallet?true: false}
     } catch (error) {
         console.log(error.message,'payment with wallet');
-        res.status(400).send(error.message);
     }
 }
 

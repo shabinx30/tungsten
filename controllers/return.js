@@ -62,11 +62,17 @@ const returnProduct = async (req,res)=>{
 //             loding return page
 const loadReturn = async (req, res) => {
     try {
-      const returnData = await Return.find({}).populate('orderedProducts.productId')
-    //   console.log("Populated Return Data:", returnData);
+
+        let page = parseInt(req.query.page) || 0;
+        let limit = 10;
+        let skip = (page * limit)
+    
+        const orderCount = await Return.find({}).countDocuments()
+        const returnData = await Return.find({}).populate('orderedProducts.productId').skip(skip).limit(limit)
+        //   console.log("Populated Return Data:", returnData);
   
-      let page = 0;
-      res.render('returnList', { returnData, page });
+     
+        res.render('returnList', { returnData,page,orderCount });
     } catch (error) {
       console.error('Error loading the return page:', error);
     }

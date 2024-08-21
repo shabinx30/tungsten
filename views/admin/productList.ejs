@@ -177,6 +177,31 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <div class="d-flex mt-3" style="justify-content: center; align-items: center;">
+                            <!-- back button in pagination -->
+                            <% if(page>0){ %>
+                                <div class="mr-3" onclick="window.location.href='?page=<%= page-1 %>'" style="border: 1px solid #d4d4d4; width: 80px; height: 30px; background-color: #ffffff; border-radius: 7.5px; cursor: pointer;">
+                                    <p style="padding-left: 7px;">Previous</p>
+                                </div>
+                                <p class="mr-3" style="cursor: default;">...</p>
+                            <% } %>
+            
+                            <!-- number in pagination -->
+                            <div  onclick="window.location.href='?page=<%= page %>'" style="border: 1px solid #b0b0b0; width: 25px; height: 30px; background-color: #c7c7c7; border-radius: 7.5px; cursor: default;">
+                                <p style="padding-left: 7px;"><%= page+1 %></p>
+                            </div>
+                            
+                            <!-- next button in pagination -->
+                            <% if(page>=0&&page<(productCount/8)-1){ %>
+                                <p class="ml-3" style="cursor: default;">...</p>
+                                <div class="ml-3" onclick="window.location.href='?page=<%= page+1 %>'" style="border: 1px solid #d4d4d4; width: 50px; height: 30px; background-color: #ffffff; border-radius: 7.5px; cursor: pointer;">
+                                    <p style="padding-left: 8px;">Next</p>
+                                </div>
+                            <% } %>
+            
+                        </div>
+
                     </div>
                 </div>
             </div>

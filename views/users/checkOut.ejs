@@ -150,7 +150,7 @@
                             <% } %>
                         </div>
             			<form id="form" action="/placeOrder" method="POST">
-                            <input type="text" id="couponId" hidden>
+                            <input type="hidden" id="couponId">
 		                	<div class="row">
 		                		<div class="col-lg-9">
 		                			<h2 class="checkout-title">Billing Details</h2><!-- End .checkout-title -->
@@ -623,7 +623,7 @@
 </script> -->
 
 <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     document.getElementById('form').addEventListener('submit', function(event) {
@@ -632,7 +632,10 @@
         const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
         const selectedAddress = document.querySelector('input[name="selected_address"]:checked');
         
-        const coupon = document.getElementById('couponId').text
+        const couponId = document.getElementById('couponId').value
+
+        console.log(couponId);
+        
         const selectedPaymentValue = selectedPaymentMethod ? selectedPaymentMethod.value : null;
         const selectedAddressValue = selectedAddress ? selectedAddress.value : null;
         
@@ -659,7 +662,7 @@
             axios.post('/placeOrder', {
                 selected_address: selectedAddressValue,
                 paymentMethod: selectedPaymentValue,
-                coupon
+                couponId
             })
             .then(response => {
                 const result = response.data.result;
@@ -749,7 +752,7 @@
 </script>
 
 <script>
-function applyCoupon(couponId,dis) {
+function applyCoupon(dis,couponId) {
     
     let totalElement = document.getElementById('totalAmount');
     let totalText = totalElement.textContent;
@@ -759,9 +762,11 @@ function applyCoupon(couponId,dis) {
 
     
     let discount = parseFloat(dis);
+    
 
-    let discountedAmount = totalValue * (discount / 100);
+    let discountedAmount = totalValue * ((100-discount) / 100);
     document.getElementById('couponId').value = couponId
+    
 
     totalElement.textContent = `₹${discountedAmount.toFixed(2)}`;
 }
