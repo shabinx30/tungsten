@@ -113,6 +113,6 @@ admin_route.get('/yearlySales',adminAuth.isLogin,saleAndReportController.yearlyS
 //sales and report page
 admin_route.get('/salesReport',adminAuth.isLogin,saleAndReportController.loadSales)
 admin_route.get('/sortSalesReport',adminAuth.isLogin,saleAndReportController.sortSalesReport)
-admin_route.post('/searchWithDate',adminAuth.isLogin,saleAndReportController.searchWithDate)
+admin_route.get('/searchWithDate',adminAuth.isLogin,saleAndReportController.searchWithDate)
 
 module.exports = admin_route

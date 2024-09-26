@@ -224,14 +224,35 @@ const sortSalesReport = async (req, res) => {
 
 const searchWithDate = async (req, res) => {
     try {
-        const { searcheDate } = req.body
+        const { searcheDate } = req.query;
 
-        let searchedDate = new Date(searcheDate)
+        let page = parseInt(req.query.page) || 0;
+        let limit = 10;
+        let skip = page * limit;
 
-        let report = await Order.find({ orderTime: { $gt: searchedDate } }).sort({ orderTime: -1 })
+        let searchedDateStart = new Date(searcheDate);
+        searchedDateStart.setHours(0, 0, 0, 0);
 
+        let searchedDateEnd = new Date(searcheDate);
+        searchedDateEnd.setHours(23, 59, 59, 999);
 
-        res.render('salesReport', { Sales: report })
+        let report = await Order.find({
+            orderTime: {
+                $gte: searchedDateStart,
+                $lte: searchedDateEnd,
+            },
+        })
+            .sort({ orderTime: 1 })
+            .skip(skip)
+            .limit(limit).populate('orderedProducts.productId')
+
+        let totalEarning = 0
+        report.forEach((val)=>{
+            totalEarning += val.subTotal
+        })
+        totalEarning = totalEarning.toFixed(2)
+
+        res.render('salesReport', { Sales: report,orderCount:0,page,totalEarning })
     } catch (error) {
         console.log(error, 'searching with the date in sales.');
 

@@ -139,12 +139,12 @@
 
                     <!-- Chart -->
                     <div
-                        style="width: 80%; background-color: white; border-radius: 10px; margin-top: 1em; text-align: center;">
+                        style="width: 80%; background-color: rgb(57, 57, 57); border-radius: 25px; margin-top: 1em; text-align: center;">
                         <canvas id="myChart"></canvas>
                     </div>
 
                     <!-- Best product table -->
-                    <h3 style="margin-top: 2em; color: #000;"><strong>Top Selling Products</strong></h3>
+                    <h3 style="margin-top: 2em; color: #1a1a1a;"><strong>Top Selling Products</strong></h3>
 
                     <div class="table-responsive w-75" style="border-radius: 10px; margin-top: 1em;">
                         <table class="table">
@@ -381,7 +381,7 @@
                     label: 'Revenue',
                     data: sortedData.map(row => row.totalIncome),
                     borderColor: 'rgb(255, 124, 124)',
-                    backgroundColor: 'rgba(107, 66, 255, 0.5)',
+                    backgroundColor: 'rgb(255, 124, 124)',
                 }]
             },
             options: {
@@ -412,7 +412,7 @@
                                     label: 'Revenue',
                                     data: Response.data.orderYear.map(row => row.totalIncome),
                                     borderColor: 'rgb(255, 124, 124)',
-                                    backgroundColor: 'rgba(107, 66, 255, 0.5)',
+                                    backgroundColor: 'rgb(255, 124, 124)',
                                     // tension: .5
                                 }]
                             },
@@ -465,10 +465,17 @@
             },
             options: {
                 scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+            x: {
+                ticks: {
+                    color: 'red' // Change x-axis label color
                 }
+            },
+            y: {
+                ticks: {
+                    color: 'blue' // Change y-axis label color
+                }
+            }
+        }
             }
         });
     })
